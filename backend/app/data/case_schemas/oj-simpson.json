@@ -52,7 +52,7 @@
       "name": "360 N. Rockingham Ave",
       "description": "O.J. Simpson's Brentwood estate, 2 miles from the crime scene. Blood trail found leading to the property.",
       "image_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4a/OJ_Simpson_house_Rockingham.jpg/320px-OJ_Simpson_house_Rockingham.jpg",
-      "revealed_at": {"requires": ["investigate-oj-home"]},
+      "revealed_at": {"requires": ["gate-forensics"]},
       "unlock_keyword_triggers": ["rockingham", "oj house", "simpson home", "estate", "his house"]
     },
     {
@@ -60,71 +60,39 @@
       "type": "evidence",
       "name": "The Bloody Glove",
       "description": "Leather glove found at Rockingham estate matching one found at Bundy crime scene. Contained blood of both victims and Simpson.",
-      "revealed_at": {"requires": ["investigate-oj-home"]},
+      "revealed_at": {"requires": ["gate-forensics"]},
       "unlock_keyword_triggers": ["glove", "leather", "rockingham evidence"]
-    },
-    {
-      "id": "bronco-chase",
-      "type": "event",
-      "name": "White Bronco Chase",
-      "description": "On June 17, 1994, O.J. led police on a slow-speed chase in a white Ford Bronco. He carried a gun, passport, and disguise.",
-      "revealed_at": {"requires": ["check-alibi"]},
-      "unlock_keyword_triggers": ["bronco", "chase", "flee", "run", "escape", "pursuit"]
-    },
-    {
-      "id": "domestic-violence-history",
-      "type": "evidence",
-      "name": "Domestic Violence Records",
-      "description": "Nicole called 911 multiple times. In 1989, Simpson pleaded no contest to spousal battery. Photos showed Nicole's bruised face.",
-      "revealed_at": {"requires": ["investigate-relationship"]},
-      "unlock_keyword_triggers": ["abuse", "domestic violence", "beat", "hit", "911", "bruise", "relationship", "marriage"]
     },
     {
       "id": "dna-evidence",
       "type": "evidence",
       "name": "DNA Blood Evidence",
       "description": "Blood drops at Bundy matched Simpson. Blood in the Bronco matched both victims. Simpson's blood was at Bundy.",
-      "revealed_at": {"requires": ["examine-blood"]},
+      "revealed_at": {"requires": ["gate-forensics"]},
       "unlock_keyword_triggers": ["dna", "blood", "forensic", "lab", "sample", "type"]
-    },
-    {
-      "id": "glove-demonstration",
-      "type": "event",
-      "name": "Glove Demonstration — 'If It Doesn't Fit'",
-      "description": "In court, Simpson tried on the bloody glove and it appeared too tight. Defense: 'If it doesn't fit, you must acquit.'",
-      "revealed_at": {"requires": ["bloody-glove"]},
-      "unlock_keyword_triggers": ["fit", "try on", "acquit", "court", "demonstration"]
-    },
-    {
-      "id": "mark-fuhrman",
-      "type": "witness",
-      "name": "Det. Mark Fuhrman",
-      "description": "LAPD detective who found the bloody glove at Rockingham. Later exposed for racial slurs, damaging prosecution credibility.",
-      "revealed_at": {"requires": ["bloody-glove"]},
-      "unlock_keyword_triggers": ["fuhrman", "detective", "found glove", "racist", "n-word", "lapd"]
-    },
-    {
-      "id": "fuhrman-tapes",
-      "type": "evidence",
-      "name": "Fuhrman Tapes",
-      "description": "Audio recordings of Fuhrman using racial slurs and boasting about planting evidence in other cases. Devastated the prosecution.",
-      "revealed_at": {"requires": ["mark-fuhrman"]},
-      "unlock_keyword_triggers": ["tapes", "recordings", "racist", "planted", "framed"]
     },
     {
       "id": "kato-kaelin",
       "type": "witness",
       "name": "Kato Kaelin",
       "description": "House guest living in Simpson's guest house. Heard 3 loud thumps against the wall around 10:40 PM on the night of the murders.",
-      "revealed_at": {"requires": ["investigate-oj-home"]},
+      "revealed_at": {"requires": ["gate-witnesses"]},
       "unlock_keyword_triggers": ["kato", "kaelin", "guest", "thumps", "noise", "wall"]
+    },
+    {
+      "id": "bronco-chase",
+      "type": "event",
+      "name": "White Bronco Chase",
+      "description": "On June 17, 1994, O.J. led police on a slow-speed chase in a white Ford Bronco. He carried a gun, passport, and disguise.",
+      "revealed_at": {"requires": ["gate-witnesses"]},
+      "unlock_keyword_triggers": ["bronco", "chase", "flee", "run", "escape", "pursuit"]
     },
     {
       "id": "timeline-gap",
       "type": "evidence",
       "name": "The Missing Hour",
       "description": "Simpson's whereabouts between 9:36 PM and 10:54 PM are unaccounted for. The murders occurred during this window.",
-      "revealed_at": {"requires": ["check-alibi"]},
+      "revealed_at": {"requires": ["gate-witnesses"]},
       "unlock_keyword_triggers": ["alibi", "where was", "timeline", "unaccounted", "missing time", "limo"]
     },
     {
@@ -132,8 +100,40 @@
       "type": "witness",
       "name": "Allan Park — Limousine Driver",
       "description": "Arrived at Rockingham at 10:22 PM to take Simpson to the airport. No one answered until 10:54 PM. Saw a large figure enter the house.",
-      "revealed_at": {"requires": ["check-alibi"]},
+      "revealed_at": {"requires": ["gate-witnesses"]},
       "unlock_keyword_triggers": ["limo", "driver", "airport", "park", "pickup"]
+    },
+    {
+      "id": "mark-fuhrman",
+      "type": "witness",
+      "name": "Det. Mark Fuhrman",
+      "description": "LAPD detective who found the bloody glove at Rockingham. Later exposed for racial slurs, damaging prosecution credibility.",
+      "revealed_at": {"requires": ["gate-witnesses"]},
+      "unlock_keyword_triggers": ["fuhrman", "detective", "found glove", "racist", "n-word", "lapd"]
+    },
+    {
+      "id": "domestic-violence-history",
+      "type": "evidence",
+      "name": "Domestic Violence Records",
+      "description": "Nicole called 911 multiple times. In 1989, Simpson pleaded no contest to spousal battery. Photos showed Nicole's bruised face.",
+      "revealed_at": {"requires": ["gate-suspects"]},
+      "unlock_keyword_triggers": ["abuse", "domestic violence", "beat", "hit", "911", "bruise", "relationship", "marriage"]
+    },
+    {
+      "id": "glove-demonstration",
+      "type": "event",
+      "name": "Glove Demonstration — 'If It Doesn't Fit'",
+      "description": "In court, Simpson tried on the bloody glove and it appeared too tight. Defense: 'If it doesn't fit, you must acquit.'",
+      "revealed_at": {"requires": ["gate-suspects"]},
+      "unlock_keyword_triggers": ["fit", "try on", "acquit", "court", "demonstration"]
+    },
+    {
+      "id": "fuhrman-tapes",
+      "type": "evidence",
+      "name": "Fuhrman Tapes",
+      "description": "Audio recordings of Fuhrman using racial slurs and boasting about planting evidence in other cases. Devastated the prosecution.",
+      "revealed_at": {"requires": ["gate-case"]},
+      "unlock_keyword_triggers": ["tapes", "recordings", "racist", "planted", "framed"]
     },
     {
       "id": "johnnie-cochran",
@@ -141,7 +141,7 @@
       "name": "Johnnie Cochran",
       "description": "Lead defense attorney. Masterfully introduced racial bias narrative, turning the trial into a referendum on LAPD racism.",
       "image_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6c/Johnnie_Cochran_2003.jpg/240px-Johnnie_Cochran_2003.jpg",
-      "revealed_at": {"requires": ["glove-demonstration"]},
+      "revealed_at": {"requires": ["gate-case"]},
       "unlock_keyword_triggers": ["cochran", "lawyer", "defense", "attorney", "dream team"]
     }
   ],
@@ -151,17 +151,19 @@
     {"from": "ron-goldman", "to": "nicole-brown", "label": "Returning sunglasses", "revealed_at": "start"},
     {"from": "nicole-brown", "to": "bundy-crime-scene", "label": "Murdered here", "revealed_at": "start"},
     {"from": "ron-goldman", "to": "bundy-crime-scene", "label": "Murdered here", "revealed_at": "start"},
-    {"from": "oj-simpson", "to": "rockingham-estate", "label": "Lived here", "revealed_at": {"requires": ["investigate-oj-home"]}},
-    {"from": "bloody-glove", "to": "rockingham-estate", "label": "Found at estate", "revealed_at": {"requires": ["investigate-oj-home"]}},
-    {"from": "bloody-glove", "to": "bundy-crime-scene", "label": "Matching glove at scene", "revealed_at": {"requires": ["investigate-oj-home"]}},
-    {"from": "dna-evidence", "to": "oj-simpson", "label": "Blood matched", "revealed_at": {"requires": ["examine-blood"]}},
-    {"from": "dna-evidence", "to": "nicole-brown", "label": "Blood in Bronco", "revealed_at": {"requires": ["examine-blood"]}},
-    {"from": "domestic-violence-history", "to": "oj-simpson", "label": "Pattern of abuse", "revealed_at": {"requires": ["investigate-relationship"]}},
-    {"from": "mark-fuhrman", "to": "bloody-glove", "label": "Found the glove", "revealed_at": {"requires": ["bloody-glove"]}},
-    {"from": "fuhrman-tapes", "to": "mark-fuhrman", "label": "Credibility destroyed", "revealed_at": {"requires": ["mark-fuhrman"]}},
-    {"from": "kato-kaelin", "to": "rockingham-estate", "label": "Heard thumps at 10:40 PM", "revealed_at": {"requires": ["investigate-oj-home"]}},
-    {"from": "timeline-gap", "to": "oj-simpson", "label": "Unaccounted 9:36-10:54 PM", "revealed_at": {"requires": ["check-alibi"]}},
-    {"from": "limo-driver", "to": "oj-simpson", "label": "No answer until 10:54 PM", "revealed_at": {"requires": ["check-alibi"]}}
+    {"from": "oj-simpson", "to": "rockingham-estate", "label": "Lived here", "revealed_at": {"requires": ["gate-forensics"]}},
+    {"from": "bloody-glove", "to": "rockingham-estate", "label": "Found at estate", "revealed_at": {"requires": ["gate-forensics"]}},
+    {"from": "bloody-glove", "to": "bundy-crime-scene", "label": "Matching glove at scene", "revealed_at": {"requires": ["gate-forensics"]}},
+    {"from": "dna-evidence", "to": "oj-simpson", "label": "Blood matched", "revealed_at": {"requires": ["gate-forensics"]}},
+    {"from": "dna-evidence", "to": "nicole-brown", "label": "Blood in Bronco", "revealed_at": {"requires": ["gate-forensics"]}},
+    {"from": "kato-kaelin", "to": "rockingham-estate", "label": "Heard thumps at 10:40 PM", "revealed_at": {"requires": ["gate-witnesses"]}},
+    {"from": "timeline-gap", "to": "oj-simpson", "label": "Unaccounted 9:36-10:54 PM", "revealed_at": {"requires": ["gate-witnesses"]}},
+    {"from": "limo-driver", "to": "oj-simpson", "label": "No answer until 10:54 PM", "revealed_at": {"requires": ["gate-witnesses"]}},
+    {"from": "mark-fuhrman", "to": "bloody-glove", "label": "Found the glove", "revealed_at": {"requires": ["gate-witnesses"]}},
+    {"from": "domestic-violence-history", "to": "oj-simpson", "label": "Pattern of abuse", "revealed_at": {"requires": ["gate-suspects"]}},
+    {"from": "glove-demonstration", "to": "oj-simpson", "label": "Failed glove test", "revealed_at": {"requires": ["gate-suspects"]}},
+    {"from": "fuhrman-tapes", "to": "mark-fuhrman", "label": "Credibility destroyed", "revealed_at": {"requires": ["gate-case"]}},
+    {"from": "johnnie-cochran", "to": "fuhrman-tapes", "label": "Used in defense strategy", "revealed_at": {"requires": ["gate-case"]}}
   ],
 
   "characters": {

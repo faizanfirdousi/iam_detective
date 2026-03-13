@@ -1,4 +1,4 @@
-"""engine.py — Investigation Engine: gates, triggers, contradictions, AI context."""
+"""engine.py — Investigation Engine: gates, triggers, contradictions, AI context, stage system."""
 
 from __future__ import annotations
 
@@ -6,7 +6,7 @@ import logging
 from typing import Any
 
 from .schema import load_schema, get_character, get_entity
-from .state import InvestigationState
+from .state import InvestigationState, STAGE_NAMES, STAGE_DESCRIPTIONS, STAGE_GATE_MAP
 
 log = logging.getLogger(__name__)
 
@@ -153,6 +153,108 @@ def check_contradictions(state: InvestigationState) -> list[dict[str, Any]]:
     return found
 
 
+# ── Stage system ─────────────────────────────────────────────────────────────
+
+# Stage-advance minimum requirements
+_STAGE_REQUIREMENTS: dict[int, dict[str, int]] = {
+    1: {"min_entities_viewed": 2,  "min_chat_messages": 1,  "contradictions_found": 0},
+    2: {"min_entities_viewed": 4,  "min_chat_messages": 3,  "contradictions_found": 0},
+    3: {"min_entities_viewed": 6,  "min_chat_messages": 5,  "contradictions_found": 0},
+    4: {"min_entities_viewed": 8,  "min_chat_messages": 7,  "contradictions_found": 0},
+    5: {"min_entities_viewed": 10, "min_chat_messages": 10, "contradictions_found": 1},
+    6: {},  # always openable once stage 5 is complete
+}
+
+
+def can_advance_stage(state: InvestigationState) -> dict[str, Any]:
+    """
+    Check if player has done enough in current stage to advance.
+    Returns a dict with `can_advance` bool and per-requirement status.
+    """
+    stage = state.current_stage
+    if stage >= 6:
+        return {
+            "can_advance": False,
+            "reason": "Already at final stage",
+            "requirements_met": {},
+            "current_stage": stage,
+        }
+
+    req = _STAGE_REQUIREMENTS.get(stage, {})
+    met: dict[str, bool] = {}
+
+    if "min_entities_viewed" in req:
+        met["min_entities_viewed"] = len(state.discovered_entities) >= req["min_entities_viewed"]
+    if "min_chat_messages" in req:
+        met["min_chat_messages"] = state.message_count >= req["min_chat_messages"]
+    if "contradictions_found" in req and req["contradictions_found"] > 0:
+        met["contradictions_found"] = len(state.contradictions_found) >= req["contradictions_found"]
+
+    return {
+        "can_advance": all(met.values()),
+        "requirements_met": met,
+        "current_stage": stage,
+        "requirements": req,
+    }
+
+
+def advance_stage(state: InvestigationState) -> dict[str, Any]:
+    """
+    Advance the player to the next investigation stage.
+    Unlocks the stage gate, returns newly visible entities.
+    Called only after can_advance_stage() confirms readiness (enforced in route).
+    """
+    if state.current_stage >= 6:
+        return {"advanced": False, "reason": "Already at final stage"}
+
+    next_stage = state.current_stage + 1
+    gate_to_unlock = STAGE_GATE_MAP[next_stage]
+
+    # Mark current stage completed
+    if state.current_stage not in state.completed_stages:
+        state.completed_stages.append(state.current_stage)
+
+    # Unlock all stage gates up to and including next_stage
+    # (handles edge cases where a player skips via keyword triggers)
+    for s in range(2, next_stage + 1):
+        g = STAGE_GATE_MAP[s]
+        if g not in state.satisfied_gates:
+            state.satisfied_gates.add(g)
+
+    # Move stage pointer
+    state.current_stage = next_stage
+
+    # Discover newly visible entities
+    schema = load_schema(state.case_id)
+    newly_visible = []
+    for ent in schema.get("entities", []):
+        if ent["id"] in state.discovered_entities:
+            continue
+        if _gate_satisfied(ent.get("revealed_at", "start"), state):
+            state.discovered_entities.add(ent["id"])
+            if ent["type"] == "evidence":
+                state.evidence_collected.add(ent["id"])
+            newly_visible.append(ent)
+            state.satisfied_gates.add(ent["id"])
+
+    log.info(
+        "🚀 Stage advanced → %d (%s). Newly visible: %d entities.",
+        next_stage, STAGE_NAMES[next_stage], len(newly_visible),
+    )
+
+    return {
+        "advanced": True,
+        "new_stage": next_stage,
+        "stage_name": STAGE_NAMES[next_stage],
+        "stage_description": STAGE_DESCRIPTIONS[next_stage],
+        "newly_unlocked_entities": [
+            {"id": e["id"], "name": e["name"], "type": e["type"]}
+            for e in newly_visible
+        ],
+        "graph_event": "STAGE_ADVANCE",
+    }
+
+
 # ── AI context building ──────────────────────────────────────────────────────
 
 def build_ai_context(
@@ -288,6 +390,11 @@ def evaluate_conclusion(
         feedback_parts.append("✅ Motive theory provided.")
     else:
         feedback_parts.append("❌ No motive provided.")
+
+    # 5. Stage completion bonus
+    stages_completed = len(state.completed_stages)
+    stage_bonus = stages_completed * 2  # 2 pts per completed stage (max 10)
+    feedback_parts.append(f"🔓 Investigation depth: {stages_completed}/5 stages fully explored (+{stage_bonus} bonus pts)")
 
     return {
         "score": score,

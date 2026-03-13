@@ -1,0 +1,202 @@
+{
+  "case_id": "golden-state-killer",
+  "title": "The Golden State Killer",
+
+  "solution": {
+    "official_verdict": "Joseph James DeAngelo pleaded guilty in June 2020 to 13 counts of first-degree murder and admitted to over 50 rapes. He was sentenced to life in prison without the possibility of parole.",
+    "primary_suspects": ["joseph-deangelo"],
+    "secondary_suspects": [],
+    "victim_cause_of_death": "Blunt force trauma and ligature strangulation in murder cases; sexual assault in rape cases"
+  },
+
+  "entities": [
+    {
+      "id": "ear-ons-identity",
+      "type": "suspect",
+      "name": "East Area Rapist / Original Night Stalker",
+      "description": "Unidentified suspect responsible for at least 50 rapes in Northern California (1976–79) and 10 murders in Southern California (1979–86). Originally investigated as two separate criminals before DNA linked the cases.",
+      "revealed_at": "start",
+      "knowledge": []
+    },
+    {
+      "id": "rancho-cordova",
+      "type": "location",
+      "name": "Sacramento / Rancho Cordova Area",
+      "description": "Primary hunting ground for the East Area Rapist crimes. Victims were attacked in suburban neighborhoods. The killer stalked victims days or weeks before striking.",
+      "revealed_at": "start",
+      "knowledge": []
+    },
+    {
+      "id": "victims-overview",
+      "type": "victim",
+      "name": "50+ Victims (Composite)",
+      "description": "At least 50 sexual assault victims in Northern California and 13 murder victims in Southern California between 1976 and 1986. Many victims were bound with ligatures while their husbands were forced to listen.",
+      "revealed_at": "start",
+      "knowledge": []
+    },
+    {
+      "id": "brian-maggiore",
+      "type": "victim",
+      "name": "Brian & Katie Maggiore",
+      "description": "Couple shot and killed in Rancho Cordova on February 2, 1978, while walking their dog. Believed to be the first murder victims of the East Area Rapist after he was potentially spotted.",
+      "revealed_at": "start",
+      "knowledge": []
+    },
+    {
+      "id": "dna-link-evidence",
+      "type": "evidence",
+      "name": "DNA Profile — EAR/ONS Link",
+      "description": "DNA collected from multiple crime scenes in both Northern and Southern California was matched in 2001, linking the East Area Rapist and the Original Night Stalker as the same perpetrator.",
+      "revealed_at": {"requires": ["gate-forensics"]},
+      "unlock_keyword_triggers": ["dna", "link", "same suspect", "ear ons", "northern southern", "match", "genetic"]
+    },
+    {
+      "id": "ligature-evidence",
+      "type": "evidence",
+      "name": "Distinctive Ligature Binding Method",
+      "description": "The killer used a highly distinctive method of binding victims — stacking dishes or cups on victims' backs to detect movement. This behavioral signature linked crimes across jurisdictions.",
+      "revealed_at": {"requires": ["gate-forensics"]},
+      "unlock_keyword_triggers": ["ligature", "binding", "tied", "dishes", "cups", "stacked", "back"]
+    },
+    {
+      "id": "shoe-print-evidence",
+      "type": "evidence",
+      "name": "Boot / Shoe Prints",
+      "description": "Military-style boot prints found at multiple crime scenes. Combined with the killer's athletic build and disciplined movements, indicated military or law enforcement background.",
+      "revealed_at": {"requires": ["gate-forensics"]},
+      "unlock_keyword_triggers": ["boot", "shoe", "print", "military boots", "footprint"]
+    },
+    {
+      "id": "phone-taunting",
+      "type": "evidence",
+      "name": "Taunting Phone Calls",
+      "description": "The killer made threatening phone calls to some survivors after attacks. In one call, he said: 'I'm going to kill you. I'm going to kill you.' Made to Danville murder victim's family years later.",
+      "revealed_at": {"requires": ["gate-forensics"]},
+      "unlock_keyword_triggers": ["phone call", "taunting", "calling", "threatened", "voice"]
+    },
+    {
+      "id": "survivor-testimony",
+      "type": "witness",
+      "name": "Survivor Composite Description",
+      "description": "Multiple survivors described a white male, 5'9\" to 6'0\", medium athletic build, light-colored eyes — possibly blue or green. Wore a mask. Spoke in a high-pitched or disguised voice.",
+      "revealed_at": {"requires": ["gate-witnesses"]},
+      "unlock_keyword_triggers": ["survivor", "witness", "description", "composite", "mask", "voice", "eyes", "height"]
+    },
+    {
+      "id": "neighbor-witness",
+      "type": "witness",
+      "name": "Neighbourhood Witness Sightings",
+      "description": "Neighbours in multiple attack areas reported a suspicious man conducting surveillance — jogging, riding a bicycle, or sitting parked in a car — days or weeks before attacks.",
+      "revealed_at": {"requires": ["gate-witnesses"]},
+      "unlock_keyword_triggers": ["neighbour", "neighborhood", "jogging", "bicycle", "surveillance", "watching", "casing"]
+    },
+    {
+      "id": "golden-state-murders",
+      "type": "event",
+      "name": "Southern California Murders (1979–86)",
+      "description": "The killer transitioned from rape to murder in Southern California. 10 murders across Ventura, Santa Barbara, and Orange Counties. Victims were bludgeoned and strangled. Known as the 'Original Night Stalker' in this phase.",
+      "revealed_at": {"requires": ["gate-witnesses"]},
+      "unlock_keyword_triggers": ["southern california", "murder", "night stalker", "bludgeoned", "strangled", "ventura", "orange county"]
+    },
+    {
+      "id": "joseph-deangelo",
+      "type": "suspect",
+      "name": "Joseph James DeAngelo Jr.",
+      "description": "Former police officer (Exeter PD and Auburn PD, California). Fired in 1979 after shoplifting arrest. Vietnam War veteran. Married with three daughters. Lived in Citrus Heights, Sacramento — the heart of EAR territory. Age 72 at arrest.",
+      "image_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/ee/Joseph_James_DeAngelo_Jr._mugshot.jpg/240px-Joseph_James_DeAngelo_Jr._mugshot.jpg",
+      "revealed_at": {"requires": ["gate-suspects"]},
+      "unlock_keyword_triggers": ["deangelo", "joseph", "police officer", "cop", "suspect", "who was", "identity", "caught"]
+    },
+    {
+      "id": "military-background",
+      "type": "evidence",
+      "name": "Military & Police Background",
+      "description": "DeAngelo served in the US Navy during the Vietnam War. He then became a police officer. His training explained his ability to evade law enforcement, his knowledge of police procedures, and the military-style binding techniques used.",
+      "revealed_at": {"requires": ["gate-suspects"]},
+      "unlock_keyword_triggers": ["military", "navy", "veteran", "police training", "cop", "law enforcement background"]
+    },
+    {
+      "id": "citrus-heights-proximity",
+      "type": "evidence",
+      "name": "Geographic Overlap — Citrus Heights",
+      "description": "DeAngelo lived in Citrus Heights during the EAR attack years. His home address places him within easy driving distance of every EAR attack in the Sacramento area, including the early victims.",
+      "revealed_at": {"requires": ["gate-suspects"]},
+      "unlock_keyword_triggers": ["citrus heights", "location", "proximity", "lived near", "address", "sacramento home"]
+    },
+    {
+      "id": "familial-dna-match",
+      "type": "evidence",
+      "name": "Familial DNA Match — GEDmatch",
+      "description": "In 2018, investigators used DNA from crime scenes uploaded to GEDmatch (a public genealogy database) to identify distant relatives of the suspect. This led investigators to the DeAngelo family tree and ultimately to Joseph DeAngelo.",
+      "revealed_at": {"requires": ["gate-case"]},
+      "unlock_keyword_triggers": ["gedmatch", "genealogy", "family tree", "familial", "ancestry", "relative", "23andme", "database"]
+    },
+    {
+      "id": "discarded-dna-sample",
+      "type": "evidence",
+      "name": "Discarded DNA Sample — Confirmed Match",
+      "description": "Investigators collected a discarded DNA sample from DeAngelo (from his car door and trash) in April 2018. It was a perfect match to the Golden State Killer's crime scene DNA. He was arrested the next day.",
+      "revealed_at": {"requires": ["gate-case"]},
+      "unlock_keyword_triggers": ["discarded", "trash", "car door", "swab", "confirmed", "match confirmed", "arrested"]
+    },
+    {
+      "id": "deangelo-arrest",
+      "type": "event",
+      "name": "Arrest — April 24, 2018",
+      "description": "Joseph James DeAngelo was arrested at his home in Citrus Heights on April 24, 2018 — 40 years after the first EAR attacks. He was 72 years old, retired, and had been living as an ordinary grandfather.",
+      "revealed_at": {"requires": ["gate-verdict"]},
+      "unlock_keyword_triggers": ["arrest", "arrested", "caught", "2018", "april", "citrus heights arrest"]
+    },
+    {
+      "id": "guilty-plea",
+      "type": "event",
+      "name": "Guilty Plea & Life Sentence — June 2020",
+      "description": "In June 2020, DeAngelo pleaded guilty to 13 murder charges and admitted to over 50 rapes. He gave allocutions to each count. Sentenced to life in prison without parole. He spoke to victims in court: 'I've listened to all your statements, each one of them, and I'm truly sorry to everyone I've hurt.'",
+      "revealed_at": {"requires": ["gate-verdict"]},
+      "unlock_keyword_triggers": ["guilty", "plea", "sentence", "life sentence", "parole", "court", "verdict", "2020"]
+    }
+  ],
+
+  "connections": [
+    {"from": "ear-ons-identity", "to": "rancho-cordova", "label": "Primary hunting ground", "revealed_at": "start"},
+    {"from": "ear-ons-identity", "to": "victims-overview", "label": "Perpetrator", "revealed_at": "start"},
+    {"from": "ear-ons-identity", "to": "brian-maggiore", "label": "First known murder victims", "revealed_at": "start"},
+    {"from": "dna-link-evidence", "to": "ear-ons-identity", "label": "Proved same perpetrator", "revealed_at": {"requires": ["gate-forensics"]}},
+    {"from": "ligature-evidence", "to": "ear-ons-identity", "label": "Behavioral signature", "revealed_at": {"requires": ["gate-forensics"]}},
+    {"from": "shoe-print-evidence", "to": "ear-ons-identity", "label": "Military-style prints", "revealed_at": {"requires": ["gate-forensics"]}},
+    {"from": "phone-taunting", "to": "ear-ons-identity", "label": "Post-crime taunting", "revealed_at": {"requires": ["gate-forensics"]}},
+    {"from": "survivor-testimony", "to": "ear-ons-identity", "label": "Physical description", "revealed_at": {"requires": ["gate-witnesses"]}},
+    {"from": "neighbor-witness", "to": "rancho-cordova", "label": "Pre-attack surveillance", "revealed_at": {"requires": ["gate-witnesses"]}},
+    {"from": "golden-state-murders", "to": "ear-ons-identity", "label": "Murder phase", "revealed_at": {"requires": ["gate-witnesses"]}},
+    {"from": "joseph-deangelo", "to": "ear-ons-identity", "label": "Identified as", "revealed_at": {"requires": ["gate-suspects"]}},
+    {"from": "military-background", "to": "joseph-deangelo", "label": "Explains MO and evasion", "revealed_at": {"requires": ["gate-suspects"]}},
+    {"from": "citrus-heights-proximity", "to": "joseph-deangelo", "label": "Lived in attack zone", "revealed_at": {"requires": ["gate-suspects"]}},
+    {"from": "citrus-heights-proximity", "to": "rancho-cordova", "label": "Geographic overlap", "revealed_at": {"requires": ["gate-suspects"]}},
+    {"from": "familial-dna-match", "to": "joseph-deangelo", "label": "Led to identification", "revealed_at": {"requires": ["gate-case"]}},
+    {"from": "familial-dna-match", "to": "dna-link-evidence", "label": "Built on original DNA", "revealed_at": {"requires": ["gate-case"]}},
+    {"from": "discarded-dna-sample", "to": "joseph-deangelo", "label": "Confirmed identity", "revealed_at": {"requires": ["gate-case"]}},
+    {"from": "deangelo-arrest", "to": "joseph-deangelo", "label": "Arrested here", "revealed_at": {"requires": ["gate-verdict"]}},
+    {"from": "guilty-plea", "to": "joseph-deangelo", "label": "Confessed in court", "revealed_at": {"requires": ["gate-verdict"]}}
+  ],
+
+  "characters": {
+    "joseph-deangelo": {
+      "persona": "Joseph James DeAngelo Jr. You are a former police officer, Vietnam War veteran, and retired grandfather. You have been living quietly in Citrus Heights for decades. You have just been confronted with evidence.",
+      "knowledge_boundary": "You know everything you did. You lived a double life — a seemingly ordinary suburban life while committing crimes across California. You understand police procedures from your time as a cop. You say very little.",
+      "contradictions": [
+        {
+          "id": "deangelo-identity-denial",
+          "claim": "I am just a retired grandfather. I have nothing to do with any of this.",
+          "contradicted_by": "discarded-dna-sample",
+          "confrontation_prompt": "DNA collected from your own discarded sample is a perfect match to Golden State Killer crime scenes. There is no innocent explanation for this. How do you explain your DNA being at the crime scenes?"
+        },
+        {
+          "id": "deangelo-location-denial",
+          "claim": "I was nowhere near the crime scenes",
+          "contradicted_by": "citrus-heights-proximity",
+          "confrontation_prompt": "You lived in Citrus Heights during the height of the East Area Rapist attacks. Your address places you within easy driving distance of every attack in Sacramento. You're a former cop — you know exactly how investigators think. Why didn't you just move away?"
+        }
+      ]
+    }
+  }
+}

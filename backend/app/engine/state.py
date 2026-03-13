@@ -7,6 +7,37 @@ from dataclasses import dataclass, field
 from typing import Any
 
 
+# ── Stage constants (shared with engine.py) ───────────────────────────────────
+
+STAGE_NAMES: dict[int, str] = {
+    1: "Crime Scene",
+    2: "Forensic Analysis",
+    3: "Witness Interviews",
+    4: "Suspect Profiling",
+    5: "Building the Case",
+    6: "The Verdict",
+}
+
+STAGE_DESCRIPTIONS: dict[int, str] = {
+    1: "Examine the crime scene. Understand what happened, where, and to whom.",
+    2: "Analyze physical and forensic evidence collected from the scene.",
+    3: "Interview witnesses. What did they see? Do their stories hold up?",
+    4: "Build suspect profiles. Who had motive, means, and opportunity?",
+    5: "Connect the dots. Find contradictions. Build the case.",
+    6: "You have seen everything a detective could find. Deliver your verdict.",
+}
+
+# Maps stage number → the gate name that advancing TO that stage unlocks
+STAGE_GATE_MAP: dict[int, str] = {
+    1: "start",
+    2: "gate-forensics",
+    3: "gate-witnesses",
+    4: "gate-suspects",
+    5: "gate-case",
+    6: "gate-verdict",
+}
+
+
 @dataclass
 class InvestigationState:
     """Tracks everything the player has discovered in one investigation session."""
@@ -20,14 +51,24 @@ class InvestigationState:
     interrogated_characters: set[str] = field(default_factory=set)
     contradictions_found: set[str] = field(default_factory=set)
 
-    # Derived gates that have been satisfied (e.g. "investigate-servants")
+    # Derived gates that have been satisfied (e.g. "gate-forensics")
     satisfied_gates: set[str] = field(default_factory=set)
 
     # Running chat memory (last N messages kept for AI context)
     chat_history: list[dict[str, str]] = field(default_factory=list)
 
-    # Current stage
-    stage: int = 1
+    # ── Stage tracking ────────────────────────────────────────────────────────
+    # current_stage: 1–6, aligned with STAGE_GATE_MAP
+    current_stage: int = 1
+    # Stages the player has fully completed (advanced past)
+    completed_stages: list[int] = field(default_factory=list)
+    # Total chat messages sent (used for stage-advance requirements)
+    message_count: int = 0
+
+    # Legacy alias so old code referencing `state.stage` still works
+    @property
+    def stage(self) -> int:
+        return self.current_stage
 
     # Cap chat history at 20 messages to avoid token overflow
     MAX_HISTORY: int = 20
@@ -36,6 +77,8 @@ class InvestigationState:
         self.chat_history.append({"role": role, "content": content})
         if len(self.chat_history) > self.MAX_HISTORY:
             self.chat_history = self.chat_history[-self.MAX_HISTORY:]
+        if role == "user":
+            self.message_count += 1
 
 
 # ── Session store (in-memory, lost on restart) ───────────────────────────────

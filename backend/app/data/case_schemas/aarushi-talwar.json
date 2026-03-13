@@ -54,35 +54,11 @@
       "knowledge": []
     },
     {
-      "id": "krishna",
-      "type": "suspect",
-      "name": "Krishna Thadarai",
-      "description": "Domestic helper who worked for a neighbour. Had keys to the Talwar household. Underwent narco-analysis.",
-      "revealed_at": {"requires": ["investigate-servants"]},
-      "unlock_keyword_triggers": ["servant", "helper", "domestic", "krishna", "other staff"]
-    },
-    {
-      "id": "rajkumar",
-      "type": "suspect",
-      "name": "Rajkumar",
-      "description": "Domestic helper who worked nearby. Was a drinking companion of Hemraj.",
-      "revealed_at": {"requires": ["investigate-servants"]},
-      "unlock_keyword_triggers": ["servant", "helper", "domestic", "rajkumar", "drinking"]
-    },
-    {
-      "id": "vijay-mandal",
-      "type": "suspect",
-      "name": "Vijay Mandal",
-      "description": "Another domestic helper. Companion of Hemraj, implicated by narco-analysis but not by physical evidence.",
-      "revealed_at": {"requires": ["investigate-servants"]},
-      "unlock_keyword_triggers": ["servant", "helper", "companion", "vijay", "mandal"]
-    },
-    {
       "id": "murder-weapon",
       "type": "evidence",
       "name": "Murder Weapon — Kukri / Khukri",
       "description": "A sharp-edged weapon consistent with scalpel-like precision. Exact weapon never recovered.",
-      "revealed_at": {"requires": ["examine-wounds"]},
+      "revealed_at": {"requires": ["gate-forensics"]},
       "unlock_keyword_triggers": ["weapon", "knife", "scalpel", "kukri", "cut", "wound", "sharp"]
     },
     {
@@ -90,7 +66,7 @@
       "type": "evidence",
       "name": "Terrace Door Lock",
       "description": "The terrace door was locked from the inside. The outer lock was missing. Raises question of how the killer accessed the terrace.",
-      "revealed_at": {"requires": ["investigate-terrace"]},
+      "revealed_at": {"requires": ["gate-forensics"]},
       "unlock_keyword_triggers": ["terrace", "lock", "door", "roof", "body found"]
     },
     {
@@ -98,7 +74,7 @@
       "type": "evidence",
       "name": "Phone Records",
       "description": "Rajesh Talwar's phone records show a late-night internet session. Aarushi's phone was found switched off.",
-      "revealed_at": {"requires": ["check-phone"]},
+      "revealed_at": {"requires": ["gate-forensics"]},
       "unlock_keyword_triggers": ["phone", "call", "mobile", "internet", "online"]
     },
     {
@@ -106,16 +82,8 @@
       "type": "evidence",
       "name": "Crime Scene Contamination",
       "description": "Noida Police failed to seal the crime scene. Multiple people walked through before forensics arrived. Key evidence may have been destroyed.",
-      "revealed_at": {"requires": ["investigate-police"]},
+      "revealed_at": {"requires": ["gate-witnesses"]},
       "unlock_keyword_triggers": ["police", "investigation", "contaminated", "sealed", "forensic", "noida police"]
-    },
-    {
-      "id": "narco-analysis",
-      "type": "evidence",
-      "name": "Narco-Analysis Test Results",
-      "description": "Krishna, Rajkumar, and Vijay Mandal were subjected to narco-analysis. Results suggested familiarity with the crime but are not admissible in court.",
-      "revealed_at": {"requires": ["investigate-servants"]},
-      "unlock_keyword_triggers": ["narco", "truth serum", "lie detector", "polygraph"]
     },
     {
       "id": "cbi-investigation",
@@ -123,15 +91,47 @@
       "name": "CBI Takes Over",
       "description": "CBI took over the case from Noida Police. Initially pursued the servant theory, later closed it and charged parents.",
       "image_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4e/CBI_Logo.svg/200px-CBI_Logo.svg.png",
-      "revealed_at": {"requires": ["investigate-police"]},
+      "revealed_at": {"requires": ["gate-witnesses"]},
       "unlock_keyword_triggers": ["cbi", "central bureau", "takeover", "transfer"]
+    },
+    {
+      "id": "krishna",
+      "type": "suspect",
+      "name": "Krishna Thadarai",
+      "description": "Domestic helper who worked for a neighbour. Had keys to the Talwar household. Underwent narco-analysis.",
+      "revealed_at": {"requires": ["gate-suspects"]},
+      "unlock_keyword_triggers": ["servant", "helper", "domestic", "krishna", "other staff"]
+    },
+    {
+      "id": "rajkumar",
+      "type": "suspect",
+      "name": "Rajkumar",
+      "description": "Domestic helper who worked nearby. Was a drinking companion of Hemraj.",
+      "revealed_at": {"requires": ["gate-suspects"]},
+      "unlock_keyword_triggers": ["rajkumar", "drinking"]
+    },
+    {
+      "id": "vijay-mandal",
+      "type": "suspect",
+      "name": "Vijay Mandal",
+      "description": "Another domestic helper. Companion of Hemraj, implicated by narco-analysis but not by physical evidence.",
+      "revealed_at": {"requires": ["gate-suspects"]},
+      "unlock_keyword_triggers": ["companion", "vijay", "mandal"]
+    },
+    {
+      "id": "narco-analysis",
+      "type": "evidence",
+      "name": "Narco-Analysis Test Results",
+      "description": "Krishna, Rajkumar, and Vijay Mandal were subjected to narco-analysis. Results suggested familiarity with the crime but are not admissible in court.",
+      "revealed_at": {"requires": ["gate-suspects"]},
+      "unlock_keyword_triggers": ["narco", "truth serum", "lie detector", "polygraph"]
     },
     {
       "id": "honour-killing-theory",
       "type": "evidence",
       "name": "Honour Killing Theory",
       "description": "CBI alleged parents killed Aarushi after finding her in a compromising position with Hemraj. Talwars denied this vehemently.",
-      "revealed_at": {"requires": ["cbi-investigation", "check-phone"]},
+      "revealed_at": {"requires": ["gate-case"]},
       "unlock_keyword_triggers": ["honour", "honor", "motive", "why", "compromising", "relationship"]
     }
   ],
@@ -142,14 +142,15 @@
     {"from": "rajesh-talwar", "to": "aarushi", "label": "Father", "revealed_at": "start"},
     {"from": "nupur-talwar", "to": "aarushi", "label": "Mother", "revealed_at": "start"},
     {"from": "rajesh-talwar", "to": "hemraj", "label": "Initially blamed Hemraj", "revealed_at": "start"},
-    {"from": "krishna", "to": "hemraj", "label": "Drinking companion", "revealed_at": {"requires": ["investigate-servants"]}},
-    {"from": "rajkumar", "to": "hemraj", "label": "Drinking companion", "revealed_at": {"requires": ["investigate-servants"]}},
-    {"from": "murder-weapon", "to": "aarushi", "label": "Throat slit", "revealed_at": {"requires": ["examine-wounds"]}},
-    {"from": "terrace-lock", "to": "hemraj", "label": "Body behind locked door", "revealed_at": {"requires": ["investigate-terrace"]}},
-    {"from": "phone-records", "to": "rajesh-talwar", "label": "Late-night internet session", "revealed_at": {"requires": ["check-phone"]}},
-    {"from": "crime-scene-tampering", "to": "crime-scene", "label": "Evidence may be compromised", "revealed_at": {"requires": ["investigate-police"]}},
-    {"from": "cbi-investigation", "to": "rajesh-talwar", "label": "Charged parents", "revealed_at": {"requires": ["investigate-police"]}},
-    {"from": "honour-killing-theory", "to": "rajesh-talwar", "label": "CBI's alleged motive", "revealed_at": {"requires": ["cbi-investigation"]}}
+    {"from": "murder-weapon", "to": "aarushi", "label": "Throat slit", "revealed_at": {"requires": ["gate-forensics"]}},
+    {"from": "terrace-lock", "to": "hemraj", "label": "Body behind locked door", "revealed_at": {"requires": ["gate-forensics"]}},
+    {"from": "phone-records", "to": "rajesh-talwar", "label": "Late-night internet session", "revealed_at": {"requires": ["gate-forensics"]}},
+    {"from": "crime-scene-tampering", "to": "crime-scene", "label": "Evidence may be compromised", "revealed_at": {"requires": ["gate-witnesses"]}},
+    {"from": "cbi-investigation", "to": "rajesh-talwar", "label": "Charged parents", "revealed_at": {"requires": ["gate-witnesses"]}},
+    {"from": "krishna", "to": "hemraj", "label": "Drinking companion", "revealed_at": {"requires": ["gate-suspects"]}},
+    {"from": "rajkumar", "to": "hemraj", "label": "Drinking companion", "revealed_at": {"requires": ["gate-suspects"]}},
+    {"from": "narco-analysis", "to": "krishna", "label": "Implicated but not confirmed", "revealed_at": {"requires": ["gate-suspects"]}},
+    {"from": "honour-killing-theory", "to": "rajesh-talwar", "label": "CBI's alleged motive", "revealed_at": {"requires": ["gate-case"]}}
   ],
 
   "characters": {

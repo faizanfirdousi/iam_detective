@@ -41,6 +41,16 @@ def list_cases() -> list[CaseListItem]:
             difficulty="medium",
             hero_image_url=None,
         ),
+        CaseListItem(
+            id="golden-state-killer",
+            title="The Golden State Killer",
+            subtitle="A former cop who terrorized California for a decade — 50 rapes, 13 murders — unmasked by DNA genealogy 40 years later.",
+            status="solved",
+            year=1976,
+            location="California, USA",
+            difficulty="hard",
+            hero_image_url=None,
+        ),
     ]
 
 

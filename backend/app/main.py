@@ -27,6 +27,8 @@ from app.engine.state import (
 )
 from app.engine.schema import load_schema
 from app.engine import engine as inv_engine
+from app.engine.state import STAGE_NAMES, STAGE_DESCRIPTIONS
+from app.services.do_agent import build_stage_prefix
 
 
 load_dotenv()
@@ -228,6 +230,8 @@ class SessionBoardResponse(BaseModel):
     session_id: str
     case_id: str
     stage: int
+    stage_name: str
+    can_advance: bool
     nodes: list[dict]
     edges: list[dict]
     newly_unlocked: list[dict]
@@ -284,10 +288,13 @@ def api_session_board(session_id: str) -> SessionBoardResponse:
     edges = inv_engine.get_visible_connections(state)
     nodes = patch_node_images(state.case_id, nodes)
     contradictions = inv_engine.check_contradictions(state)
+    advance_check = inv_engine.can_advance_stage(state)
     return SessionBoardResponse(
         session_id=state.session_id,
         case_id=state.case_id,
         stage=state.stage,
+        stage_name=STAGE_NAMES.get(state.current_stage, "Stage " + str(state.current_stage)),
+        can_advance=advance_check["can_advance"],
         nodes=nodes,
         edges=edges,
         newly_unlocked=[],
@@ -304,11 +311,12 @@ async def api_session_chat(session_id: str, req: SessionChatRequest) -> SessionC
     # 1. Process triggers
     newly_unlocked = inv_engine.process_chat_triggers(req.message, state)
 
-    # 2. Build restricted context
+    # 2. Build restricted context with stage knowledge boundary injected
+    stage_prefix = build_stage_prefix(state)
     engine_context = inv_engine.build_ai_context(state, req.role, req.persona_id)
 
-    # 3. Assemble messages
-    messages = [{"role": "system", "content": engine_context}]
+    # 3. Assemble messages — stage prefix prepended to system prompt
+    messages = [{"role": "system", "content": stage_prefix + engine_context}]
     for msg in state.chat_history[-10:]:
         messages.append(msg)
     messages.append({
@@ -324,7 +332,7 @@ async def api_session_chat(session_id: str, req: SessionChatRequest) -> SessionC
     )
     reply = client.extract_content(resp).strip()
 
-    # 5. Update state
+    # 5. Update state (add_chat increments message_count for user messages)
     state.add_chat("user", req.message)
     state.add_chat("assistant", reply)
     if req.persona_id:
@@ -420,6 +428,60 @@ def api_satisfy_gate(session_id: str, gate_name: str):
         "gate": gate_name,
         "newly_unlocked": [{"id": e["id"], "name": e["name"], "type": e["type"]} for e in newly_visible],
     }
+
+
+# ── Stage management endpoints ────────────────────────────────────────────────
+
+class StageResponse(BaseModel):
+    current_stage: int
+    stage_name: str
+    stage_description: str
+    completed_stages: list[int]
+    can_advance: bool
+    requirements_met: dict
+
+class StageAdvanceResponse(BaseModel):
+    advanced: bool
+    new_stage: int
+    stage_name: str
+    stage_description: str
+    newly_unlocked_entities: list[dict]
+    graph_event: str
+
+
+@app.get("/api/sessions/{session_id}/stage", response_model=StageResponse)
+def api_get_stage(session_id: str) -> StageResponse:
+    """Get current investigation stage info and whether player can advance."""
+    state = _require_session(session_id)
+    advance_check = inv_engine.can_advance_stage(state)
+    return StageResponse(
+        current_stage=state.current_stage,
+        stage_name=STAGE_NAMES.get(state.current_stage, f"Stage {state.current_stage}"),
+        stage_description=STAGE_DESCRIPTIONS.get(state.current_stage, ""),
+        completed_stages=state.completed_stages,
+        can_advance=advance_check["can_advance"],
+        requirements_met=advance_check.get("requirements_met", {}),
+    )
+
+
+@app.post("/api/sessions/{session_id}/stage/advance", response_model=StageAdvanceResponse)
+def api_advance_stage(session_id: str) -> StageAdvanceResponse:
+    """Advance to the next investigation stage."""
+    state = _require_session(session_id)
+    check = inv_engine.can_advance_stage(state)
+    if not check["can_advance"]:
+        raise HTTPException(
+            status_code=400,
+            detail={
+                "message": "Complete current stage requirements before advancing.",
+                "requirements_met": check.get("requirements_met", {}),
+                "current_stage": state.current_stage,
+            },
+        )
+    result = inv_engine.advance_stage(state)
+    if not result.get("advanced"):
+        raise HTTPException(status_code=400, detail=result.get("reason", "Cannot advance"))
+    return StageAdvanceResponse(**result)
 
 
 # ══════════════════════════════════════════════════════════════════════════════
