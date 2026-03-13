@@ -19,15 +19,16 @@ const DIFFICULTY_BARS: Record<string, number> = {
   hard: 3,
 };
 
-function DifficultyBar({ difficulty }: { difficulty: string }) {
-  const filled = DIFFICULTY_BARS[difficulty] ?? 2;
+function DifficultyBar({ difficulty }: { difficulty: import("@/lib/api").CaseDifficulty | string }) {
+  const diffStr = String(difficulty);
+  const filled = DIFFICULTY_BARS[diffStr] ?? 2;
   return (
     <span className="flex items-center gap-0.5">
       {[1, 2, 3].map((i) => (
         <span
           key={i}
           className={`inline-block h-2 w-4 rounded-sm ${
-            i <= filled ? DIFFICULTY_STYLES[difficulty] ?? "text-zinc-500" : "bg-zinc-800"
+            i <= filled ? DIFFICULTY_STYLES[diffStr] ?? "text-zinc-500" : "bg-zinc-800"
           } ${i <= filled ? "bg-current opacity-80" : ""}`}
         />
       ))}
@@ -74,7 +75,7 @@ function CaseCard({ c }: { c: CaseListItem }) {
           {c.difficulty && (
             <div className="flex items-center gap-1.5">
               <DifficultyBar difficulty={c.difficulty} />
-              <span className="text-xs text-zinc-500 capitalize">{c.difficulty}</span>
+              <span className="text-xs text-zinc-500 capitalize">{String(c.difficulty)}</span>
             </div>
           )}
         </div>
