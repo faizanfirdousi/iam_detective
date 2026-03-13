@@ -6,6 +6,7 @@ from pydantic import BaseModel, Field
 
 
 CaseStatus = Literal["solved", "unsolved", "pending"]
+CaseDifficulty = Literal["easy", "medium", "hard"]
 
 
 class CaseListItem(BaseModel):
@@ -13,14 +14,26 @@ class CaseListItem(BaseModel):
     title: str
     subtitle: str
     status: CaseStatus
+    year: int | None = None
+    location: str | None = None
+    difficulty: CaseDifficulty | None = None
     hero_image_url: str | None = None
+
+
+class CaseIntroSlide(BaseModel):
+    page: int
+    text: str
+    image_prompt: str | None = None  # used by frontend for background mood
 
 
 class CaseDetail(BaseModel):
     id: str
     title: str
     status: CaseStatus
+    year: int | None = None
+    location: str | None = None
     opening_lines: list[str] = Field(default_factory=list)
+    intro_slides: list[CaseIntroSlide] = Field(default_factory=list)
     sources: list[str] = Field(default_factory=list)
 
 
@@ -47,21 +60,21 @@ class LinkEdge(BaseModel):
 
 class LinkBoard(BaseModel):
     stage: int
-    nodes: list[LinkNode]
-    edges: list[LinkEdge]
+    nodes: list[LinkNode] = Field(default_factory=list)
+    edges: list[LinkEdge] = Field(default_factory=list)
 
 
-ChatRole = Literal["co_detective", "witness"]
+ChatRole = Literal["co_detective", "witness", "suspect"]
 
 
 class ChatRequest(BaseModel):
     role: ChatRole = "co_detective"
     message: str
     stage: int = 1
+    persona_id: str | None = None  # e.g. "witness-jane-doe" or "suspect-allen"
 
 
 class ChatResponse(BaseModel):
     role: ChatRole
     reply: str
     stage_suggestion: int | None = None
-
