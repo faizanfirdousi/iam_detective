@@ -1,0 +1,165 @@
+{
+  "case_id": "zodiac-killer",
+  "title": "Zodiac Killer",
+
+  "solution": {
+    "official_verdict": "The Zodiac Killer was never identified or caught. The case remains open.",
+    "primary_suspects": ["arthur-leigh-allen"],
+    "secondary_suspects": ["rick-marshall", "lawrence-kane"],
+    "victim_cause_of_death": "Gunshot and stabbing"
+  },
+
+  "entities": [
+    {
+      "id": "david-faraday",
+      "type": "victim",
+      "name": "David Faraday",
+      "description": "17-year-old student shot and killed at Lake Herman Road on December 20, 1968, while on a first date.",
+      "revealed_at": "start",
+      "knowledge": []
+    },
+    {
+      "id": "betty-lou-jensen",
+      "type": "victim",
+      "name": "Betty Lou Jensen",
+      "description": "16-year-old student, shot and killed at Lake Herman Road alongside David Faraday.",
+      "revealed_at": "start",
+      "knowledge": []
+    },
+    {
+      "id": "lake-herman-road",
+      "type": "location",
+      "name": "Lake Herman Road",
+      "description": "Remote lovers' lane in Benicia, California. Scene of the first confirmed Zodiac murders on December 20, 1968.",
+      "revealed_at": "start",
+      "knowledge": []
+    },
+    {
+      "id": "zodiac-identity",
+      "type": "suspect",
+      "name": "The Zodiac Killer",
+      "description": "Unidentified serial killer active in Northern California in the late 1960s–70s. Taunted police and newspapers with letters and ciphers.",
+      "image_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/10/Zodiac_Killer_cipher_and_target.jpg/300px-Zodiac_Killer_cipher_and_target.jpg",
+      "revealed_at": "start",
+      "knowledge": []
+    },
+    {
+      "id": "darlene-ferrin",
+      "type": "victim",
+      "name": "Darlene Ferrin",
+      "description": "22-year-old waitress, shot and killed at Blue Rock Springs Park on July 4, 1969.",
+      "revealed_at": {"requires": ["investigate-second-attack"]},
+      "unlock_keyword_triggers": ["second attack", "blue rock", "july 4", "1969", "darlene", "ferrin"]
+    },
+    {
+      "id": "mike-mageau",
+      "type": "witness",
+      "name": "Mike Mageau",
+      "description": "19-year-old who survived the Blue Rock Springs shooting. Only surviving victim who saw the Zodiac up close.",
+      "revealed_at": {"requires": ["investigate-second-attack"]},
+      "unlock_keyword_triggers": ["survivor", "mageau", "witness", "saw him", "survived"]
+    },
+    {
+      "id": "zodiac-letters",
+      "type": "evidence",
+      "name": "Zodiac Letters",
+      "description": "Series of taunting letters sent to San Francisco newspapers beginning August 1969. Claimed responsibility and threatened more killings.",
+      "image_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e2/Zodiac_Killer_letter_September_27_1969.jpg/300px-Zodiac_Killer_letter_September_27_1969.jpg",
+      "revealed_at": {"requires": ["examine-letters"]},
+      "unlock_keyword_triggers": ["letter", "newspaper", "mail", "wrote", "message", "chronicle"]
+    },
+    {
+      "id": "cipher-408",
+      "type": "evidence",
+      "name": "The 408 Cipher",
+      "description": "Three-part cipher sent to newspapers. Decoded by schoolteacher couple Donald and Bettye Harden. Read: 'I like killing people because it is so much fun.'",
+      "revealed_at": {"requires": ["zodiac-letters"]},
+      "unlock_keyword_triggers": ["cipher", "code", "decode", "encrypted", "cryptogram", "408"]
+    },
+    {
+      "id": "cipher-340",
+      "type": "evidence",
+      "name": "The 340 Cipher",
+      "description": "A 340-character cipher sent November 1969. Remained unsolved for 51 years until cracked in 2020 by amateur codebreakers.",
+      "revealed_at": {"requires": ["cipher-408"]},
+      "unlock_keyword_triggers": ["340", "unsolved cipher", "second cipher", "cracked"]
+    },
+    {
+      "id": "lake-berryessa",
+      "type": "event",
+      "name": "Lake Berryessa Attack",
+      "description": "September 27, 1969. Zodiac approached a couple in a hood/executioner costume, tied them up, and stabbed them. Bryan Hartnell survived.",
+      "revealed_at": {"requires": ["investigate-berryessa"]},
+      "unlock_keyword_triggers": ["berryessa", "stabbing", "costume", "hood", "executioner", "hartnell"]
+    },
+    {
+      "id": "paul-stine",
+      "type": "victim",
+      "name": "Paul Stine",
+      "description": "29-year-old taxi driver shot in the head in San Francisco on October 11, 1969. Zodiac took a piece of his shirt as proof.",
+      "revealed_at": {"requires": ["investigate-stine"]},
+      "unlock_keyword_triggers": ["taxi", "cab", "stine", "san francisco murder", "shirt"]
+    },
+    {
+      "id": "arthur-leigh-allen",
+      "type": "suspect",
+      "name": "Arthur Leigh Allen",
+      "description": "Most prominent suspect. Former schoolteacher, convicted sex offender. Owned a Zodiac-brand watch. Circumstantial evidence only — DNA and fingerprints did not match.",
+      "revealed_at": {"requires": ["investigate-suspects"]},
+      "unlock_keyword_triggers": ["allen", "arthur", "suspect", "who did it", "teacher", "zodiac watch"]
+    },
+    {
+      "id": "fingerprint-evidence",
+      "type": "evidence",
+      "name": "Cab Fingerprints",
+      "description": "Bloody fingerprints found in Paul Stine's cab. Never matched to Arthur Leigh Allen or any known suspect.",
+      "revealed_at": {"requires": ["paul-stine"]},
+      "unlock_keyword_triggers": ["fingerprint", "print", "cab evidence"]
+    },
+    {
+      "id": "dna-evidence",
+      "type": "evidence",
+      "name": "DNA from Stamps",
+      "description": "DNA extracted from stamps on Zodiac letters. Did not match Arthur Leigh Allen. May not be the Zodiac's DNA.",
+      "revealed_at": {"requires": ["zodiac-letters", "arthur-leigh-allen"]},
+      "unlock_keyword_triggers": ["dna", "stamp", "lick", "genetic"]
+    }
+  ],
+
+  "connections": [
+    {"from": "zodiac-identity", "to": "david-faraday", "label": "First confirmed victim", "revealed_at": "start"},
+    {"from": "zodiac-identity", "to": "betty-lou-jensen", "label": "First confirmed victim", "revealed_at": "start"},
+    {"from": "david-faraday", "to": "lake-herman-road", "label": "Killed here", "revealed_at": "start"},
+    {"from": "betty-lou-jensen", "to": "lake-herman-road", "label": "Killed here", "revealed_at": "start"},
+    {"from": "zodiac-identity", "to": "darlene-ferrin", "label": "Second confirmed victims", "revealed_at": {"requires": ["investigate-second-attack"]}},
+    {"from": "mike-mageau", "to": "darlene-ferrin", "label": "Survived alongside her", "revealed_at": {"requires": ["investigate-second-attack"]}},
+    {"from": "zodiac-identity", "to": "zodiac-letters", "label": "Sent to newspapers", "revealed_at": {"requires": ["examine-letters"]}},
+    {"from": "cipher-408", "to": "zodiac-letters", "label": "Enclosed in letters", "revealed_at": {"requires": ["zodiac-letters"]}},
+    {"from": "zodiac-identity", "to": "lake-berryessa", "label": "Attacked in costume", "revealed_at": {"requires": ["investigate-berryessa"]}},
+    {"from": "zodiac-identity", "to": "paul-stine", "label": "Shot in cab", "revealed_at": {"requires": ["investigate-stine"]}},
+    {"from": "arthur-leigh-allen", "to": "zodiac-identity", "label": "Primary suspect", "revealed_at": {"requires": ["investigate-suspects"]}},
+    {"from": "fingerprint-evidence", "to": "paul-stine", "label": "Found in cab", "revealed_at": {"requires": ["paul-stine"]}},
+    {"from": "fingerprint-evidence", "to": "arthur-leigh-allen", "label": "Did NOT match", "revealed_at": {"requires": ["paul-stine", "arthur-leigh-allen"]}},
+    {"from": "dna-evidence", "to": "arthur-leigh-allen", "label": "Did NOT match", "revealed_at": {"requires": ["zodiac-letters", "arthur-leigh-allen"]}}
+  ],
+
+  "characters": {
+    "mike-mageau": {
+      "persona": "Mike Mageau. You survived being shot by the Zodiac at Blue Rock Springs. You were 19 years old. The experience traumatized you deeply.",
+      "knowledge_boundary": "You saw the shooter briefly. He had a round face, was stocky, and about 5'8. It was dark. You cannot identify him with certainty. You were with Darlene Ferrin.",
+      "contradictions": []
+    },
+    "arthur-leigh-allen": {
+      "persona": "Arthur Leigh Allen. You are a former teacher. Police have questioned you multiple times. You deny being the Zodiac Killer.",
+      "knowledge_boundary": "You own a Zodiac-brand watch. You were reportedly near Lake Berryessa the day of the attack. You deny everything.",
+      "contradictions": [
+        {
+          "id": "allen-berryessa",
+          "claim": "I was not near Lake Berryessa on September 27, 1969",
+          "contradicted_by": "lake-berryessa",
+          "confrontation_prompt": "Multiple witnesses placed you near Lake Berryessa on the same day as the stabbing attack on September 27, 1969. Why were you there?"
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,204 @@
+{
+  "case_id": "oj-simpson",
+  "title": "O.J. Simpson Murder Trial",
+
+  "solution": {
+    "official_verdict": "O.J. Simpson was acquitted of criminal charges in October 1995. Found liable in civil trial in 1997.",
+    "primary_suspects": ["oj-simpson"],
+    "secondary_suspects": [],
+    "victim_cause_of_death": "Multiple stab wounds"
+  },
+
+  "entities": [
+    {
+      "id": "nicole-brown",
+      "type": "victim",
+      "name": "Nicole Brown Simpson",
+      "description": "35-year-old ex-wife of O.J. Simpson. Found murdered outside her Brentwood condo on June 12, 1994.",
+      "image_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a4/Nicole_Brown_Simpson.jpg/240px-Nicole_Brown_Simpson.jpg",
+      "revealed_at": "start",
+      "knowledge": []
+    },
+    {
+      "id": "ron-goldman",
+      "type": "victim",
+      "name": "Ron Goldman",
+      "description": "25-year-old waiter. Found murdered alongside Nicole. Was returning her mother's sunglasses she left at the restaurant.",
+      "image_url": "https://upload.wikimedia.org/wikipedia/en/thumb/5/54/Ron_Goldman.jpg/240px-Ron_Goldman.jpg",
+      "revealed_at": "start",
+      "knowledge": []
+    },
+    {
+      "id": "oj-simpson",
+      "type": "suspect",
+      "name": "O.J. Simpson",
+      "description": "Former NFL star, actor, and ex-husband of Nicole Brown. Has a history of domestic violence against Nicole.",
+      "image_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9e/OJ_Simpson_2_CCBY.jpg/240px-OJ_Simpson_2_CCBY.jpg",
+      "revealed_at": "start",
+      "knowledge": []
+    },
+    {
+      "id": "bundy-crime-scene",
+      "type": "location",
+      "name": "875 S. Bundy Drive",
+      "description": "Nicole Brown's condo in Brentwood, Los Angeles. The murders took place at the front walkway around 10:15 PM.",
+      "image_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/98/875_S_Bundy_Drive_crime_scene.jpg/320px-875_S_Bundy_Drive_crime_scene.jpg",
+      "revealed_at": "start",
+      "knowledge": []
+    },
+    {
+      "id": "rockingham-estate",
+      "type": "location",
+      "name": "360 N. Rockingham Ave",
+      "description": "O.J. Simpson's Brentwood estate, 2 miles from the crime scene. Blood trail found leading to the property.",
+      "image_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4a/OJ_Simpson_house_Rockingham.jpg/320px-OJ_Simpson_house_Rockingham.jpg",
+      "revealed_at": {"requires": ["investigate-oj-home"]},
+      "unlock_keyword_triggers": ["rockingham", "oj house", "simpson home", "estate", "his house"]
+    },
+    {
+      "id": "bloody-glove",
+      "type": "evidence",
+      "name": "The Bloody Glove",
+      "description": "Leather glove found at Rockingham estate matching one found at Bundy crime scene. Contained blood of both victims and Simpson.",
+      "revealed_at": {"requires": ["investigate-oj-home"]},
+      "unlock_keyword_triggers": ["glove", "leather", "rockingham evidence"]
+    },
+    {
+      "id": "bronco-chase",
+      "type": "event",
+      "name": "White Bronco Chase",
+      "description": "On June 17, 1994, O.J. led police on a slow-speed chase in a white Ford Bronco. He carried a gun, passport, and disguise.",
+      "revealed_at": {"requires": ["check-alibi"]},
+      "unlock_keyword_triggers": ["bronco", "chase", "flee", "run", "escape", "pursuit"]
+    },
+    {
+      "id": "domestic-violence-history",
+      "type": "evidence",
+      "name": "Domestic Violence Records",
+      "description": "Nicole called 911 multiple times. In 1989, Simpson pleaded no contest to spousal battery. Photos showed Nicole's bruised face.",
+      "revealed_at": {"requires": ["investigate-relationship"]},
+      "unlock_keyword_triggers": ["abuse", "domestic violence", "beat", "hit", "911", "bruise", "relationship", "marriage"]
+    },
+    {
+      "id": "dna-evidence",
+      "type": "evidence",
+      "name": "DNA Blood Evidence",
+      "description": "Blood drops at Bundy matched Simpson. Blood in the Bronco matched both victims. Simpson's blood was at Bundy.",
+      "revealed_at": {"requires": ["examine-blood"]},
+      "unlock_keyword_triggers": ["dna", "blood", "forensic", "lab", "sample", "type"]
+    },
+    {
+      "id": "glove-demonstration",
+      "type": "event",
+      "name": "Glove Demonstration — 'If It Doesn't Fit'",
+      "description": "In court, Simpson tried on the bloody glove and it appeared too tight. Defense: 'If it doesn't fit, you must acquit.'",
+      "revealed_at": {"requires": ["bloody-glove"]},
+      "unlock_keyword_triggers": ["fit", "try on", "acquit", "court", "demonstration"]
+    },
+    {
+      "id": "mark-fuhrman",
+      "type": "witness",
+      "name": "Det. Mark Fuhrman",
+      "description": "LAPD detective who found the bloody glove at Rockingham. Later exposed for racial slurs, damaging prosecution credibility.",
+      "revealed_at": {"requires": ["bloody-glove"]},
+      "unlock_keyword_triggers": ["fuhrman", "detective", "found glove", "racist", "n-word", "lapd"]
+    },
+    {
+      "id": "fuhrman-tapes",
+      "type": "evidence",
+      "name": "Fuhrman Tapes",
+      "description": "Audio recordings of Fuhrman using racial slurs and boasting about planting evidence in other cases. Devastated the prosecution.",
+      "revealed_at": {"requires": ["mark-fuhrman"]},
+      "unlock_keyword_triggers": ["tapes", "recordings", "racist", "planted", "framed"]
+    },
+    {
+      "id": "kato-kaelin",
+      "type": "witness",
+      "name": "Kato Kaelin",
+      "description": "House guest living in Simpson's guest house. Heard 3 loud thumps against the wall around 10:40 PM on the night of the murders.",
+      "revealed_at": {"requires": ["investigate-oj-home"]},
+      "unlock_keyword_triggers": ["kato", "kaelin", "guest", "thumps", "noise", "wall"]
+    },
+    {
+      "id": "timeline-gap",
+      "type": "evidence",
+      "name": "The Missing Hour",
+      "description": "Simpson's whereabouts between 9:36 PM and 10:54 PM are unaccounted for. The murders occurred during this window.",
+      "revealed_at": {"requires": ["check-alibi"]},
+      "unlock_keyword_triggers": ["alibi", "where was", "timeline", "unaccounted", "missing time", "limo"]
+    },
+    {
+      "id": "limo-driver",
+      "type": "witness",
+      "name": "Allan Park — Limousine Driver",
+      "description": "Arrived at Rockingham at 10:22 PM to take Simpson to the airport. No one answered until 10:54 PM. Saw a large figure enter the house.",
+      "revealed_at": {"requires": ["check-alibi"]},
+      "unlock_keyword_triggers": ["limo", "driver", "airport", "park", "pickup"]
+    },
+    {
+      "id": "johnnie-cochran",
+      "type": "witness",
+      "name": "Johnnie Cochran",
+      "description": "Lead defense attorney. Masterfully introduced racial bias narrative, turning the trial into a referendum on LAPD racism.",
+      "image_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6c/Johnnie_Cochran_2003.jpg/240px-Johnnie_Cochran_2003.jpg",
+      "revealed_at": {"requires": ["glove-demonstration"]},
+      "unlock_keyword_triggers": ["cochran", "lawyer", "defense", "attorney", "dream team"]
+    }
+  ],
+
+  "connections": [
+    {"from": "oj-simpson", "to": "nicole-brown", "label": "Ex-husband", "revealed_at": "start"},
+    {"from": "ron-goldman", "to": "nicole-brown", "label": "Returning sunglasses", "revealed_at": "start"},
+    {"from": "nicole-brown", "to": "bundy-crime-scene", "label": "Murdered here", "revealed_at": "start"},
+    {"from": "ron-goldman", "to": "bundy-crime-scene", "label": "Murdered here", "revealed_at": "start"},
+    {"from": "oj-simpson", "to": "rockingham-estate", "label": "Lived here", "revealed_at": {"requires": ["investigate-oj-home"]}},
+    {"from": "bloody-glove", "to": "rockingham-estate", "label": "Found at estate", "revealed_at": {"requires": ["investigate-oj-home"]}},
+    {"from": "bloody-glove", "to": "bundy-crime-scene", "label": "Matching glove at scene", "revealed_at": {"requires": ["investigate-oj-home"]}},
+    {"from": "dna-evidence", "to": "oj-simpson", "label": "Blood matched", "revealed_at": {"requires": ["examine-blood"]}},
+    {"from": "dna-evidence", "to": "nicole-brown", "label": "Blood in Bronco", "revealed_at": {"requires": ["examine-blood"]}},
+    {"from": "domestic-violence-history", "to": "oj-simpson", "label": "Pattern of abuse", "revealed_at": {"requires": ["investigate-relationship"]}},
+    {"from": "mark-fuhrman", "to": "bloody-glove", "label": "Found the glove", "revealed_at": {"requires": ["bloody-glove"]}},
+    {"from": "fuhrman-tapes", "to": "mark-fuhrman", "label": "Credibility destroyed", "revealed_at": {"requires": ["mark-fuhrman"]}},
+    {"from": "kato-kaelin", "to": "rockingham-estate", "label": "Heard thumps at 10:40 PM", "revealed_at": {"requires": ["investigate-oj-home"]}},
+    {"from": "timeline-gap", "to": "oj-simpson", "label": "Unaccounted 9:36-10:54 PM", "revealed_at": {"requires": ["check-alibi"]}},
+    {"from": "limo-driver", "to": "oj-simpson", "label": "No answer until 10:54 PM", "revealed_at": {"requires": ["check-alibi"]}}
+  ],
+
+  "characters": {
+    "oj-simpson": {
+      "persona": "O.J. Simpson. Former NFL star, actor. You are charming, confident, and maintain absolute innocence. You loved Nicole and would never hurt her.",
+      "knowledge_boundary": "You claim you were home chipping golf balls, then getting ready for a flight to Chicago. You did NOT kill anyone. You do not know who did.",
+      "contradictions": [
+        {
+          "id": "oj-missing-hour",
+          "claim": "I was at home getting ready for my flight to Chicago",
+          "contradicted_by": "timeline-gap",
+          "confrontation_prompt": "The limo driver says no one answered at your house from 10:22 PM to 10:54 PM — a 32-minute gap. Where were you during that time?"
+        },
+        {
+          "id": "oj-cut-hand",
+          "claim": "I cut my hand on a glass in Chicago when I heard about Nicole",
+          "contradicted_by": "dna-evidence",
+          "confrontation_prompt": "Your blood was found at the Bundy crime scene BEFORE you went to Chicago. How did your blood get to Nicole's house?"
+        }
+      ]
+    },
+    "kato-kaelin": {
+      "persona": "Kato Kaelin. You are a house guest at O.J.'s estate. You are laid back but nervous about being involved. You want to be helpful but don't want trouble.",
+      "knowledge_boundary": "You heard 3 loud thumps against the guest house wall around 10:40 PM. You saw O.J. briefly before the limo arrived. You do NOT know if O.J. killed anyone.",
+      "contradictions": []
+    },
+    "mark-fuhrman": {
+      "persona": "Detective Mark Fuhrman, LAPD. You are a seasoned homicide detective. You found key evidence. You are defensive about allegations of racism.",
+      "knowledge_boundary": "You found the bloody glove at Rockingham. You climbed the wall to enter the property. You deny planting any evidence.",
+      "contradictions": [
+        {
+          "id": "fuhrman-racism",
+          "claim": "I have never used racial slurs in the last 10 years",
+          "contradicted_by": "fuhrman-tapes",
+          "confrontation_prompt": "Audio recordings have surfaced of you using racial slurs repeatedly and describing planting evidence. You lied under oath. How can we trust the glove evidence?"
+        }
+      ]
+    }
+  }
+}

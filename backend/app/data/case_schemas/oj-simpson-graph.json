@@ -1,0 +1,1256 @@
+{
+  "case_id": "oj-simpson",
+  "nodes": [
+    {
+      "id": "nicole-brown",
+      "label": "Nicole Brown Simpson",
+      "type": "PERSON",
+      "description": "35-year-old ex-wife of O.J. Simpson. Found murdered outside her Brentwood condo on June 12, 1994.",
+      "image_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a4/Nicole_Brown_Simpson.jpg/240px-Nicole_Brown_Simpson.jpg",
+      "confidence": 1.0,
+      "importance": "MEDIUM",
+      "revealed_at": "start",
+      "unlock_level": 1,
+      "unlock_keyword_triggers": [],
+      "source": "schema"
+    },
+    {
+      "id": "ron-goldman",
+      "label": "Ron Goldman",
+      "type": "PERSON",
+      "description": "25-year-old waiter. Found murdered alongside Nicole. Was returning her mother's sunglasses she left at the restaurant.",
+      "image_url": "https://upload.wikimedia.org/wikipedia/en/thumb/5/54/Ron_Goldman.jpg/240px-Ron_Goldman.jpg",
+      "confidence": 1.0,
+      "importance": "MEDIUM",
+      "revealed_at": "start",
+      "unlock_level": 1,
+      "unlock_keyword_triggers": [],
+      "source": "schema"
+    },
+    {
+      "id": "oj-simpson",
+      "label": "O.J. Simpson",
+      "type": "PERSON",
+      "description": "Former NFL star, actor, and ex-husband of Nicole Brown. Has a history of domestic violence against Nicole.",
+      "image_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9e/OJ_Simpson_2_CCBY.jpg/240px-OJ_Simpson_2_CCBY.jpg",
+      "confidence": 1.0,
+      "importance": "MEDIUM",
+      "revealed_at": "start",
+      "unlock_level": 1,
+      "unlock_keyword_triggers": [],
+      "source": "schema"
+    },
+    {
+      "id": "bundy-crime-scene",
+      "label": "875 S. Bundy Drive",
+      "type": "LOCATION",
+      "description": "Nicole Brown's condo in Brentwood, Los Angeles. The murders took place at the front walkway around 10:15 PM.",
+      "image_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/98/875_S_Bundy_Drive_crime_scene.jpg/320px-875_S_Bundy_Drive_crime_scene.jpg",
+      "confidence": 1.0,
+      "importance": "MEDIUM",
+      "revealed_at": "start",
+      "unlock_level": 1,
+      "unlock_keyword_triggers": [],
+      "source": "schema"
+    },
+    {
+      "id": "rockingham-estate",
+      "label": "360 N. Rockingham Ave",
+      "type": "LOCATION",
+      "description": "O.J. Simpson's Brentwood estate, 2 miles from the crime scene. Blood trail found leading to the property.",
+      "image_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4a/OJ_Simpson_house_Rockingham.jpg/320px-OJ_Simpson_house_Rockingham.jpg",
+      "confidence": 1.0,
+      "importance": "MEDIUM",
+      "revealed_at": {
+        "requires": [
+          "investigate-oj-home"
+        ]
+      },
+      "unlock_level": 2,
+      "unlock_keyword_triggers": [
+        "rockingham",
+        "oj house",
+        "simpson home",
+        "estate",
+        "his house"
+      ],
+      "source": "schema"
+    },
+    {
+      "id": "bloody-glove",
+      "label": "The Bloody Glove",
+      "type": "EVIDENCE",
+      "description": "Leather glove found at Rockingham estate matching one found at Bundy crime scene. Contained blood of both victims and Simpson.",
+      "image_url": null,
+      "confidence": 1.0,
+      "importance": "MEDIUM",
+      "revealed_at": {
+        "requires": [
+          "investigate-oj-home"
+        ]
+      },
+      "unlock_level": 2,
+      "unlock_keyword_triggers": [
+        "glove",
+        "leather",
+        "rockingham evidence"
+      ],
+      "source": "schema"
+    },
+    {
+      "id": "bronco-chase",
+      "label": "White Bronco Chase",
+      "type": "EVENT",
+      "description": "On June 17, 1994, O.J. led police on a slow-speed chase in a white Ford Bronco. He carried a gun, passport, and disguise.",
+      "image_url": null,
+      "confidence": 1.0,
+      "importance": "MEDIUM",
+      "revealed_at": {
+        "requires": [
+          "check-alibi"
+        ]
+      },
+      "unlock_level": 2,
+      "unlock_keyword_triggers": [
+        "bronco",
+        "chase",
+        "flee",
+        "run",
+        "escape",
+        "pursuit"
+      ],
+      "source": "schema"
+    },
+    {
+      "id": "domestic-violence-history",
+      "label": "Domestic Violence Records",
+      "type": "EVIDENCE",
+      "description": "Nicole called 911 multiple times. In 1989, Simpson pleaded no contest to spousal battery. Photos showed Nicole's bruised face.",
+      "image_url": null,
+      "confidence": 1.0,
+      "importance": "MEDIUM",
+      "revealed_at": {
+        "requires": [
+          "investigate-relationship"
+        ]
+      },
+      "unlock_level": 2,
+      "unlock_keyword_triggers": [
+        "abuse",
+        "domestic violence",
+        "beat",
+        "hit",
+        "911",
+        "bruise",
+        "relationship",
+        "marriage"
+      ],
+      "source": "schema"
+    },
+    {
+      "id": "dna-evidence",
+      "label": "DNA Blood Evidence",
+      "type": "EVIDENCE",
+      "description": "Blood drops at Bundy matched Simpson. Blood in the Bronco matched both victims. Simpson's blood was at Bundy.",
+      "image_url": null,
+      "confidence": 1.0,
+      "importance": "MEDIUM",
+      "revealed_at": {
+        "requires": [
+          "examine-blood"
+        ]
+      },
+      "unlock_level": 2,
+      "unlock_keyword_triggers": [
+        "dna",
+        "blood",
+        "forensic",
+        "lab",
+        "sample",
+        "type"
+      ],
+      "source": "schema"
+    },
+    {
+      "id": "glove-demonstration",
+      "label": "Glove Demonstration \u2014 'If It Doesn't Fit'",
+      "type": "EVENT",
+      "description": "In court, Simpson tried on the bloody glove and it appeared too tight. Defense: 'If it doesn't fit, you must acquit.'",
+      "image_url": null,
+      "confidence": 1.0,
+      "importance": "MEDIUM",
+      "revealed_at": {
+        "requires": [
+          "bloody-glove"
+        ]
+      },
+      "unlock_level": 2,
+      "unlock_keyword_triggers": [
+        "fit",
+        "try on",
+        "acquit",
+        "court",
+        "demonstration"
+      ],
+      "source": "schema"
+    },
+    {
+      "id": "mark-fuhrman",
+      "label": "Det. Mark Fuhrman",
+      "type": "PERSON",
+      "description": "LAPD detective who found the bloody glove at Rockingham. Later exposed for racial slurs, damaging prosecution credibility.",
+      "image_url": null,
+      "confidence": 1.0,
+      "importance": "MEDIUM",
+      "revealed_at": {
+        "requires": [
+          "bloody-glove"
+        ]
+      },
+      "unlock_level": 2,
+      "unlock_keyword_triggers": [
+        "fuhrman",
+        "detective",
+        "found glove",
+        "racist",
+        "n-word",
+        "lapd"
+      ],
+      "source": "schema"
+    },
+    {
+      "id": "fuhrman-tapes",
+      "label": "Fuhrman Tapes",
+      "type": "EVIDENCE",
+      "description": "Audio recordings of Fuhrman using racial slurs and boasting about planting evidence in other cases. Devastated the prosecution.",
+      "image_url": null,
+      "confidence": 1.0,
+      "importance": "MEDIUM",
+      "revealed_at": {
+        "requires": [
+          "mark-fuhrman"
+        ]
+      },
+      "unlock_level": 2,
+      "unlock_keyword_triggers": [
+        "tapes",
+        "recordings",
+        "racist",
+        "planted",
+        "framed"
+      ],
+      "source": "schema"
+    },
+    {
+      "id": "kato-kaelin",
+      "label": "Kato Kaelin",
+      "type": "PERSON",
+      "description": "House guest living in Simpson's guest house. Heard 3 loud thumps against the wall around 10:40 PM on the night of the murders.",
+      "image_url": null,
+      "confidence": 1.0,
+      "importance": "MEDIUM",
+      "revealed_at": {
+        "requires": [
+          "investigate-oj-home"
+        ]
+      },
+      "unlock_level": 2,
+      "unlock_keyword_triggers": [
+        "kato",
+        "kaelin",
+        "guest",
+        "thumps",
+        "noise",
+        "wall"
+      ],
+      "source": "schema"
+    },
+    {
+      "id": "timeline-gap",
+      "label": "The Missing Hour",
+      "type": "EVIDENCE",
+      "description": "Simpson's whereabouts between 9:36 PM and 10:54 PM are unaccounted for. The murders occurred during this window.",
+      "image_url": null,
+      "confidence": 1.0,
+      "importance": "MEDIUM",
+      "revealed_at": {
+        "requires": [
+          "check-alibi"
+        ]
+      },
+      "unlock_level": 2,
+      "unlock_keyword_triggers": [
+        "alibi",
+        "where was",
+        "timeline",
+        "unaccounted",
+        "missing time",
+        "limo"
+      ],
+      "source": "schema"
+    },
+    {
+      "id": "limo-driver",
+      "label": "Allan Park \u2014 Limousine Driver",
+      "type": "PERSON",
+      "description": "Arrived at Rockingham at 10:22 PM to take Simpson to the airport. No one answered until 10:54 PM. Saw a large figure enter the house.",
+      "image_url": null,
+      "confidence": 1.0,
+      "importance": "MEDIUM",
+      "revealed_at": {
+        "requires": [
+          "check-alibi"
+        ]
+      },
+      "unlock_level": 2,
+      "unlock_keyword_triggers": [
+        "limo",
+        "driver",
+        "airport",
+        "park",
+        "pickup"
+      ],
+      "source": "schema"
+    },
+    {
+      "id": "johnnie-cochran",
+      "label": "Johnnie Cochran",
+      "type": "PERSON",
+      "description": "Lead defense attorney. Masterfully introduced racial bias narrative, turning the trial into a referendum on LAPD racism.",
+      "image_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6c/Johnnie_Cochran_2003.jpg/240px-Johnnie_Cochran_2003.jpg",
+      "confidence": 1.0,
+      "importance": "MEDIUM",
+      "revealed_at": {
+        "requires": [
+          "glove-demonstration"
+        ]
+      },
+      "unlock_level": 2,
+      "unlock_keyword_triggers": [
+        "cochran",
+        "lawyer",
+        "defense",
+        "attorney",
+        "dream team"
+      ],
+      "source": "schema"
+    },
+    {
+      "id": "o_j_simpson",
+      "label": "O.J. Simpson",
+      "type": "PERSON",
+      "description": "O.J. Simpson was a former NFL player and actor who was accused of murdering his ex-wife Nicole Brown Simpson and her friend Ron Goldman. He was found not guilty in a highly publicized trial. Simpson had a history of domestic violence against his ex-wife.",
+      "confidence": 1.0,
+      "importance": "HIGH",
+      "unlock_level": 1,
+      "source": "ai_extracted"
+    },
+    {
+      "id": "nicole_brown_simpson",
+      "label": "Nicole Brown Simpson",
+      "type": "PERSON",
+      "description": "Nicole Brown Simpson was the ex-wife of O.J. Simpson and the mother of their two children. She was brutally murdered outside her condominium in Los Angeles. Nicole had previously reported incidents of domestic violence by O.J. to the police.",
+      "confidence": 1.0,
+      "importance": "HIGH",
+      "unlock_level": 1,
+      "source": "ai_extracted"
+    },
+    {
+      "id": "ron_goldman",
+      "label": "Ron Goldman",
+      "type": "PERSON",
+      "description": "Ron Goldman was a friend of Nicole Brown Simpson who was also murdered outside her condominium. He was a waiter at a local restaurant and had been returning a pair of glasses to Nicole when they were both killed.",
+      "confidence": 1.0,
+      "importance": "HIGH",
+      "unlock_level": 1,
+      "source": "ai_extracted"
+    },
+    {
+      "id": "mark_ferman",
+      "label": "Mark Ferman",
+      "type": "PERSON",
+      "description": "The detective who investigated the crime scene and found key pieces of evidence, including the bloody glove. Mark Ferman was a crucial witness in the trial, as he provided testimony about the evidence he found and its significance.",
+      "confidence": 1.0,
+      "importance": "HIGH",
+      "unlock_level": 2,
+      "source": "ai_extracted"
+    },
+    {
+      "id": "johnnie_cochran",
+      "label": "Johnnie Cochran",
+      "type": "PERSON",
+      "description": "Johnnie Cochran was a lawyer who was part of O.J. Simpson's defense team. He was known for his charismatic personality and his ability to connect with the jury.",
+      "confidence": 1.0,
+      "importance": "HIGH",
+      "unlock_level": 1,
+      "source": "ai_extracted"
+    },
+    {
+      "id": "marcia_clark",
+      "label": "Marcia Clark",
+      "type": "PERSON",
+      "description": "Marcia Clark was a prosecutor in the O.J. Simpson trial. She was known for her tough and aggressive questioning of witnesses.",
+      "confidence": 1.0,
+      "importance": "HIGH",
+      "unlock_level": 1,
+      "source": "ai_extracted"
+    },
+    {
+      "id": "robert_shapiro",
+      "label": "Robert Shapiro",
+      "type": "PERSON",
+      "description": "Robert Shapiro was a lawyer who was part of O.J. Simpson's defense team. He was known for his experience in high-profile cases.",
+      "confidence": 1.0,
+      "importance": "MEDIUM",
+      "unlock_level": 2,
+      "source": "ai_extracted"
+    },
+    {
+      "id": "robert_kardashian",
+      "label": "Robert Kardashian",
+      "type": "PERSON",
+      "description": "Robert Kardashian was a lawyer and a friend of O.J. Simpson who was involved in his defense. He was also the father of the Kardashian siblings.",
+      "confidence": 1.0,
+      "importance": "MEDIUM",
+      "unlock_level": 2,
+      "source": "ai_extracted"
+    },
+    {
+      "id": "lance_ito",
+      "label": "Lance Ito",
+      "type": "PERSON",
+      "description": "Lance Ito was the judge in the O.J. Simpson trial. He was known for his fair and impartial demeanor.",
+      "confidence": 1.0,
+      "importance": "HIGH",
+      "unlock_level": 1,
+      "source": "ai_extracted"
+    },
+    {
+      "id": "philip_vader",
+      "label": "Philip Vader",
+      "type": "PERSON",
+      "description": "Philip Vader was a detective with the LAPD who was involved in the investigation of the murders.",
+      "confidence": 0.8,
+      "importance": "LOW",
+      "unlock_level": 3,
+      "source": "ai_extracted"
+    },
+    {
+      "id": "tom_langan",
+      "label": "Tom Langan",
+      "type": "PERSON",
+      "description": "Tom Langan was a detective with the LAPD who was involved in the investigation of the murders.",
+      "confidence": 0.8,
+      "importance": "LOW",
+      "unlock_level": 3,
+      "source": "ai_extracted"
+    },
+    {
+      "id": "brad_roberts",
+      "label": "Brad Roberts",
+      "type": "PERSON",
+      "description": "Brad Roberts was a junior partner of Mark Ferman who was involved in the investigation of the murders.",
+      "confidence": 0.8,
+      "importance": "LOW",
+      "unlock_level": 3,
+      "source": "ai_extracted"
+    },
+    {
+      "id": "david_rossy",
+      "label": "David Rossy",
+      "type": "PERSON",
+      "description": "David Rossy was a sergeant with the LAPD who was one of the first officers to arrive at the crime scene.",
+      "confidence": 0.8,
+      "importance": "LOW",
+      "unlock_level": 3,
+      "source": "ai_extracted"
+    },
+    {
+      "id": "marty",
+      "label": "Marty",
+      "type": "PERSON",
+      "description": "Marty was a sergeant with the LAPD who was involved in the investigation of the murders.",
+      "confidence": 0.8,
+      "importance": "LOW",
+      "unlock_level": 3,
+      "source": "ai_extracted"
+    },
+    {
+      "id": "keith_bushley",
+      "label": "Keith Bushley",
+      "type": "PERSON",
+      "description": "Keith Bushley was a commander of operations for the Western quarter of LA who was involved in the investigation of the murders.",
+      "confidence": 0.8,
+      "importance": "LOW",
+      "unlock_level": 3,
+      "source": "ai_extracted"
+    },
+    {
+      "id": "henry_lee",
+      "label": "Henry Lee",
+      "type": "PERSON",
+      "description": "Henry Lee was a forensic expert who testified for the defense in the O.J. Simpson trial.",
+      "confidence": 0.9,
+      "importance": "MEDIUM",
+      "unlock_level": 2,
+      "source": "ai_extracted"
+    },
+    {
+      "id": "barry_scheck",
+      "label": "Barry Scheck",
+      "type": "PERSON",
+      "description": "Barry Scheck was a lawyer who was part of O.J. Simpson's defense team. He was known for his expertise in DNA evidence.",
+      "confidence": 1.0,
+      "importance": "MEDIUM",
+      "unlock_level": 2,
+      "source": "ai_extracted"
+    },
+    {
+      "id": "peter_neufeld",
+      "label": "Peter Neufeld",
+      "type": "PERSON",
+      "description": "Peter Neufeld was a lawyer who was part of O.J. Simpson's defense team. He was known for his expertise in DNA evidence.",
+      "confidence": 1.0,
+      "importance": "MEDIUM",
+      "unlock_level": 2,
+      "source": "ai_extracted"
+    },
+    {
+      "id": "robert_kardashian_jr",
+      "label": "Robert Kardashian Jr",
+      "type": "PERSON",
+      "description": "Robert Kardashian Jr was the son of Robert Kardashian and a friend of O.J. Simpson's children.",
+      "confidence": 0.8,
+      "importance": "LOW",
+      "unlock_level": 4,
+      "source": "ai_extracted"
+    },
+    {
+      "id": "kardashian_siblings",
+      "label": "Kardashian Siblings",
+      "type": "PERSON",
+      "description": "The Kardashian siblings, including Kourtney, Kim, Khloe, and Rob, are the children of Robert Kardashian and were friends of O.J. Simpson's children.",
+      "confidence": 0.8,
+      "importance": "LOW",
+      "unlock_level": 4,
+      "source": "ai_extracted"
+    },
+    {
+      "id": "bloody_glove",
+      "label": "Bloody Glove",
+      "type": "EVIDENCE",
+      "description": "A bloody glove found at the crime scene, later matched to another glove found at O.J. Simpson's estate. The glove had bloodstains from both victims and O.J. Simpson. Its discovery was a crucial piece of evidence in the trial.",
+      "confidence": 0.95,
+      "importance": "HIGH",
+      "unlock_level": 1,
+      "source": "ai_extracted"
+    },
+    {
+      "id": "bloody_footprints",
+      "label": "Bloody Footprints",
+      "type": "EVIDENCE",
+      "description": "Bloody footprints found leading away from the crime scene, later matched to O.J. Simpson's shoes. These footprints indicated that the perpetrator was injured and fled the scene. They were a significant piece of evidence linking O.J. Simpson to the crime.",
+      "confidence": 0.9,
+      "importance": "HIGH",
+      "unlock_level": 2,
+      "source": "ai_extracted"
+    },
+    {
+      "id": "dna_blood_samples",
+      "label": "DNA Blood Samples",
+      "type": "EVIDENCE",
+      "description": "DNA blood samples collected from the crime scene, O.J. Simpson's estate, and his vehicle. These samples were used to create a DNA profile that matched O.J. Simpson, placing him at the crime scene and linking him to the victims.",
+      "confidence": 0.98,
+      "importance": "HIGH",
+      "unlock_level": 1,
+      "source": "ai_extracted"
+    },
+    {
+      "id": "bronco",
+      "label": "Ford Bronco",
+      "type": "EVIDENCE",
+      "description": "O.J. Simpson's Ford Bronco, which was the subject of a police chase and later found to have bloodstains from both victims and O.J. Simpson. The Bronco was a key piece of evidence in the trial, as it linked O.J. Simpson to the crime scene and provided a possible means of escape.",
+      "confidence": 0.92,
+      "importance": "HIGH",
+      "unlock_level": 1,
+      "source": "ai_extracted"
+    },
+    {
+      "id": "bloodstained_socks",
+      "label": "Bloodstained Socks",
+      "type": "EVIDENCE",
+      "description": "Bloodstained socks found in O.J. Simpson's bedroom, which had blood from both victims on them. These socks were a crucial piece of evidence, as they linked O.J. Simpson to the crime scene and indicated that he had been in contact with the victims' blood.",
+      "confidence": 0.9,
+      "importance": "HIGH",
+      "unlock_level": 2,
+      "source": "ai_extracted"
+    },
+    {
+      "id": "knit_hat",
+      "label": "Knit Hat",
+      "type": "EVIDENCE",
+      "description": "A knit hat found at the crime scene, which was later matched to a hat owned by O.J. Simpson. The hat was a significant piece of evidence, as it linked O.J. Simpson to the crime scene and provided a possible means of identifying the perpetrator.",
+      "confidence": 0.85,
+      "importance": "MEDIUM",
+      "unlock_level": 3,
+      "source": "ai_extracted"
+    },
+    {
+      "id": "envelope",
+      "label": "Bloody Envelope",
+      "type": "EVIDENCE",
+      "description": "A bloody envelope found at the crime scene, which had O.J. Simpson's fingerprints and blood from one of the victims on it. The envelope was a significant piece of evidence, as it linked O.J. Simpson to the crime scene and provided a possible means of identifying the perpetrator.",
+      "confidence": 0.8,
+      "importance": "MEDIUM",
+      "unlock_level": 3,
+      "source": "ai_extracted"
+    },
+    {
+      "id": "bundy_drive",
+      "label": "Bundy Drive Crime Scene",
+      "type": "LOCATION",
+      "description": "The location where the bodies of Nicole Brown Simpson and Ron Goldman were found. It is a key crime scene in the O.J. Simpson murder case. The area was thoroughly examined for evidence.",
+      "confidence": 1.0,
+      "importance": "HIGH",
+      "unlock_level": 1,
+      "source": "ai_extracted"
+    },
+    {
+      "id": "rockingham",
+      "label": "O.J. Simpson's Rockingham Residence",
+      "type": "LOCATION",
+      "description": "O.J. Simpson's home, where a bloody glove was found. The house was a key location in the investigation, with police finding several pieces of evidence. It was also where O.J. Simpson was arrested.",
+      "confidence": 1.0,
+      "importance": "HIGH",
+      "unlock_level": 1,
+      "source": "ai_extracted"
+    },
+    {
+      "id": "mezzaluna",
+      "label": "Mezzaluna Restaurant",
+      "type": "LOCATION",
+      "description": "The restaurant where Nicole Brown Simpson and Ron Goldman were last seen alive. It is a significant location in the timeline of events leading up to the murders.",
+      "confidence": 0.9,
+      "importance": "MEDIUM",
+      "unlock_level": 2,
+      "source": "ai_extracted"
+    },
+    {
+      "id": "lapd_headquarters",
+      "label": "LAPD Headquarters",
+      "type": "LOCATION",
+      "description": "The police station where O.J. Simpson was supposed to turn himself in. It is also where much of the investigation and evidence processing took place.",
+      "confidence": 1.0,
+      "importance": "MEDIUM",
+      "unlock_level": 1,
+      "source": "ai_extracted"
+    },
+    {
+      "id": "west_la_police_station",
+      "label": "West LA Police Station",
+      "type": "LOCATION",
+      "description": "The police station where the two children were taken after the discovery of the bodies. It was also a location where some of the investigation and interviews took place.",
+      "confidence": 0.8,
+      "importance": "LOW",
+      "unlock_level": 3,
+      "source": "ai_extracted"
+    },
+    {
+      "id": "june_12_1994_nicole_brown_simpson_murder",
+      "label": "Nicole Brown Simpson Murder",
+      "type": "TIMELINE",
+      "description": "June 12, 1994: Nicole Brown Simpson and Ron Goldman were murdered outside Nicole's condominium in Brentwood, California.",
+      "confidence": 1.0,
+      "importance": "HIGH",
+      "unlock_level": 1,
+      "source": "ai_extracted"
+    },
+    {
+      "id": "june_13_1994_oj_simpson_arrest",
+      "label": "OJ Simpson Arrest",
+      "type": "TIMELINE",
+      "description": "June 13, 1994: OJ Simpson failed to turn himself in and became the subject of a police pursuit, which ended in his arrest.",
+      "confidence": 1.0,
+      "importance": "HIGH",
+      "unlock_level": 1,
+      "source": "ai_extracted"
+    },
+    {
+      "id": "july_1995_fredric_rieders_testimony",
+      "label": "Fredric Rieders Testimony",
+      "type": "TIMELINE",
+      "description": "July 1995: Fredric Rieders testified that the level of EDTA in the evidence samples was higher than that which is normally found in blood.",
+      "confidence": 0.8,
+      "importance": "MEDIUM",
+      "unlock_level": 3,
+      "source": "ai_extracted"
+    },
+    {
+      "id": "june_28_1995_glove_trial",
+      "label": "Glove Trial",
+      "type": "TIMELINE",
+      "description": "June 28, 1995: The infamous glove trial took place, where OJ Simpson tried on the gloves found at the crime scene.",
+      "confidence": 1.0,
+      "importance": "HIGH",
+      "unlock_level": 1,
+      "source": "ai_extracted"
+    },
+    {
+      "id": "september_12_1995_richard_rubin_testimony",
+      "label": "Richard Rubin Testimony",
+      "type": "TIMELINE",
+      "description": "September 12, 1995: Richard Rubin testified that the gloves could have shrunk due to moisture.",
+      "confidence": 0.7,
+      "importance": "MEDIUM",
+      "unlock_level": 3,
+      "source": "ai_extracted"
+    },
+    {
+      "id": "june_17_1994_oj_simpson_charged",
+      "label": "OJ Simpson Charged",
+      "type": "TIMELINE",
+      "description": "June 17, 1994: OJ Simpson was formally charged with the murders of Nicole Brown Simpson and Ron Goldman.",
+      "confidence": 1.0,
+      "importance": "HIGH",
+      "unlock_level": 1,
+      "source": "ai_extracted"
+    },
+    {
+      "id": "polygraph_test",
+      "label": "Polygraph Test",
+      "type": "EVIDENCE",
+      "description": "A polygraph test taken by O.J. Simpson, which reportedly indicated deception. The test results were not admissible in court but may have influenced the defense strategy.",
+      "confidence": 0.6,
+      "importance": "MEDIUM",
+      "unlock_level": 4,
+      "source": "ai_extracted"
+    },
+    {
+      "id": "robert_kardashian_polygraph_test",
+      "label": "Robert Kardashian's Knowledge of Polygraph Test",
+      "type": "EVENT",
+      "description": "Robert Kardashian's awareness of the polygraph test results, which may have affected his perception of O.J. Simpson's guilt.",
+      "confidence": 0.55,
+      "importance": "LOW",
+      "unlock_level": 5,
+      "source": "ai_extracted"
+    },
+    {
+      "id": "ron_ship",
+      "label": "Ron Ship",
+      "type": "PERSON",
+      "description": "A friend of O.J. Simpson and an LAPD officer who had knowledge of O.J.'s violent tendencies. His testimony could have been significant in establishing a motive.",
+      "confidence": 0.65,
+      "importance": "MEDIUM",
+      "unlock_level": 4,
+      "source": "ai_extracted"
+    }
+  ],
+  "edges": [
+    {
+      "source": "oj-simpson",
+      "target": "nicole-brown",
+      "relationship": "LINKED_TO",
+      "description": "",
+      "confidence": 1.0,
+      "unlock_level": 1,
+      "source_system": "schema"
+    },
+    {
+      "source": "ron-goldman",
+      "target": "nicole-brown",
+      "relationship": "LINKED_TO",
+      "description": "",
+      "confidence": 1.0,
+      "unlock_level": 1,
+      "source_system": "schema"
+    },
+    {
+      "source": "nicole-brown",
+      "target": "bundy-crime-scene",
+      "relationship": "LINKED_TO",
+      "description": "",
+      "confidence": 1.0,
+      "unlock_level": 1,
+      "source_system": "schema"
+    },
+    {
+      "source": "ron-goldman",
+      "target": "bundy-crime-scene",
+      "relationship": "LINKED_TO",
+      "description": "",
+      "confidence": 1.0,
+      "unlock_level": 1,
+      "source_system": "schema"
+    },
+    {
+      "source": "oj-simpson",
+      "target": "rockingham-estate",
+      "relationship": "LINKED_TO",
+      "description": "",
+      "confidence": 1.0,
+      "unlock_level": 2,
+      "source_system": "schema"
+    },
+    {
+      "source": "bloody-glove",
+      "target": "rockingham-estate",
+      "relationship": "LINKED_TO",
+      "description": "",
+      "confidence": 1.0,
+      "unlock_level": 2,
+      "source_system": "schema"
+    },
+    {
+      "source": "bloody-glove",
+      "target": "bundy-crime-scene",
+      "relationship": "LINKED_TO",
+      "description": "",
+      "confidence": 1.0,
+      "unlock_level": 2,
+      "source_system": "schema"
+    },
+    {
+      "source": "dna-evidence",
+      "target": "oj-simpson",
+      "relationship": "LINKED_TO",
+      "description": "",
+      "confidence": 1.0,
+      "unlock_level": 2,
+      "source_system": "schema"
+    },
+    {
+      "source": "dna-evidence",
+      "target": "nicole-brown",
+      "relationship": "LINKED_TO",
+      "description": "",
+      "confidence": 1.0,
+      "unlock_level": 2,
+      "source_system": "schema"
+    },
+    {
+      "source": "domestic-violence-history",
+      "target": "oj-simpson",
+      "relationship": "LINKED_TO",
+      "description": "",
+      "confidence": 1.0,
+      "unlock_level": 2,
+      "source_system": "schema"
+    },
+    {
+      "source": "mark-fuhrman",
+      "target": "bloody-glove",
+      "relationship": "LINKED_TO",
+      "description": "",
+      "confidence": 1.0,
+      "unlock_level": 2,
+      "source_system": "schema"
+    },
+    {
+      "source": "fuhrman-tapes",
+      "target": "mark-fuhrman",
+      "relationship": "LINKED_TO",
+      "description": "",
+      "confidence": 1.0,
+      "unlock_level": 2,
+      "source_system": "schema"
+    },
+    {
+      "source": "kato-kaelin",
+      "target": "rockingham-estate",
+      "relationship": "LINKED_TO",
+      "description": "",
+      "confidence": 1.0,
+      "unlock_level": 2,
+      "source_system": "schema"
+    },
+    {
+      "source": "timeline-gap",
+      "target": "oj-simpson",
+      "relationship": "LINKED_TO",
+      "description": "",
+      "confidence": 1.0,
+      "unlock_level": 2,
+      "source_system": "schema"
+    },
+    {
+      "source": "limo-driver",
+      "target": "oj-simpson",
+      "relationship": "LINKED_TO",
+      "description": "",
+      "confidence": 1.0,
+      "unlock_level": 2,
+      "source_system": "schema"
+    },
+    {
+      "source": "o_j_simpson",
+      "target": "nicole_brown_simpson",
+      "relationship": "MARRIED_TO",
+      "description": "O.J. Simpson was married to Nicole Brown Simpson until their divorce in 1992.",
+      "confidence": 1.0,
+      "unlock_level": 1,
+      "source_system": "ai_extracted"
+    },
+    {
+      "source": "o_j_simpson",
+      "target": "ron_goldman",
+      "relationship": "MURDER_SUSPECT",
+      "description": "O.J. Simpson was suspected of murdering Ron Goldman.",
+      "confidence": 1.0,
+      "unlock_level": 1,
+      "source_system": "ai_extracted"
+    },
+    {
+      "source": "mark_ferman",
+      "target": "o_j_simpson",
+      "relationship": "INVESTIGATED",
+      "description": "Mark Ferman was one of the detectives who investigated O.J. Simpson for the murders.",
+      "confidence": 0.8,
+      "unlock_level": 2,
+      "source_system": "ai_extracted"
+    },
+    {
+      "source": "johnnie_cochran",
+      "target": "o_j_simpson",
+      "relationship": "DEFENDED",
+      "description": "Johnnie Cochran was part of the defense team that represented O.J. Simpson in his trial.",
+      "confidence": 1.0,
+      "unlock_level": 1,
+      "source_system": "ai_extracted"
+    },
+    {
+      "source": "marcia_clark",
+      "target": "o_j_simpson",
+      "relationship": "PROSECUTED",
+      "description": "Marcia Clark was one of the prosecutors who tried O.J. Simpson for the murders.",
+      "confidence": 1.0,
+      "unlock_level": 1,
+      "source_system": "ai_extracted"
+    },
+    {
+      "source": "robert_shapiro",
+      "target": "o_j_simpson",
+      "relationship": "DEFENDED",
+      "description": "Robert Shapiro was part of the defense team that represented O.J. Simpson in his trial.",
+      "confidence": 1.0,
+      "unlock_level": 2,
+      "source_system": "ai_extracted"
+    },
+    {
+      "source": "robert_kardashian",
+      "target": "o_j_simpson",
+      "relationship": "FRIEND_OF",
+      "description": "Robert Kardashian was a friend of O.J. Simpson and part of his defense team.",
+      "confidence": 1.0,
+      "unlock_level": 2,
+      "source_system": "ai_extracted"
+    },
+    {
+      "source": "lance_ito",
+      "target": "o_j_simpson",
+      "relationship": "TRIED",
+      "description": "Lance Ito was the judge who presided over O.J. Simpson's trial.",
+      "confidence": 1.0,
+      "unlock_level": 1,
+      "source_system": "ai_extracted"
+    },
+    {
+      "source": "philip_vader",
+      "target": "o_j_simpson",
+      "relationship": "INVESTIGATED",
+      "description": "Philip Vader was one of the detectives who investigated O.J. Simpson for the murders.",
+      "confidence": 0.8,
+      "unlock_level": 3,
+      "source_system": "ai_extracted"
+    },
+    {
+      "source": "tom_langan",
+      "target": "o_j_simpson",
+      "relationship": "INVESTIGATED",
+      "description": "Tom Langan was one of the detectives who investigated O.J. Simpson for the murders.",
+      "confidence": 0.8,
+      "unlock_level": 3,
+      "source_system": "ai_extracted"
+    },
+    {
+      "source": "brad_roberts",
+      "target": "mark_ferman",
+      "relationship": "PARTNER_OF",
+      "description": "Brad Roberts was the junior partner of Mark Ferman during the investigation.",
+      "confidence": 0.8,
+      "unlock_level": 3,
+      "source_system": "ai_extracted"
+    },
+    {
+      "source": "david_rossy",
+      "target": "o_j_simpson",
+      "relationship": "INVESTIGATED",
+      "description": "David Rossy was one of the first officers to arrive at the crime scene and was involved in the investigation of O.J. Simpson.",
+      "confidence": 0.8,
+      "unlock_level": 3,
+      "source_system": "ai_extracted"
+    },
+    {
+      "source": "marty",
+      "target": "o_j_simpson",
+      "relationship": "INVESTIGATED",
+      "description": "Marty was a sergeant who was involved in the investigation of O.J. Simpson.",
+      "confidence": 0.8,
+      "unlock_level": 3,
+      "source_system": "ai_extracted"
+    },
+    {
+      "source": "keith_bushley",
+      "target": "o_j_simpson",
+      "relationship": "INVESTIGATED",
+      "description": "Keith Bushley was a commander who was involved in the investigation of O.J. Simpson.",
+      "confidence": 0.8,
+      "unlock_level": 3,
+      "source_system": "ai_extracted"
+    },
+    {
+      "source": "henry_lee",
+      "target": "o_j_simpson",
+      "relationship": "TESTIFIED_FOR",
+      "description": "Henry Lee was a forensic expert who testified for the defense in O.J. Simpson's trial.",
+      "confidence": 0.9,
+      "unlock_level": 2,
+      "source_system": "ai_extracted"
+    },
+    {
+      "source": "barry_scheck",
+      "target": "o_j_simpson",
+      "relationship": "DEFENDED",
+      "description": "Barry Scheck was a lawyer who was part of O.J. Simpson's defense team.",
+      "confidence": 1.0,
+      "unlock_level": 2,
+      "source_system": "ai_extracted"
+    },
+    {
+      "source": "peter_neufeld",
+      "target": "o_j_simpson",
+      "relationship": "DEFENDED",
+      "description": "Peter Neufeld was a lawyer who was part of O.J. Simpson's defense team.",
+      "confidence": 1.0,
+      "unlock_level": 2,
+      "source_system": "ai_extracted"
+    },
+    {
+      "source": "robert_kardashian_jr",
+      "target": "robert_kardashian",
+      "relationship": "SON_OF",
+      "description": "Robert Kardashian Jr is the son of Robert Kardashian.",
+      "confidence": 0.8,
+      "unlock_level": 4,
+      "source_system": "ai_extracted"
+    },
+    {
+      "source": "kardashian_siblings",
+      "target": "robert_kardashian",
+      "relationship": "CHILDREN_OF",
+      "description": "The Kardashian siblings are the children of Robert Kardashian.",
+      "confidence": 0.8,
+      "unlock_level": 4,
+      "source_system": "ai_extracted"
+    },
+    {
+      "source": "bloody_glove",
+      "target": "o_j_simpson",
+      "relationship": "IMPLICATES",
+      "description": "The bloody glove found at the crime scene was later matched to another glove found at O.J. Simpson's estate, linking him to the crime.",
+      "confidence": 0.95,
+      "unlock_level": 1,
+      "source_system": "ai_extracted"
+    },
+    {
+      "source": "bloody_footprints",
+      "target": "o_j_simpson",
+      "relationship": "IMPLICATES",
+      "description": "The bloody footprints found leading away from the crime scene were later matched to O.J. Simpson's shoes, linking him to the crime.",
+      "confidence": 0.9,
+      "unlock_level": 2,
+      "source_system": "ai_extracted"
+    },
+    {
+      "source": "dna_blood_samples",
+      "target": "o_j_simpson",
+      "relationship": "IMPLICATES",
+      "description": "The DNA blood samples collected from the crime scene, O.J. Simpson's estate, and his vehicle matched O.J. Simpson's DNA, linking him to the crime.",
+      "confidence": 0.98,
+      "unlock_level": 1,
+      "source_system": "ai_extracted"
+    },
+    {
+      "source": "bronco",
+      "target": "o_j_simpson",
+      "relationship": "IMPLICATES",
+      "description": "The Ford Bronco, which was the subject of a police chase, was found to have bloodstains from both victims and O.J. Simpson, linking him to the crime.",
+      "confidence": 0.92,
+      "unlock_level": 1,
+      "source_system": "ai_extracted"
+    },
+    {
+      "source": "bloody_glove",
+      "target": "mark_ferman",
+      "relationship": "FOUND_BY",
+      "description": "Mark Ferman found the bloody glove at the crime scene, which was a crucial piece of evidence in the trial.",
+      "confidence": 1.0,
+      "unlock_level": 2,
+      "source_system": "ai_extracted"
+    },
+    {
+      "source": "bloody_glove",
+      "target": "nicole_brown_simpson_residence",
+      "relationship": "FOUND_AT",
+      "description": "The bloody glove was found at Nicole Brown Simpson's residence, which was the crime scene.",
+      "confidence": 1.0,
+      "unlock_level": 1,
+      "source_system": "ai_extracted"
+    },
+    {
+      "source": "dna_blood_samples",
+      "target": "o_j_simpson",
+      "relationship": "CONTRADICTS",
+      "description": "The DNA blood samples collected from the crime scene, O.J. Simpson's estate, and his vehicle contradicted O.J. Simpson's alibi, which claimed he was not at the crime scene.",
+      "confidence": 0.98,
+      "unlock_level": 1,
+      "source_system": "ai_extracted"
+    },
+    {
+      "source": "bundy_drive",
+      "target": "nicole_brown_simpson",
+      "relationship": "SCENE_OF",
+      "description": "The location where Nicole Brown Simpson's body was found.",
+      "confidence": 1.0,
+      "unlock_level": 1,
+      "source_system": "ai_extracted"
+    },
+    {
+      "source": "bundy_drive",
+      "target": "ron_goldman",
+      "relationship": "SCENE_OF",
+      "description": "The location where Ron Goldman's body was found.",
+      "confidence": 1.0,
+      "unlock_level": 1,
+      "source_system": "ai_extracted"
+    },
+    {
+      "source": "rockingham",
+      "target": "o_j_simpson",
+      "relationship": "PRESENT_AT",
+      "description": "O.J. Simpson was present at his Rockingham residence after the murders.",
+      "confidence": 1.0,
+      "unlock_level": 1,
+      "source_system": "ai_extracted"
+    },
+    {
+      "source": "rockingham",
+      "target": "bloody_glove",
+      "relationship": "CONTAINS_EVIDENCE",
+      "description": "A bloody glove was found at O.J. Simpson's Rockingham residence.",
+      "confidence": 1.0,
+      "unlock_level": 1,
+      "source_system": "ai_extracted"
+    },
+    {
+      "source": "mezzaluna",
+      "target": "nicole_brown_simpson",
+      "relationship": "PRESENT_AT",
+      "description": "Nicole Brown Simpson was last seen alive at Mezzaluna Restaurant.",
+      "confidence": 0.9,
+      "unlock_level": 2,
+      "source_system": "ai_extracted"
+    },
+    {
+      "source": "mezzaluna",
+      "target": "ron_goldman",
+      "relationship": "PRESENT_AT",
+      "description": "Ron Goldman was last seen alive at Mezzaluna Restaurant.",
+      "confidence": 0.9,
+      "unlock_level": 2,
+      "source_system": "ai_extracted"
+    },
+    {
+      "source": "june_12_1994_nicole_brown_simpson_murder",
+      "target": "june_13_1994_oj_simpson_arrest",
+      "relationship": "LEADS_TO",
+      "description": "The murder of Nicole Brown Simpson and Ron Goldman led to the arrest of OJ Simpson.",
+      "confidence": 1.0,
+      "unlock_level": 1,
+      "source_system": "ai_extracted"
+    },
+    {
+      "source": "june_13_1994_oj_simpson_arrest",
+      "target": "july_1995_fredric_rieders_testimony",
+      "relationship": "INFORMS",
+      "description": "OJ Simpson's arrest informed the testimony of Fredric Rieders about the EDTA levels in the evidence samples.",
+      "confidence": 0.8,
+      "unlock_level": 3,
+      "source_system": "ai_extracted"
+    },
+    {
+      "source": "june_28_1995_glove_trial",
+      "target": "september_12_1995_richard_rubin_testimony",
+      "relationship": "CONTRADICTS",
+      "description": "The glove trial contradicted the testimony of Richard Rubin about the gloves shrinking due to moisture.",
+      "confidence": 0.7,
+      "unlock_level": 3,
+      "source_system": "ai_extracted"
+    },
+    {
+      "source": "june_17_1994_oj_simpson_charged",
+      "target": "june_13_1994_oj_simpson_arrest",
+      "relationship": "FOLLOWS",
+      "description": "The charging of OJ Simpson followed his arrest.",
+      "confidence": 1.0,
+      "unlock_level": 1,
+      "source_system": "ai_extracted"
+    },
+    {
+      "source": "o_j_simpson",
+      "target": "polygraph_test",
+      "relationship": "TOOK",
+      "description": "O.J. Simpson took a polygraph test, which reportedly indicated deception.",
+      "confidence": 0.6,
+      "unlock_level": 4,
+      "source_system": "ai_extracted"
+    },
+    {
+      "source": "robert_shapiro",
+      "target": "polygraph_test",
+      "relationship": "ARRANGED",
+      "description": "Robert Shapiro arranged for O.J. Simpson to take a polygraph test.",
+      "confidence": 0.6,
+      "unlock_level": 4,
+      "source_system": "ai_extracted"
+    },
+    {
+      "source": "robert_kardashian",
+      "target": "robert_kardashian_polygraph_test",
+      "relationship": "AWARE_OF",
+      "description": "Robert Kardashian was aware of the polygraph test results, which may have influenced his actions.",
+      "confidence": 0.55,
+      "unlock_level": 5,
+      "source_system": "ai_extracted"
+    },
+    {
+      "source": "ron_ship",
+      "target": "o_j_simpson",
+      "relationship": "KNEW",
+      "description": "Ron Ship knew O.J. Simpson and was aware of his violent tendencies.",
+      "confidence": 0.65,
+      "importance": "MEDIUM",
+      "unlock_level": 4,
+      "source_system": "ai_extracted"
+    },
+    {
+      "source": "ron_ship",
+      "target": "nicole_brown_simpson",
+      "relationship": "KNEW",
+      "description": "Ron Ship also knew Nicole Brown Simpson, which could have given him insight into the dynamics of their relationship.",
+      "confidence": 0.6,
+      "unlock_level": 4,
+      "source_system": "ai_extracted"
+    }
+  ]
+}

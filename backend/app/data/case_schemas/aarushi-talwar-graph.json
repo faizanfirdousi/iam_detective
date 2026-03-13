@@ -1,0 +1,1270 @@
+{
+  "case_id": "aarushi-talwar",
+  "nodes": [
+    {
+      "id": "aarushi",
+      "label": "Aarushi Talwar",
+      "type": "PERSON",
+      "description": "14-year-old girl found dead in her bedroom with her throat slit on the morning of May 16, 2008.",
+      "image_url": "https://upload.wikimedia.org/wikipedia/en/5/5e/Aarushi_talwar.jpg",
+      "confidence": 1.0,
+      "importance": "MEDIUM",
+      "revealed_at": "start",
+      "unlock_level": 1,
+      "unlock_keyword_triggers": [],
+      "source": "schema"
+    },
+    {
+      "id": "hemraj",
+      "label": "Hemraj Banjade",
+      "type": "PERSON",
+      "description": "45-year-old Nepali domestic helper. Initially reported missing. Body found on the terrace 2 days later.",
+      "image_url": null,
+      "confidence": 1.0,
+      "importance": "MEDIUM",
+      "revealed_at": "start",
+      "unlock_level": 1,
+      "unlock_keyword_triggers": [],
+      "source": "schema"
+    },
+    {
+      "id": "rajesh-talwar",
+      "label": "Dr. Rajesh Talwar",
+      "type": "PERSON",
+      "description": "Father of Aarushi. Dentist. Filed the initial FIR naming Hemraj as suspect before Hemraj's body was found.",
+      "image_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ab/Rajesh_Talwar.jpg/240px-Rajesh_Talwar.jpg",
+      "confidence": 1.0,
+      "importance": "MEDIUM",
+      "revealed_at": "start",
+      "unlock_level": 1,
+      "unlock_keyword_triggers": [],
+      "source": "schema"
+    },
+    {
+      "id": "nupur-talwar",
+      "label": "Dr. Nupur Talwar",
+      "type": "PERSON",
+      "description": "Mother of Aarushi. Dentist. Was in the house on the night of the murder.",
+      "image_url": null,
+      "confidence": 1.0,
+      "importance": "MEDIUM",
+      "revealed_at": "start",
+      "unlock_level": 1,
+      "unlock_keyword_triggers": [],
+      "source": "schema"
+    },
+    {
+      "id": "crime-scene",
+      "label": "Jalvayu Vihar, Sector 25, Noida",
+      "type": "LOCATION",
+      "description": "L-32, Jalvayu Vihar apartment complex. Aarushi's bedroom was on the 2nd floor. Hemraj's body was on the terrace.",
+      "image_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/Jalvayu_Vihar%2C_Noida.jpg/320px-Jalvayu_Vihar%2C_Noida.jpg",
+      "confidence": 1.0,
+      "importance": "MEDIUM",
+      "revealed_at": "start",
+      "unlock_level": 1,
+      "unlock_keyword_triggers": [],
+      "source": "schema"
+    },
+    {
+      "id": "krishna",
+      "label": "Krishna Thadarai",
+      "type": "PERSON",
+      "description": "Domestic helper who worked for a neighbour. Had keys to the Talwar household. Underwent narco-analysis.",
+      "image_url": null,
+      "confidence": 1.0,
+      "importance": "MEDIUM",
+      "revealed_at": {
+        "requires": [
+          "investigate-servants"
+        ]
+      },
+      "unlock_level": 2,
+      "unlock_keyword_triggers": [
+        "servant",
+        "helper",
+        "domestic",
+        "krishna",
+        "other staff"
+      ],
+      "source": "schema"
+    },
+    {
+      "id": "rajkumar",
+      "label": "Rajkumar",
+      "type": "PERSON",
+      "description": "Domestic helper who worked nearby. Was a drinking companion of Hemraj.",
+      "image_url": null,
+      "confidence": 1.0,
+      "importance": "MEDIUM",
+      "revealed_at": {
+        "requires": [
+          "investigate-servants"
+        ]
+      },
+      "unlock_level": 2,
+      "unlock_keyword_triggers": [
+        "servant",
+        "helper",
+        "domestic",
+        "rajkumar",
+        "drinking"
+      ],
+      "source": "schema"
+    },
+    {
+      "id": "vijay-mandal",
+      "label": "Vijay Mandal",
+      "type": "PERSON",
+      "description": "Another domestic helper. Companion of Hemraj, implicated by narco-analysis but not by physical evidence.",
+      "image_url": null,
+      "confidence": 1.0,
+      "importance": "MEDIUM",
+      "revealed_at": {
+        "requires": [
+          "investigate-servants"
+        ]
+      },
+      "unlock_level": 2,
+      "unlock_keyword_triggers": [
+        "servant",
+        "helper",
+        "companion",
+        "vijay",
+        "mandal"
+      ],
+      "source": "schema"
+    },
+    {
+      "id": "murder-weapon",
+      "label": "Murder Weapon \u2014 Kukri / Khukri",
+      "type": "EVIDENCE",
+      "description": "A sharp-edged weapon consistent with scalpel-like precision. Exact weapon never recovered.",
+      "image_url": null,
+      "confidence": 1.0,
+      "importance": "MEDIUM",
+      "revealed_at": {
+        "requires": [
+          "examine-wounds"
+        ]
+      },
+      "unlock_level": 2,
+      "unlock_keyword_triggers": [
+        "weapon",
+        "knife",
+        "scalpel",
+        "kukri",
+        "cut",
+        "wound",
+        "sharp"
+      ],
+      "source": "schema"
+    },
+    {
+      "id": "terrace-lock",
+      "label": "Terrace Door Lock",
+      "type": "EVIDENCE",
+      "description": "The terrace door was locked from the inside. The outer lock was missing. Raises question of how the killer accessed the terrace.",
+      "image_url": null,
+      "confidence": 1.0,
+      "importance": "MEDIUM",
+      "revealed_at": {
+        "requires": [
+          "investigate-terrace"
+        ]
+      },
+      "unlock_level": 2,
+      "unlock_keyword_triggers": [
+        "terrace",
+        "lock",
+        "door",
+        "roof",
+        "body found"
+      ],
+      "source": "schema"
+    },
+    {
+      "id": "phone-records",
+      "label": "Phone Records",
+      "type": "EVIDENCE",
+      "description": "Rajesh Talwar's phone records show a late-night internet session. Aarushi's phone was found switched off.",
+      "image_url": null,
+      "confidence": 1.0,
+      "importance": "MEDIUM",
+      "revealed_at": {
+        "requires": [
+          "check-phone"
+        ]
+      },
+      "unlock_level": 2,
+      "unlock_keyword_triggers": [
+        "phone",
+        "call",
+        "mobile",
+        "internet",
+        "online"
+      ],
+      "source": "schema"
+    },
+    {
+      "id": "crime-scene-tampering",
+      "label": "Crime Scene Contamination",
+      "type": "EVIDENCE",
+      "description": "Noida Police failed to seal the crime scene. Multiple people walked through before forensics arrived. Key evidence may have been destroyed.",
+      "image_url": null,
+      "confidence": 1.0,
+      "importance": "MEDIUM",
+      "revealed_at": {
+        "requires": [
+          "investigate-police"
+        ]
+      },
+      "unlock_level": 2,
+      "unlock_keyword_triggers": [
+        "police",
+        "investigation",
+        "contaminated",
+        "sealed",
+        "forensic",
+        "noida police"
+      ],
+      "source": "schema"
+    },
+    {
+      "id": "narco-analysis",
+      "label": "Narco-Analysis Test Results",
+      "type": "EVIDENCE",
+      "description": "Krishna, Rajkumar, and Vijay Mandal were subjected to narco-analysis. Results suggested familiarity with the crime but are not admissible in court.",
+      "image_url": null,
+      "confidence": 1.0,
+      "importance": "MEDIUM",
+      "revealed_at": {
+        "requires": [
+          "investigate-servants"
+        ]
+      },
+      "unlock_level": 2,
+      "unlock_keyword_triggers": [
+        "narco",
+        "truth serum",
+        "lie detector",
+        "polygraph"
+      ],
+      "source": "schema"
+    },
+    {
+      "id": "cbi-investigation",
+      "label": "CBI Takes Over",
+      "type": "EVENT",
+      "description": "CBI took over the case from Noida Police. Initially pursued the servant theory, later closed it and charged parents.",
+      "image_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4e/CBI_Logo.svg/200px-CBI_Logo.svg.png",
+      "confidence": 1.0,
+      "importance": "MEDIUM",
+      "revealed_at": {
+        "requires": [
+          "investigate-police"
+        ]
+      },
+      "unlock_level": 2,
+      "unlock_keyword_triggers": [
+        "cbi",
+        "central bureau",
+        "takeover",
+        "transfer"
+      ],
+      "source": "schema"
+    },
+    {
+      "id": "honour-killing-theory",
+      "label": "Honour Killing Theory",
+      "type": "EVIDENCE",
+      "description": "CBI alleged parents killed Aarushi after finding her in a compromising position with Hemraj. Talwars denied this vehemently.",
+      "image_url": null,
+      "confidence": 1.0,
+      "importance": "MEDIUM",
+      "revealed_at": {
+        "requires": [
+          "cbi-investigation",
+          "check-phone"
+        ]
+      },
+      "unlock_level": 3,
+      "unlock_keyword_triggers": [
+        "honour",
+        "honor",
+        "motive",
+        "why",
+        "compromising",
+        "relationship"
+      ],
+      "source": "schema"
+    },
+    {
+      "id": "aarushi_talwar",
+      "label": "Aarushi Talwar",
+      "type": "PERSON",
+      "description": "Aarushi Talwar was a 14-year-old girl who was murdered in her home. She was the daughter of Dr. Rajesh Talwar and Dr. Nupur Talwar. Her murder, along with that of Hemraj Banjade, led to a highly publicized and controversial case.",
+      "confidence": 1.0,
+      "importance": "HIGH",
+      "unlock_level": 1,
+      "source": "ai_extracted"
+    },
+    {
+      "id": "hemraj_banjade",
+      "label": "Hemraj Banjade",
+      "type": "PERSON",
+      "description": "Hemraj Banjade was a 45-year-old domestic worker who was employed by the Talwar family. He was found murdered on the terrace of the Talwar residence. His body was discovered a day after Aarushi's, leading to a shift in the investigation's focus.",
+      "confidence": 1.0,
+      "importance": "HIGH",
+      "unlock_level": 1,
+      "source": "ai_extracted"
+    },
+    {
+      "id": "rajesh_talwar",
+      "label": "Dr. Rajesh Talwar",
+      "type": "PERSON",
+      "description": "Dr. Rajesh Talwar is the father of Aarushi Talwar and the husband of Dr. Nupur Talwar. He was a prime suspect in the murders and was later convicted and sentenced to life imprisonment. He maintained his innocence throughout the trial.",
+      "confidence": 1.0,
+      "importance": "HIGH",
+      "unlock_level": 1,
+      "source": "ai_extracted"
+    },
+    {
+      "id": "nupur_talwar",
+      "label": "Dr. Nupur Talwar",
+      "type": "PERSON",
+      "description": "Dr. Nupur Talwar is the mother of Aarushi Talwar and the wife of Dr. Rajesh Talwar. She was also a suspect in the case but was later convicted and sentenced to life imprisonment. She, like her husband, claimed innocence.",
+      "confidence": 1.0,
+      "importance": "HIGH",
+      "unlock_level": 1,
+      "source": "ai_extracted"
+    },
+    {
+      "id": "raj_kumar",
+      "label": "Raj Kumar",
+      "type": "PERSON",
+      "description": "Raj Kumar was one of the domestic servants who was suspected by the CBI. He underwent a narco test, which suggested his involvement in the crime.",
+      "confidence": 0.7,
+      "importance": "MEDIUM",
+      "unlock_level": 2,
+      "source": "ai_extracted"
+    },
+    {
+      "id": "vijay_mandal",
+      "label": "Vijay Mandal",
+      "type": "PERSON",
+      "description": "Vijay Mandal was another domestic servant who was suspected and underwent a narco test. The results implicated him in the crime, but he was later released due to lack of concrete evidence.",
+      "confidence": 0.7,
+      "importance": "MEDIUM",
+      "unlock_level": 2,
+      "source": "ai_extracted"
+    },
+    {
+      "id": "bharti_mandal",
+      "label": "Bharti Mandal",
+      "type": "PERSON",
+      "description": "Bharti Mandal was a maid who worked for the Talwar family. She provided testimony in the case, describing the events of the morning Aarushi's body was found.",
+      "confidence": 0.9,
+      "importance": "MEDIUM",
+      "unlock_level": 1,
+      "source": "ai_extracted"
+    },
+    {
+      "id": "umesh_sharma",
+      "label": "Umesh Sharma",
+      "type": "PERSON",
+      "description": "Umesh Sharma was the driver of the Talwar family. He gave statements regarding the golf clubs and their storage, which became a point of contention in the investigation.",
+      "confidence": 0.8,
+      "importance": "MEDIUM",
+      "unlock_level": 2,
+      "source": "ai_extracted"
+    },
+    {
+      "id": "anita_durani",
+      "label": "Anita Durani",
+      "type": "PERSON",
+      "description": "Anita Durani was mentioned in the context of Dr. Rajesh Talwar's alleged extramarital affair, which was one of the motives proposed for the murder.",
+      "confidence": 0.6,
+      "importance": "LOW",
+      "unlock_level": 3,
+      "source": "ai_extracted"
+    },
+    {
+      "id": "richa_saxena",
+      "label": "Richa Saxena",
+      "type": "PERSON",
+      "description": "Richa Saxena was a doctor involved in the initial collection and testing of evidence, including Aarushi's vaginal swab. Her handling of the sample was questioned due to contamination issues.",
+      "confidence": 0.8,
+      "importance": "MEDIUM",
+      "unlock_level": 2,
+      "source": "ai_extracted"
+    },
+    {
+      "id": "s_c_singhal",
+      "label": "S.C. Singhal",
+      "type": "PERSON",
+      "description": "S.C. Singhal was the Chief Medical Superintendent who handed over Aarushi's sample to the CBI in Richa Saxena's absence, leading to questions about the sample's integrity.",
+      "confidence": 0.8,
+      "importance": "MEDIUM",
+      "unlock_level": 2,
+      "source": "ai_extracted"
+    },
+    {
+      "id": "arun_kumar",
+      "label": "Arun Kumar",
+      "type": "PERSON",
+      "description": "Arun Kumar was the Joint-Director of the CBI who led the investigation into the Aarushi-Hemraj murders.",
+      "confidence": 1.0,
+      "importance": "HIGH",
+      "unlock_level": 1,
+      "source": "ai_extracted"
+    },
+    {
+      "id": "nilabh_kishore",
+      "label": "Nilabh Kishore",
+      "type": "PERSON",
+      "description": "Nilabh Kishore was part of the CBI team that questioned the Talwars. He was involved in the investigation and later issued an affidavit regarding media leaks.",
+      "confidence": 0.9,
+      "importance": "MEDIUM",
+      "unlock_level": 2,
+      "source": "ai_extracted"
+    },
+    {
+      "id": "k_k_gautam",
+      "label": "K.K. Gautam",
+      "type": "PERSON",
+      "description": "K.K. Gautam was a witness who described the state of Hemraj's room, including finding liquor bottles and glasses, which suggested the presence of multiple individuals.",
+      "confidence": 0.8,
+      "importance": "MEDIUM",
+      "unlock_level": 2,
+      "source": "ai_extracted"
+    },
+    {
+      "id": "vikas",
+      "label": "Vikas",
+      "type": "PERSON",
+      "description": "Vikas was one of the lab technicians involved in the handling of Aarushi's vaginal swab sample.",
+      "confidence": 0.7,
+      "importance": "LOW",
+      "unlock_level": 3,
+      "source": "ai_extracted"
+    },
+    {
+      "id": "navneet",
+      "label": "Navneet",
+      "type": "PERSON",
+      "description": "Navneet was another lab technician who handled Aarushi's sample.",
+      "confidence": 0.7,
+      "importance": "LOW",
+      "unlock_level": 3,
+      "source": "ai_extracted"
+    },
+    {
+      "id": "bk_mohapatra",
+      "label": "B.K. Mohapatra",
+      "type": "PERSON",
+      "description": "B.K. Mohapatra was a forensic expert who analyzed the contaminated vaginal swab sample and found it to be a mix of two individuals' DNA.",
+      "confidence": 0.9,
+      "importance": "MEDIUM",
+      "unlock_level": 2,
+      "source": "ai_extracted"
+    },
+    {
+      "id": "avirook_sen",
+      "label": "Avirook Sen",
+      "type": "PERSON",
+      "description": "Avirook Sen is a journalist who wrote extensively on the Aarushi-Hemraj case, questioning the investigation and trial.",
+      "confidence": 0.8,
+      "importance": "MEDIUM",
+      "unlock_level": 2,
+      "source": "ai_extracted"
+    },
+    {
+      "id": "praveen_swami",
+      "label": "Praveen Swami",
+      "type": "PERSON",
+      "description": "Praveen Swami is a journalist who covered the case and discussed the implications of DNA tampering in the investigation.",
+      "confidence": 0.8,
+      "importance": "MEDIUM",
+      "unlock_level": 2,
+      "source": "ai_extracted"
+    },
+    {
+      "id": "golf_club",
+      "label": "Golf Club",
+      "type": "EVIDENCE",
+      "description": "A golf club was found, which was suspected to be the murder weapon due to its dimensions matching the wounds on the victims' heads. However, no blood traces were found on it. The golf club was handed over to the police by Rajesh Talwar himself.",
+      "confidence": 0.7,
+      "importance": "HIGH",
+      "unlock_level": 2,
+      "source": "ai_extracted"
+    },
+    {
+      "id": "pillow_cover",
+      "label": "Pillow Cover with Blood Stains",
+      "type": "EVIDENCE",
+      "description": "A pillow cover with blood stains was found in Krishna's house, which was later matched to Hemraj's DNA. However, a labeling error occurred at the forensic lab, leading to the discarding of this evidence. The pillow cover was crucial as it could have linked Krishna to the crime scene.",
+      "confidence": 0.8,
+      "importance": "HIGH",
+      "unlock_level": 3,
+      "source": "ai_extracted"
+    },
+    {
+      "id": "khukri",
+      "label": "Khukri (Nepali Knife)",
+      "type": "EVIDENCE",
+      "description": "A khukri, a type of Nepali knife, was found in Krishna's house. Although many people in Nepal and India keep khukris at home, its presence was considered significant in the investigation. The khukri was suspected to be the weapon used for slitting the throats of the victims.",
+      "confidence": 0.6,
+      "importance": "MEDIUM",
+      "unlock_level": 2,
+      "source": "ai_extracted"
+    },
+    {
+      "id": "bloodstained_handprints",
+      "label": "Bloodstained Handprints on Terrace",
+      "type": "EVIDENCE",
+      "description": "Bloodstained handprints were found near the entry door on the terrace where Hemraj's body was discovered. The blood was later identified as Hemraj's, but the handprints could not be matched to anyone due to the police's negligence in collecting and preserving the evidence.",
+      "confidence": 0.9,
+      "importance": "HIGH",
+      "unlock_level": 1,
+      "source": "ai_extracted"
+    },
+    {
+      "id": "bloodstained_shoe_print",
+      "label": "Bloodstained Shoe Print on Terrace",
+      "type": "EVIDENCE",
+      "description": "A bloodstained shoe print of size 8 was found near the drag marks made by Hemraj's body on the terrace. The shoe print was not matched to any suspect, and its significance remains unclear due to the lack of further investigation.",
+      "confidence": 0.8,
+      "importance": "MEDIUM",
+      "unlock_level": 1,
+      "source": "ai_extracted"
+    },
+    {
+      "id": "aarushi_phone",
+      "label": "Aarushi's Mobile Phone",
+      "type": "EVIDENCE",
+      "description": "Aarushi's mobile phone was found on a dirt track by a housemaid named Kusum near Noida's Sadarpur area. The phone was later recovered by the police, but it did not contain any significant data or evidence related to the murders.",
+      "confidence": 0.5,
+      "importance": "LOW",
+      "unlock_level": 1,
+      "source": "ai_extracted"
+    },
+    {
+      "id": "scotch_whisky_bottle",
+      "label": "Scotch Whisky Bottle with Bloodstains",
+      "type": "EVIDENCE",
+      "description": "A scotch whisky bottle with bloodstains was found in the living room of the Talwar residence. The presence of the bottle with bloodstains was considered unusual, as it was not cleaned or hidden by the perpetrators.",
+      "confidence": 0.7,
+      "importance": "MEDIUM",
+      "unlock_level": 1,
+      "source": "ai_extracted"
+    },
+    {
+      "id": "hemraj_clothes",
+      "label": "Hemraj's Clothes",
+      "type": "EVIDENCE",
+      "description": "Hemraj's clothes were not found at the crime scene, which raised questions about what he was wearing when his body was discovered on the terrace. Rajesh Talwar's failure to identify Hemraj's clothes when his body was found was also considered suspicious.",
+      "confidence": 0.6,
+      "importance": "MEDIUM",
+      "unlock_level": 2,
+      "source": "ai_extracted"
+    },
+    {
+      "id": "noida_sector_25",
+      "label": "Noida Sector 25",
+      "type": "LOCATION",
+      "description": "Noida Sector 25 is a residential area where the Talwar family resided. The area was the site of the double murder of Aarushi Talwar and Hemraj Banjade. It is a key location in the investigation.",
+      "confidence": 1.0,
+      "importance": "HIGH",
+      "unlock_level": 1,
+      "source": "ai_extracted"
+    },
+    {
+      "id": "talwar_residence",
+      "label": "Talwar Residence",
+      "type": "LOCATION",
+      "description": "The Talwar residence, located in Noida Sector 25, is the site where Aarushi Talwar and Hemraj Banjade were found murdered. The residence is a key crime scene in the investigation. It is where the bodies of the victims were discovered.",
+      "confidence": 1.0,
+      "importance": "HIGH",
+      "unlock_level": 1,
+      "source": "ai_extracted"
+    },
+    {
+      "id": "terrace",
+      "label": "Talwar Residence Terrace",
+      "type": "LOCATION",
+      "description": "The terrace of the Talwar residence is where Hemraj Banjade's body was found. It is a key part of the crime scene and has been the subject of much investigation and speculation.",
+      "confidence": 1.0,
+      "importance": "HIGH",
+      "unlock_level": 1,
+      "source": "ai_extracted"
+    },
+    {
+      "id": "hemraj_residence",
+      "label": "Hemraj Residence",
+      "type": "LOCATION",
+      "description": "Hemraj Banjade's residence is located in Nepal. It is not a direct crime scene but is relevant to the investigation as it provides background information on the victim.",
+      "confidence": 0.8,
+      "importance": "LOW",
+      "unlock_level": 2,
+      "source": "ai_extracted"
+    },
+    {
+      "id": "noida_police_station",
+      "label": "Noida Police Station",
+      "type": "LOCATION",
+      "description": "The Noida Police Station is where the initial investigation into the murders was conducted. It is a key location in the procedural aspects of the case.",
+      "confidence": 1.0,
+      "importance": "MEDIUM",
+      "unlock_level": 1,
+      "source": "ai_extracted"
+    },
+    {
+      "id": "cbi_headquarters",
+      "label": "CBI Headquarters",
+      "type": "LOCATION",
+      "description": "The CBI Headquarters is where the Central Bureau of Investigation is based. The CBI took over the investigation of the Aarushi Talwar and Hemraj Banjade murders.",
+      "confidence": 1.0,
+      "importance": "MEDIUM",
+      "unlock_level": 2,
+      "source": "ai_extracted"
+    },
+    {
+      "id": "ghaziabad_court",
+      "label": "Ghaziabad Court",
+      "type": "LOCATION",
+      "description": "The Ghaziabad Court is where the trial of Rajesh and Nupur Talwar took place. It is a key location in the legal proceedings of the case.",
+      "confidence": 1.0,
+      "importance": "HIGH",
+      "unlock_level": 2,
+      "source": "ai_extracted"
+    },
+    {
+      "id": "allahabad_high_court",
+      "label": "Allahabad High Court",
+      "type": "LOCATION",
+      "description": "The Allahabad High Court is where the Talwars appealed their conviction. It is a significant location in the legal proceedings of the case.",
+      "confidence": 1.0,
+      "importance": "HIGH",
+      "unlock_level": 3,
+      "source": "ai_extracted"
+    },
+    {
+      "id": "may_15th_school_day",
+      "label": "Last Day of School",
+      "type": "TIMELINE",
+      "description": "May 15th, Aarushi's last day of school before summer vacation, she was excited about upcoming birthdays and her own birthday in 9 days.",
+      "confidence": 1.0,
+      "importance": "MEDIUM",
+      "unlock_level": 1,
+      "source": "ai_extracted"
+    },
+    {
+      "id": "may_15th_morning_cleaning",
+      "label": "Morning Cleaning",
+      "type": "TIMELINE",
+      "description": "May 15th, morning, Bharti and Hemraj finished cleaning and prepared food before Rajesh and Nupur woke up.",
+      "confidence": 1.0,
+      "importance": "LOW",
+      "unlock_level": 1,
+      "source": "ai_extracted"
+    },
+    {
+      "id": "may_15th_aarushi_returns_home",
+      "label": "Aarushi Returns Home",
+      "type": "TIMELINE",
+      "description": "May 15th, 1:30 PM, Aarushi returns home from school.",
+      "confidence": 1.0,
+      "importance": "MEDIUM",
+      "unlock_level": 1,
+      "source": "ai_extracted"
+    },
+    {
+      "id": "may_15th_nupur_returns_home",
+      "label": "Nupur Returns Home",
+      "type": "TIMELINE",
+      "description": "May 15th, 7:30 PM, Nupur returns home from work.",
+      "confidence": 1.0,
+      "importance": "MEDIUM",
+      "unlock_level": 1,
+      "source": "ai_extracted"
+    },
+    {
+      "id": "may_15th_rajesh_returns_home",
+      "label": "Rajesh Returns Home",
+      "type": "TIMELINE",
+      "description": "May 15th, 9:30 PM, Rajesh returns home from work with his driver Umesh Sharma.",
+      "confidence": 1.0,
+      "importance": "HIGH",
+      "unlock_level": 1,
+      "source": "ai_extracted"
+    },
+    {
+      "id": "may_15th_umesh_leaves",
+      "label": "Umesh Leaves",
+      "type": "TIMELINE",
+      "description": "May 15th, 9:40 PM, Umesh leaves after returning the car keys and Rajesh's bag to Hemraj.",
+      "confidence": 1.0,
+      "importance": "HIGH",
+      "unlock_level": 1,
+      "source": "ai_extracted"
+    },
+    {
+      "id": "may_15th_camera_gift",
+      "label": "Camera Gift",
+      "type": "TIMELINE",
+      "description": "May 15th, after dinner, Rajesh gives Aarushi a Sony DSC camera as an early birthday gift.",
+      "confidence": 1.0,
+      "importance": "MEDIUM",
+      "unlock_level": 1,
+      "source": "ai_extracted"
+    },
+    {
+      "id": "may_15th_last_photo",
+      "label": "Last Photo",
+      "type": "TIMELINE",
+      "description": "May 15th, 10:10 PM, the last photo taken on the Sony DSC camera.",
+      "confidence": 1.0,
+      "importance": "HIGH",
+      "unlock_level": 1,
+      "source": "ai_extracted"
+    },
+    {
+      "id": "unidentified_footprint",
+      "label": "Unidentified Footprint",
+      "type": "EVIDENCE",
+      "description": "A footprint found at the crime scene that does not match any of the known individuals, suggesting an unknown person might have been present.",
+      "confidence": 0.6,
+      "importance": "MEDIUM",
+      "unlock_level": 4,
+      "source": "ai_extracted"
+    },
+    {
+      "id": "missing_security_footage",
+      "label": "Missing Security Footage",
+      "type": "EVIDENCE",
+      "description": "The lack of security footage from the night of the murder, which could have provided crucial evidence, raises suspicions about potential tampering or negligence.",
+      "confidence": 0.5,
+      "importance": "MEDIUM",
+      "unlock_level": 5,
+      "source": "ai_extracted"
+    },
+    {
+      "id": "alleged_affair_motive",
+      "label": "Alleged Affair Motive",
+      "type": "EVENT",
+      "description": "The rumored affair between Dr. Rajesh Talwar and Anita Durani, which could have been a motive for the murder, but lacks concrete evidence.",
+      "confidence": 0.4,
+      "importance": "LOW",
+      "unlock_level": 5,
+      "source": "ai_extracted"
+    }
+  ],
+  "edges": [
+    {
+      "source": "aarushi",
+      "target": "crime-scene",
+      "relationship": "LINKED_TO",
+      "description": "",
+      "confidence": 1.0,
+      "unlock_level": 1,
+      "source_system": "schema"
+    },
+    {
+      "source": "hemraj",
+      "target": "crime-scene",
+      "relationship": "LINKED_TO",
+      "description": "",
+      "confidence": 1.0,
+      "unlock_level": 1,
+      "source_system": "schema"
+    },
+    {
+      "source": "rajesh-talwar",
+      "target": "aarushi",
+      "relationship": "LINKED_TO",
+      "description": "",
+      "confidence": 1.0,
+      "unlock_level": 1,
+      "source_system": "schema"
+    },
+    {
+      "source": "nupur-talwar",
+      "target": "aarushi",
+      "relationship": "LINKED_TO",
+      "description": "",
+      "confidence": 1.0,
+      "unlock_level": 1,
+      "source_system": "schema"
+    },
+    {
+      "source": "rajesh-talwar",
+      "target": "hemraj",
+      "relationship": "LINKED_TO",
+      "description": "",
+      "confidence": 1.0,
+      "unlock_level": 1,
+      "source_system": "schema"
+    },
+    {
+      "source": "krishna",
+      "target": "hemraj",
+      "relationship": "LINKED_TO",
+      "description": "",
+      "confidence": 1.0,
+      "unlock_level": 2,
+      "source_system": "schema"
+    },
+    {
+      "source": "rajkumar",
+      "target": "hemraj",
+      "relationship": "LINKED_TO",
+      "description": "",
+      "confidence": 1.0,
+      "unlock_level": 2,
+      "source_system": "schema"
+    },
+    {
+      "source": "murder-weapon",
+      "target": "aarushi",
+      "relationship": "LINKED_TO",
+      "description": "",
+      "confidence": 1.0,
+      "unlock_level": 2,
+      "source_system": "schema"
+    },
+    {
+      "source": "terrace-lock",
+      "target": "hemraj",
+      "relationship": "LINKED_TO",
+      "description": "",
+      "confidence": 1.0,
+      "unlock_level": 2,
+      "source_system": "schema"
+    },
+    {
+      "source": "phone-records",
+      "target": "rajesh-talwar",
+      "relationship": "LINKED_TO",
+      "description": "",
+      "confidence": 1.0,
+      "unlock_level": 2,
+      "source_system": "schema"
+    },
+    {
+      "source": "crime-scene-tampering",
+      "target": "crime-scene",
+      "relationship": "LINKED_TO",
+      "description": "",
+      "confidence": 1.0,
+      "unlock_level": 2,
+      "source_system": "schema"
+    },
+    {
+      "source": "cbi-investigation",
+      "target": "rajesh-talwar",
+      "relationship": "LINKED_TO",
+      "description": "",
+      "confidence": 1.0,
+      "unlock_level": 2,
+      "source_system": "schema"
+    },
+    {
+      "source": "honour-killing-theory",
+      "target": "rajesh-talwar",
+      "relationship": "LINKED_TO",
+      "description": "",
+      "confidence": 1.0,
+      "unlock_level": 2,
+      "source_system": "schema"
+    },
+    {
+      "source": "rajesh_talwar",
+      "target": "aarushi_talwar",
+      "relationship": "FATHER_OF",
+      "description": "Dr. Rajesh Talwar is the father of Aarushi Talwar.",
+      "confidence": 1.0,
+      "unlock_level": 1,
+      "source_system": "ai_extracted"
+    },
+    {
+      "source": "nupur_talwar",
+      "target": "aarushi_talwar",
+      "relationship": "MOTHER_OF",
+      "description": "Dr. Nupur Talwar is the mother of Aarushi Talwar.",
+      "confidence": 1.0,
+      "unlock_level": 1,
+      "source_system": "ai_extracted"
+    },
+    {
+      "source": "rajesh_talwar",
+      "target": "nupur_talwar",
+      "relationship": "SPOUSE_OF",
+      "description": "Dr. Rajesh Talwar is the husband of Dr. Nupur Talwar.",
+      "confidence": 1.0,
+      "unlock_level": 1,
+      "source_system": "ai_extracted"
+    },
+    {
+      "source": "hemraj_banjade",
+      "target": "aarushi_talwar",
+      "relationship": "MURDER_VICTIM_ALONGSIDE",
+      "description": "Hemraj Banjade and Aarushi Talwar were both murder victims in the same case.",
+      "confidence": 1.0,
+      "unlock_level": 1,
+      "source_system": "ai_extracted"
+    },
+    {
+      "source": "krishna",
+      "target": "rajesh_talwar",
+      "relationship": "ASSISTANT_OF",
+      "description": "Krishna was an assistant to the Talwar family.",
+      "confidence": 0.7,
+      "unlock_level": 2,
+      "source_system": "ai_extracted"
+    },
+    {
+      "source": "raj_kumar",
+      "target": "vijay_mandal",
+      "relationship": "CO_SUSPECT",
+      "description": "Raj Kumar and Vijay Mandal were both suspects in the case and underwent narco tests.",
+      "confidence": 0.7,
+      "unlock_level": 2,
+      "source_system": "ai_extracted"
+    },
+    {
+      "source": "bharti_mandal",
+      "target": "aarushi_talwar",
+      "relationship": "TESTIFIED_ABOUT",
+      "description": "Bharti Mandal provided testimony regarding the events of the morning Aarushi's body was discovered.",
+      "confidence": 0.9,
+      "unlock_level": 1,
+      "source_system": "ai_extracted"
+    },
+    {
+      "source": "umesh_sharma",
+      "target": "rajesh_talwar",
+      "relationship": "DRIVER_OF",
+      "description": "Umesh Sharma was the driver of the Talwar family.",
+      "confidence": 0.8,
+      "importance": "MEDIUM",
+      "unlock_level": 2,
+      "source_system": "ai_extracted"
+    },
+    {
+      "source": "anita_durani",
+      "target": "rajesh_talwar",
+      "relationship": "ALLEGED_EXTRAMARITAL_AFFAIR",
+      "description": "Anita Durani was alleged to have had an extramarital affair with Dr. Rajesh Talwar.",
+      "confidence": 0.6,
+      "unlock_level": 3,
+      "source_system": "ai_extracted"
+    },
+    {
+      "source": "richa_saxena",
+      "target": "aarushi_talwar",
+      "relationship": "HANDLED_EVIDENCE_FOR",
+      "description": "Richa Saxena handled the vaginal swab sample of Aarushi Talwar.",
+      "confidence": 0.8,
+      "unlock_level": 2,
+      "source_system": "ai_extracted"
+    },
+    {
+      "source": "s_c_singhal",
+      "target": "richa_saxena",
+      "relationship": "SUPERIOR_OF",
+      "description": "S.C. Singhal was the superior of Richa Saxena and handed over Aarushi's sample to the CBI.",
+      "confidence": 0.8,
+      "unlock_level": 2,
+      "source_system": "ai_extracted"
+    },
+    {
+      "source": "arun_kumar",
+      "target": "rajesh_talwar",
+      "relationship": "INVESTIGATED",
+      "description": "Arun Kumar led the CBI investigation that considered Dr. Rajesh Talwar a suspect.",
+      "confidence": 1.0,
+      "unlock_level": 1,
+      "source_system": "ai_extracted"
+    },
+    {
+      "source": "nilabh_kishore",
+      "target": "rajesh_talwar",
+      "relationship": "QUESTIONED",
+      "description": "Nilabh Kishore questioned the Talwars as part of the CBI investigation.",
+      "confidence": 0.9,
+      "unlock_level": 2,
+      "source_system": "ai_extracted"
+    },
+    {
+      "source": "k_k_gautam",
+      "target": "hemraj_banjade",
+      "relationship": "FOUND_EVIDENCE_AT_SCENE_OF",
+      "description": "K.K. Gautam found evidence in Hemraj's room that suggested the presence of multiple individuals.",
+      "confidence": 0.8,
+      "unlock_level": 2,
+      "source_system": "ai_extracted"
+    },
+    {
+      "source": "vikas",
+      "target": "richa_saxena",
+      "relationship": "ASSISTED_IN_EVIDENCE_HANDLING",
+      "description": "Vikas assisted Richa Saxena in handling Aarushi's vaginal swab sample.",
+      "confidence": 0.7,
+      "unlock_level": 3,
+      "source_system": "ai_extracted"
+    },
+    {
+      "source": "navneet",
+      "target": "richa_saxena",
+      "relationship": "ASSISTED_IN_EVIDENCE_HANDLING",
+      "description": "Navneet assisted Richa Saxena in handling Aarushi's vaginal swab sample.",
+      "confidence": 0.7,
+      "unlock_level": 3,
+      "source_system": "ai_extracted"
+    },
+    {
+      "source": "bk_mohapatra",
+      "target": "aarushi_talwar",
+      "relationship": "ANALYZED_EVIDENCE_FOR",
+      "description": "B.K. Mohapatra analyzed the contaminated vaginal swab sample of Aarushi Talwar.",
+      "confidence": 0.9,
+      "unlock_level": 2,
+      "source_system": "ai_extracted"
+    },
+    {
+      "source": "avirook_sen",
+      "target": "aarushi_talwar",
+      "relationship": "INVESTIGATIVE_JOURNALIST_COVERING",
+      "description": "Avirook Sen is a journalist who wrote about the Aarushi-Hemraj case, questioning the investigation.",
+      "confidence": 0.8,
+      "unlock_level": 2,
+      "source_system": "ai_extracted"
+    },
+    {
+      "source": "praveen_swami",
+      "target": "aarushi_talwar",
+      "relationship": "INVESTIGATIVE_JOURNALIST_COVERING",
+      "description": "Praveen Swami covered the case and discussed DNA tampering implications.",
+      "confidence": 0.8,
+      "unlock_level": 2,
+      "source_system": "ai_extracted"
+    },
+    {
+      "source": "golf_club",
+      "target": "rajesh_talwar",
+      "relationship": "IMPLICATES",
+      "description": "The golf club implicates Rajesh Talwar as it was handed over by him to the police and its dimensions match the wounds on the victims' heads.",
+      "confidence": 0.7,
+      "unlock_level": 2,
+      "source_system": "ai_extracted"
+    },
+    {
+      "source": "pillow_cover",
+      "target": "krishna",
+      "relationship": "IMPLICATES",
+      "description": "The pillow cover with blood stains implicates Krishna as it was found in his house and the blood was matched to Hemraj's DNA.",
+      "confidence": 0.8,
+      "unlock_level": 3,
+      "source_system": "ai_extracted"
+    },
+    {
+      "source": "khukri",
+      "target": "krishna",
+      "relationship": "IMPLICATES",
+      "description": "The khukri found in Krishna's house implicates him as it was suspected to be the weapon used for slitting the throats of the victims.",
+      "confidence": 0.6,
+      "unlock_level": 2,
+      "source_system": "ai_extracted"
+    },
+    {
+      "source": "bloodstained_handprints",
+      "target": "unknown_suspect",
+      "relationship": "IMPLICATES",
+      "description": "The bloodstained handprints on the terrace implicate an unknown suspect as the handprints were not matched to anyone.",
+      "confidence": 0.9,
+      "unlock_level": 1,
+      "source_system": "ai_extracted"
+    },
+    {
+      "source": "bloodstained_shoe_print",
+      "target": "unknown_suspect",
+      "relationship": "IMPLICATES",
+      "description": "The bloodstained shoe print on the terrace implicates an unknown suspect as the shoe print was not matched to anyone.",
+      "confidence": 0.8,
+      "unlock_level": 1,
+      "source_system": "ai_extracted"
+    },
+    {
+      "source": "golf_club",
+      "target": "arun_kumar",
+      "relationship": "FOUND_BY",
+      "description": "The golf club was found by Arun Kumar, the CBI officer investigating the case.",
+      "confidence": 0.7,
+      "unlock_level": 2,
+      "source_system": "ai_extracted"
+    },
+    {
+      "source": "pillow_cover",
+      "target": "agl_kaul",
+      "relationship": "FOUND_BY",
+      "description": "The pillow cover with blood stains was found by AGL Kaul, the CBI officer who took over the investigation.",
+      "confidence": 0.8,
+      "unlock_level": 3,
+      "source_system": "ai_extracted"
+    },
+    {
+      "source": "bloodstained_handprints",
+      "target": "terrace",
+      "relationship": "FOUND_AT",
+      "description": "The bloodstained handprints were found at the terrace where Hemraj's body was discovered.",
+      "confidence": 0.9,
+      "unlock_level": 1,
+      "source_system": "ai_extracted"
+    },
+    {
+      "source": "bloodstained_shoe_print",
+      "target": "terrace",
+      "relationship": "FOUND_AT",
+      "description": "The bloodstained shoe print was found at the terrace where Hemraj's body was discovered.",
+      "confidence": 0.8,
+      "unlock_level": 1,
+      "source_system": "ai_extracted"
+    },
+    {
+      "source": "golf_club",
+      "target": "rajesh_alibi",
+      "relationship": "CONTRADICTS",
+      "description": "The golf club contradicts Rajesh Talwar's alibi as its dimensions match the wounds on the victims' heads, suggesting he might have used it.",
+      "confidence": 0.7,
+      "unlock_level": 2,
+      "source_system": "ai_extracted"
+    },
+    {
+      "source": "talwar_residence",
+      "target": "aaruushi_talwar_murder",
+      "relationship": "SCENE_OF",
+      "description": "The Talwar residence is the scene of Aarushi Talwar's murder.",
+      "confidence": 1.0,
+      "unlock_level": 1,
+      "source_system": "ai_extracted"
+    },
+    {
+      "source": "terrace",
+      "target": "hemraj_banjade_murder",
+      "relationship": "SCENE_OF",
+      "description": "The terrace of the Talwar residence is the scene of Hemraj Banjade's murder.",
+      "confidence": 1.0,
+      "unlock_level": 1,
+      "source_system": "ai_extracted"
+    },
+    {
+      "source": "rajesh_talwar",
+      "target": "talwar_residence",
+      "relationship": "PRESENT_AT",
+      "description": "Rajesh Talwar was present at the Talwar residence on the night of the murders.",
+      "confidence": 1.0,
+      "unlock_level": 1,
+      "source_system": "ai_extracted"
+    },
+    {
+      "source": "nupur_talwar",
+      "target": "talwar_residence",
+      "relationship": "PRESENT_AT",
+      "description": "Nupur Talwar was present at the Talwar residence on the night of the murders.",
+      "confidence": 1.0,
+      "unlock_level": 1,
+      "source_system": "ai_extracted"
+    },
+    {
+      "source": "hemraj_banjade",
+      "target": "talwar_residence",
+      "relationship": "PRESENT_AT",
+      "description": "Hemraj Banjade was present at the Talwar residence on the night of the murders.",
+      "confidence": 1.0,
+      "unlock_level": 1,
+      "source_system": "ai_extracted"
+    },
+    {
+      "source": "aaruushi_talwar",
+      "target": "talwar_residence",
+      "relationship": "PRESENT_AT",
+      "description": "Aarushi Talwar was present at the Talwar residence on the night of the murders.",
+      "confidence": 1.0,
+      "unlock_level": 1,
+      "source_system": "ai_extracted"
+    },
+    {
+      "source": "talwar_residence",
+      "target": "blood_stains",
+      "relationship": "CONTAINS_EVIDENCE",
+      "description": "The Talwar residence contains blood stains as evidence.",
+      "confidence": 1.0,
+      "unlock_level": 1,
+      "source_system": "ai_extracted"
+    },
+    {
+      "source": "terrace",
+      "target": "hemraj_banjade_body",
+      "relationship": "CONTAINS_EVIDENCE",
+      "description": "The terrace contains Hemraj Banjade's body as evidence.",
+      "confidence": 1.0,
+      "unlock_level": 1,
+      "source_system": "ai_extracted"
+    },
+    {
+      "source": "may_15th_rajesh_returns_home",
+      "target": "may_15th_umesh_leaves",
+      "relationship": "PRESENT_AT",
+      "description": "Umesh was present when Rajesh returned home.",
+      "confidence": 1.0,
+      "unlock_level": 1,
+      "source_system": "ai_extracted"
+    },
+    {
+      "source": "may_15th_camera_gift",
+      "target": "may_15th_last_photo",
+      "relationship": "CREATED_EVIDENCE",
+      "description": "The camera gift led to the creation of the last photo as evidence.",
+      "confidence": 1.0,
+      "unlock_level": 1,
+      "source_system": "ai_extracted"
+    },
+    {
+      "source": "may_15th_last_photo",
+      "target": "may_15th_rajesh_returns_home",
+      "relationship": "SUPPORTS",
+      "description": "The last photo supports Rajesh's alibi of being at home.",
+      "confidence": 0.8,
+      "unlock_level": 2,
+      "source_system": "ai_extracted"
+    },
+    {
+      "source": "rajesh_talwar",
+      "target": "unidentified_footprint",
+      "relationship": "DOES_NOT_MATCH_ALIBI",
+      "description": "The unidentified footprint at the crime scene contradicts Dr. Rajesh Talwar's alibi, suggesting he might not have been where he claimed to be.",
+      "confidence": 0.6,
+      "unlock_level": 4,
+      "source_system": "ai_extracted"
+    },
+    {
+      "source": "anita_durani",
+      "target": "alleged_affair_motive",
+      "relationship": "IS_RUMORED_TO_BE_INVOLVED",
+      "description": "Anita Durani is rumored to be involved in an affair with Dr. Rajesh Talwar, which could have motivated the murder, but this remains speculative.",
+      "confidence": 0.4,
+      "unlock_level": 5,
+      "source_system": "ai_extracted"
+    },
+    {
+      "source": "missing_security_footage",
+      "target": "noida_sector_25",
+      "relationship": "COULD_HAVE_PROVIDED_EVIDENCE",
+      "description": "The missing security footage from Noida Sector 25 could have provided crucial evidence about the events surrounding the murder.",
+      "confidence": 0.5,
+      "unlock_level": 5,
+      "source_system": "ai_extracted"
+    }
+  ]
+}

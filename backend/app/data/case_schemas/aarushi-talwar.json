@@ -1,0 +1,186 @@
+{
+  "case_id": "aarushi-talwar",
+  "title": "Aarushi Talwar Murder Case",
+
+  "solution": {
+    "official_verdict": "Rajesh and Nupur Talwar were convicted in 2013 by CBI court, then acquitted by Allahabad High Court in 2017 due to insufficient evidence. The case remains officially unsolved.",
+    "primary_suspects": ["rajesh-talwar", "nupur-talwar"],
+    "secondary_suspects": ["krishna", "rajkumar", "vijay-mandal"],
+    "victim_cause_of_death": "Sharp-edged weapon trauma to the head and neck"
+  },
+
+  "entities": [
+    {
+      "id": "aarushi",
+      "type": "victim",
+      "name": "Aarushi Talwar",
+      "description": "14-year-old girl found dead in her bedroom with her throat slit on the morning of May 16, 2008.",
+      "image_url": "https://upload.wikimedia.org/wikipedia/en/5/5e/Aarushi_talwar.jpg",
+      "revealed_at": "start",
+      "knowledge": []
+    },
+    {
+      "id": "hemraj",
+      "type": "victim",
+      "name": "Hemraj Banjade",
+      "description": "45-year-old Nepali domestic helper. Initially reported missing. Body found on the terrace 2 days later.",
+      "revealed_at": "start",
+      "knowledge": []
+    },
+    {
+      "id": "rajesh-talwar",
+      "type": "suspect",
+      "name": "Dr. Rajesh Talwar",
+      "description": "Father of Aarushi. Dentist. Filed the initial FIR naming Hemraj as suspect before Hemraj's body was found.",
+      "image_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ab/Rajesh_Talwar.jpg/240px-Rajesh_Talwar.jpg",
+      "revealed_at": "start",
+      "knowledge": []
+    },
+    {
+      "id": "nupur-talwar",
+      "type": "suspect",
+      "name": "Dr. Nupur Talwar",
+      "description": "Mother of Aarushi. Dentist. Was in the house on the night of the murder.",
+      "revealed_at": "start",
+      "knowledge": []
+    },
+    {
+      "id": "crime-scene",
+      "type": "location",
+      "name": "Jalvayu Vihar, Sector 25, Noida",
+      "description": "L-32, Jalvayu Vihar apartment complex. Aarushi's bedroom was on the 2nd floor. Hemraj's body was on the terrace.",
+      "image_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/Jalvayu_Vihar%2C_Noida.jpg/320px-Jalvayu_Vihar%2C_Noida.jpg",
+      "revealed_at": "start",
+      "knowledge": []
+    },
+    {
+      "id": "krishna",
+      "type": "suspect",
+      "name": "Krishna Thadarai",
+      "description": "Domestic helper who worked for a neighbour. Had keys to the Talwar household. Underwent narco-analysis.",
+      "revealed_at": {"requires": ["investigate-servants"]},
+      "unlock_keyword_triggers": ["servant", "helper", "domestic", "krishna", "other staff"]
+    },
+    {
+      "id": "rajkumar",
+      "type": "suspect",
+      "name": "Rajkumar",
+      "description": "Domestic helper who worked nearby. Was a drinking companion of Hemraj.",
+      "revealed_at": {"requires": ["investigate-servants"]},
+      "unlock_keyword_triggers": ["servant", "helper", "domestic", "rajkumar", "drinking"]
+    },
+    {
+      "id": "vijay-mandal",
+      "type": "suspect",
+      "name": "Vijay Mandal",
+      "description": "Another domestic helper. Companion of Hemraj, implicated by narco-analysis but not by physical evidence.",
+      "revealed_at": {"requires": ["investigate-servants"]},
+      "unlock_keyword_triggers": ["servant", "helper", "companion", "vijay", "mandal"]
+    },
+    {
+      "id": "murder-weapon",
+      "type": "evidence",
+      "name": "Murder Weapon — Kukri / Khukri",
+      "description": "A sharp-edged weapon consistent with scalpel-like precision. Exact weapon never recovered.",
+      "revealed_at": {"requires": ["examine-wounds"]},
+      "unlock_keyword_triggers": ["weapon", "knife", "scalpel", "kukri", "cut", "wound", "sharp"]
+    },
+    {
+      "id": "terrace-lock",
+      "type": "evidence",
+      "name": "Terrace Door Lock",
+      "description": "The terrace door was locked from the inside. The outer lock was missing. Raises question of how the killer accessed the terrace.",
+      "revealed_at": {"requires": ["investigate-terrace"]},
+      "unlock_keyword_triggers": ["terrace", "lock", "door", "roof", "body found"]
+    },
+    {
+      "id": "phone-records",
+      "type": "evidence",
+      "name": "Phone Records",
+      "description": "Rajesh Talwar's phone records show a late-night internet session. Aarushi's phone was found switched off.",
+      "revealed_at": {"requires": ["check-phone"]},
+      "unlock_keyword_triggers": ["phone", "call", "mobile", "internet", "online"]
+    },
+    {
+      "id": "crime-scene-tampering",
+      "type": "evidence",
+      "name": "Crime Scene Contamination",
+      "description": "Noida Police failed to seal the crime scene. Multiple people walked through before forensics arrived. Key evidence may have been destroyed.",
+      "revealed_at": {"requires": ["investigate-police"]},
+      "unlock_keyword_triggers": ["police", "investigation", "contaminated", "sealed", "forensic", "noida police"]
+    },
+    {
+      "id": "narco-analysis",
+      "type": "evidence",
+      "name": "Narco-Analysis Test Results",
+      "description": "Krishna, Rajkumar, and Vijay Mandal were subjected to narco-analysis. Results suggested familiarity with the crime but are not admissible in court.",
+      "revealed_at": {"requires": ["investigate-servants"]},
+      "unlock_keyword_triggers": ["narco", "truth serum", "lie detector", "polygraph"]
+    },
+    {
+      "id": "cbi-investigation",
+      "type": "event",
+      "name": "CBI Takes Over",
+      "description": "CBI took over the case from Noida Police. Initially pursued the servant theory, later closed it and charged parents.",
+      "image_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4e/CBI_Logo.svg/200px-CBI_Logo.svg.png",
+      "revealed_at": {"requires": ["investigate-police"]},
+      "unlock_keyword_triggers": ["cbi", "central bureau", "takeover", "transfer"]
+    },
+    {
+      "id": "honour-killing-theory",
+      "type": "evidence",
+      "name": "Honour Killing Theory",
+      "description": "CBI alleged parents killed Aarushi after finding her in a compromising position with Hemraj. Talwars denied this vehemently.",
+      "revealed_at": {"requires": ["cbi-investigation", "check-phone"]},
+      "unlock_keyword_triggers": ["honour", "honor", "motive", "why", "compromising", "relationship"]
+    }
+  ],
+
+  "connections": [
+    {"from": "aarushi", "to": "crime-scene", "label": "Found dead in bedroom", "revealed_at": "start"},
+    {"from": "hemraj", "to": "crime-scene", "label": "Body found on terrace", "revealed_at": "start"},
+    {"from": "rajesh-talwar", "to": "aarushi", "label": "Father", "revealed_at": "start"},
+    {"from": "nupur-talwar", "to": "aarushi", "label": "Mother", "revealed_at": "start"},
+    {"from": "rajesh-talwar", "to": "hemraj", "label": "Initially blamed Hemraj", "revealed_at": "start"},
+    {"from": "krishna", "to": "hemraj", "label": "Drinking companion", "revealed_at": {"requires": ["investigate-servants"]}},
+    {"from": "rajkumar", "to": "hemraj", "label": "Drinking companion", "revealed_at": {"requires": ["investigate-servants"]}},
+    {"from": "murder-weapon", "to": "aarushi", "label": "Throat slit", "revealed_at": {"requires": ["examine-wounds"]}},
+    {"from": "terrace-lock", "to": "hemraj", "label": "Body behind locked door", "revealed_at": {"requires": ["investigate-terrace"]}},
+    {"from": "phone-records", "to": "rajesh-talwar", "label": "Late-night internet session", "revealed_at": {"requires": ["check-phone"]}},
+    {"from": "crime-scene-tampering", "to": "crime-scene", "label": "Evidence may be compromised", "revealed_at": {"requires": ["investigate-police"]}},
+    {"from": "cbi-investigation", "to": "rajesh-talwar", "label": "Charged parents", "revealed_at": {"requires": ["investigate-police"]}},
+    {"from": "honour-killing-theory", "to": "rajesh-talwar", "label": "CBI's alleged motive", "revealed_at": {"requires": ["cbi-investigation"]}}
+  ],
+
+  "characters": {
+    "rajesh-talwar": {
+      "persona": "Dr. Rajesh Talwar. Father of Aarushi. Dentist. You discovered your daughter's body. You are grieving and feel falsely accused by both police and media.",
+      "knowledge_boundary": "You know what happened inside the house that night from your perspective. You went to sleep around 11:30 PM. You claim you found Aarushi's body at 6 AM. You do NOT know who killed her.",
+      "contradictions": [
+        {
+          "id": "rajesh-internet-session",
+          "claim": "I went to sleep around 11:30 PM and heard nothing",
+          "contradicted_by": "phone-records",
+          "confrontation_prompt": "Phone records show your router was active until 12:07 AM. Why were you online after you say you went to sleep?"
+        }
+      ]
+    },
+    "nupur-talwar": {
+      "persona": "Dr. Nupur Talwar. Mother of Aarushi. Dentist. You are devastated by the loss of your daughter and outraged at being suspected.",
+      "knowledge_boundary": "You were asleep on the night of the murder. You claim to have heard nothing. You do NOT know who killed Aarushi.",
+      "contradictions": []
+    },
+    "krishna": {
+      "persona": "Krishna Thadarai. Domestic helper. You worked for Dr. Aarushi's neighbour. You sometimes visited Hemraj. You are frightened of the police.",
+      "knowledge_boundary": "You know Hemraj socially. You claim you were at your employer's house that night. You underwent narco-analysis.",
+      "contradictions": [
+        {
+          "id": "krishna-narco",
+          "claim": "I was at my employer's house the whole night",
+          "contradicted_by": "narco-analysis",
+          "confrontation_prompt": "Narco-analysis results suggest you have knowledge of the crime scene layout. How do you explain this?"
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,417 @@
+{
+  "case_id": "zodiac-killer",
+  "nodes": [
+    {
+      "id": "david-faraday",
+      "label": "David Faraday",
+      "type": "PERSON",
+      "description": "17-year-old student shot and killed at Lake Herman Road on December 20, 1968, while on a first date.",
+      "image_url": null,
+      "confidence": 1.0,
+      "importance": "MEDIUM",
+      "revealed_at": "start",
+      "unlock_level": 1,
+      "unlock_keyword_triggers": [],
+      "source": "schema"
+    },
+    {
+      "id": "betty-lou-jensen",
+      "label": "Betty Lou Jensen",
+      "type": "PERSON",
+      "description": "16-year-old student, shot and killed at Lake Herman Road alongside David Faraday.",
+      "image_url": null,
+      "confidence": 1.0,
+      "importance": "MEDIUM",
+      "revealed_at": "start",
+      "unlock_level": 1,
+      "unlock_keyword_triggers": [],
+      "source": "schema"
+    },
+    {
+      "id": "lake-herman-road",
+      "label": "Lake Herman Road",
+      "type": "LOCATION",
+      "description": "Remote lovers' lane in Benicia, California. Scene of the first confirmed Zodiac murders on December 20, 1968.",
+      "image_url": null,
+      "confidence": 1.0,
+      "importance": "MEDIUM",
+      "revealed_at": "start",
+      "unlock_level": 1,
+      "unlock_keyword_triggers": [],
+      "source": "schema"
+    },
+    {
+      "id": "zodiac-identity",
+      "label": "The Zodiac Killer",
+      "type": "PERSON",
+      "description": "Unidentified serial killer active in Northern California in the late 1960s\u201370s. Taunted police and newspapers with letters and ciphers.",
+      "image_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/10/Zodiac_Killer_cipher_and_target.jpg/300px-Zodiac_Killer_cipher_and_target.jpg",
+      "confidence": 1.0,
+      "importance": "MEDIUM",
+      "revealed_at": "start",
+      "unlock_level": 1,
+      "unlock_keyword_triggers": [],
+      "source": "schema"
+    },
+    {
+      "id": "darlene-ferrin",
+      "label": "Darlene Ferrin",
+      "type": "PERSON",
+      "description": "22-year-old waitress, shot and killed at Blue Rock Springs Park on July 4, 1969.",
+      "image_url": null,
+      "confidence": 1.0,
+      "importance": "MEDIUM",
+      "revealed_at": {
+        "requires": [
+          "investigate-second-attack"
+        ]
+      },
+      "unlock_level": 2,
+      "unlock_keyword_triggers": [
+        "second attack",
+        "blue rock",
+        "july 4",
+        "1969",
+        "darlene",
+        "ferrin"
+      ],
+      "source": "schema"
+    },
+    {
+      "id": "mike-mageau",
+      "label": "Mike Mageau",
+      "type": "PERSON",
+      "description": "19-year-old who survived the Blue Rock Springs shooting. Only surviving victim who saw the Zodiac up close.",
+      "image_url": null,
+      "confidence": 1.0,
+      "importance": "MEDIUM",
+      "revealed_at": {
+        "requires": [
+          "investigate-second-attack"
+        ]
+      },
+      "unlock_level": 2,
+      "unlock_keyword_triggers": [
+        "survivor",
+        "mageau",
+        "witness",
+        "saw him",
+        "survived"
+      ],
+      "source": "schema"
+    },
+    {
+      "id": "zodiac-letters",
+      "label": "Zodiac Letters",
+      "type": "EVIDENCE",
+      "description": "Series of taunting letters sent to San Francisco newspapers beginning August 1969. Claimed responsibility and threatened more killings.",
+      "image_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e2/Zodiac_Killer_letter_September_27_1969.jpg/300px-Zodiac_Killer_letter_September_27_1969.jpg",
+      "confidence": 1.0,
+      "importance": "MEDIUM",
+      "revealed_at": {
+        "requires": [
+          "examine-letters"
+        ]
+      },
+      "unlock_level": 2,
+      "unlock_keyword_triggers": [
+        "letter",
+        "newspaper",
+        "mail",
+        "wrote",
+        "message",
+        "chronicle"
+      ],
+      "source": "schema"
+    },
+    {
+      "id": "cipher-408",
+      "label": "The 408 Cipher",
+      "type": "EVIDENCE",
+      "description": "Three-part cipher sent to newspapers. Decoded by schoolteacher couple Donald and Bettye Harden. Read: 'I like killing people because it is so much fun.'",
+      "image_url": null,
+      "confidence": 1.0,
+      "importance": "MEDIUM",
+      "revealed_at": {
+        "requires": [
+          "zodiac-letters"
+        ]
+      },
+      "unlock_level": 2,
+      "unlock_keyword_triggers": [
+        "cipher",
+        "code",
+        "decode",
+        "encrypted",
+        "cryptogram",
+        "408"
+      ],
+      "source": "schema"
+    },
+    {
+      "id": "cipher-340",
+      "label": "The 340 Cipher",
+      "type": "EVIDENCE",
+      "description": "A 340-character cipher sent November 1969. Remained unsolved for 51 years until cracked in 2020 by amateur codebreakers.",
+      "image_url": null,
+      "confidence": 1.0,
+      "importance": "MEDIUM",
+      "revealed_at": {
+        "requires": [
+          "cipher-408"
+        ]
+      },
+      "unlock_level": 2,
+      "unlock_keyword_triggers": [
+        "340",
+        "unsolved cipher",
+        "second cipher",
+        "cracked"
+      ],
+      "source": "schema"
+    },
+    {
+      "id": "lake-berryessa",
+      "label": "Lake Berryessa Attack",
+      "type": "EVENT",
+      "description": "September 27, 1969. Zodiac approached a couple in a hood/executioner costume, tied them up, and stabbed them. Bryan Hartnell survived.",
+      "image_url": null,
+      "confidence": 1.0,
+      "importance": "MEDIUM",
+      "revealed_at": {
+        "requires": [
+          "investigate-berryessa"
+        ]
+      },
+      "unlock_level": 2,
+      "unlock_keyword_triggers": [
+        "berryessa",
+        "stabbing",
+        "costume",
+        "hood",
+        "executioner",
+        "hartnell"
+      ],
+      "source": "schema"
+    },
+    {
+      "id": "paul-stine",
+      "label": "Paul Stine",
+      "type": "PERSON",
+      "description": "29-year-old taxi driver shot in the head in San Francisco on October 11, 1969. Zodiac took a piece of his shirt as proof.",
+      "image_url": null,
+      "confidence": 1.0,
+      "importance": "MEDIUM",
+      "revealed_at": {
+        "requires": [
+          "investigate-stine"
+        ]
+      },
+      "unlock_level": 2,
+      "unlock_keyword_triggers": [
+        "taxi",
+        "cab",
+        "stine",
+        "san francisco murder",
+        "shirt"
+      ],
+      "source": "schema"
+    },
+    {
+      "id": "arthur-leigh-allen",
+      "label": "Arthur Leigh Allen",
+      "type": "PERSON",
+      "description": "Most prominent suspect. Former schoolteacher, convicted sex offender. Owned a Zodiac-brand watch. Circumstantial evidence only \u2014 DNA and fingerprints did not match.",
+      "image_url": null,
+      "confidence": 1.0,
+      "importance": "MEDIUM",
+      "revealed_at": {
+        "requires": [
+          "investigate-suspects"
+        ]
+      },
+      "unlock_level": 2,
+      "unlock_keyword_triggers": [
+        "allen",
+        "arthur",
+        "suspect",
+        "who did it",
+        "teacher",
+        "zodiac watch"
+      ],
+      "source": "schema"
+    },
+    {
+      "id": "fingerprint-evidence",
+      "label": "Cab Fingerprints",
+      "type": "EVIDENCE",
+      "description": "Bloody fingerprints found in Paul Stine's cab. Never matched to Arthur Leigh Allen or any known suspect.",
+      "image_url": null,
+      "confidence": 1.0,
+      "importance": "MEDIUM",
+      "revealed_at": {
+        "requires": [
+          "paul-stine"
+        ]
+      },
+      "unlock_level": 2,
+      "unlock_keyword_triggers": [
+        "fingerprint",
+        "print",
+        "cab evidence"
+      ],
+      "source": "schema"
+    },
+    {
+      "id": "dna-evidence",
+      "label": "DNA from Stamps",
+      "type": "EVIDENCE",
+      "description": "DNA extracted from stamps on Zodiac letters. Did not match Arthur Leigh Allen. May not be the Zodiac's DNA.",
+      "image_url": null,
+      "confidence": 1.0,
+      "importance": "MEDIUM",
+      "revealed_at": {
+        "requires": [
+          "zodiac-letters",
+          "arthur-leigh-allen"
+        ]
+      },
+      "unlock_level": 3,
+      "unlock_keyword_triggers": [
+        "dna",
+        "stamp",
+        "lick",
+        "genetic"
+      ],
+      "source": "schema"
+    }
+  ],
+  "edges": [
+    {
+      "source": "zodiac-identity",
+      "target": "david-faraday",
+      "relationship": "LINKED_TO",
+      "description": "",
+      "confidence": 1.0,
+      "unlock_level": 1,
+      "source_system": "schema"
+    },
+    {
+      "source": "zodiac-identity",
+      "target": "betty-lou-jensen",
+      "relationship": "LINKED_TO",
+      "description": "",
+      "confidence": 1.0,
+      "unlock_level": 1,
+      "source_system": "schema"
+    },
+    {
+      "source": "david-faraday",
+      "target": "lake-herman-road",
+      "relationship": "LINKED_TO",
+      "description": "",
+      "confidence": 1.0,
+      "unlock_level": 1,
+      "source_system": "schema"
+    },
+    {
+      "source": "betty-lou-jensen",
+      "target": "lake-herman-road",
+      "relationship": "LINKED_TO",
+      "description": "",
+      "confidence": 1.0,
+      "unlock_level": 1,
+      "source_system": "schema"
+    },
+    {
+      "source": "zodiac-identity",
+      "target": "darlene-ferrin",
+      "relationship": "LINKED_TO",
+      "description": "",
+      "confidence": 1.0,
+      "unlock_level": 2,
+      "source_system": "schema"
+    },
+    {
+      "source": "mike-mageau",
+      "target": "darlene-ferrin",
+      "relationship": "LINKED_TO",
+      "description": "",
+      "confidence": 1.0,
+      "unlock_level": 2,
+      "source_system": "schema"
+    },
+    {
+      "source": "zodiac-identity",
+      "target": "zodiac-letters",
+      "relationship": "LINKED_TO",
+      "description": "",
+      "confidence": 1.0,
+      "unlock_level": 2,
+      "source_system": "schema"
+    },
+    {
+      "source": "cipher-408",
+      "target": "zodiac-letters",
+      "relationship": "LINKED_TO",
+      "description": "",
+      "confidence": 1.0,
+      "unlock_level": 2,
+      "source_system": "schema"
+    },
+    {
+      "source": "zodiac-identity",
+      "target": "lake-berryessa",
+      "relationship": "LINKED_TO",
+      "description": "",
+      "confidence": 1.0,
+      "unlock_level": 2,
+      "source_system": "schema"
+    },
+    {
+      "source": "zodiac-identity",
+      "target": "paul-stine",
+      "relationship": "LINKED_TO",
+      "description": "",
+      "confidence": 1.0,
+      "unlock_level": 2,
+      "source_system": "schema"
+    },
+    {
+      "source": "arthur-leigh-allen",
+      "target": "zodiac-identity",
+      "relationship": "LINKED_TO",
+      "description": "",
+      "confidence": 1.0,
+      "unlock_level": 2,
+      "source_system": "schema"
+    },
+    {
+      "source": "fingerprint-evidence",
+      "target": "paul-stine",
+      "relationship": "LINKED_TO",
+      "description": "",
+      "confidence": 1.0,
+      "unlock_level": 2,
+      "source_system": "schema"
+    },
+    {
+      "source": "fingerprint-evidence",
+      "target": "arthur-leigh-allen",
+      "relationship": "LINKED_TO",
+      "description": "",
+      "confidence": 1.0,
+      "unlock_level": 3,
+      "source_system": "schema"
+    },
+    {
+      "source": "dna-evidence",
+      "target": "arthur-leigh-allen",
+      "relationship": "LINKED_TO",
+      "description": "",
+      "confidence": 1.0,
+      "unlock_level": 3,
+      "source_system": "schema"
+    }
+  ]
+}
