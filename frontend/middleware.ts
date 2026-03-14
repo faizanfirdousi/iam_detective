@@ -9,7 +9,7 @@ export function middleware(req: NextRequest) {
   // Always allow the login page and its API route
   if (
     pathname.startsWith('/login') ||
-    pathname.startsWith('/api/auth') ||
+    pathname.startsWith('/auth') ||
     pathname.startsWith('/_next') ||
     pathname === '/favicon.ico'
   ) {
