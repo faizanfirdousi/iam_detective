@@ -107,11 +107,8 @@ interface PinboardProps {
   onNodeClick?: (nodeId: string, nodeData: Record<string, unknown>) => void;
 }
 
-// Mirrors the base URL logic from lib/api.ts
-const API_BASE =
-  typeof window !== "undefined"
-    ? (process.env.NEXT_PUBLIC_API_BASE ?? "http://localhost:8000")
-    : "http://localhost:8000";
+// Empty string ensures client-side fetches use the current origin's /api route
+const API_BASE = "";
 
 // ── Component ──────────────────────────────────────────────────────────────────
 const Pinboard = forwardRef<PinboardHandle, PinboardProps>(
