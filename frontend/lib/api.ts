@@ -3,7 +3,7 @@
 // On the client side, empty string works because Next.js proxies /api to the backend.
 const API_BASE =
   typeof window === "undefined"
-    ? `${process.env.APP_URL || process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:8000"}/api`
+    ? (process.env.APP_URL || process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:8000")
     : "";
 
 
