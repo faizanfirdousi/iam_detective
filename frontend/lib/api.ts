@@ -1,4 +1,11 @@
-const API_BASE = process.env.NEXT_PUBLIC_API_BASE ?? "http://localhost:8000";
+// During build / SSR (server-side), relative paths don't work — we need an absolute URL.
+// NEXT_PUBLIC_BACKEND_URL must be set to your backend base (e.g. https://yourapp.ondigitalocean.app)
+// On the client side, empty string works because Next.js proxies /api to the backend.
+const API_BASE =
+  typeof window === "undefined"
+    ? (process.env.NEXT_PUBLIC_BACKEND_URL ?? "http://localhost:8000")
+    : "";
+
 
 // ── Types ────────────────────────────────────────────────────────────────────
 

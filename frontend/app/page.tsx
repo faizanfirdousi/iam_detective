@@ -1,6 +1,10 @@
 import Link from "next/link";
 import { api, type CaseListItem } from "@/lib/api";
 
+// Force this page to be server-rendered at request time, not at build time.
+// This prevents the build from trying to call the backend API when it's not running.
+export const dynamic = "force-dynamic";
+
 const STATUS_STYLES: Record<string, string> = {
   unsolved: "bg-red-950/60 text-red-300 border border-red-800/50",
   solved: "bg-emerald-950/60 text-emerald-300 border border-emerald-800/50",
