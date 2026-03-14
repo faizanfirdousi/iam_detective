@@ -1,42 +1,34 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
-// NOTE: Edge Runtime can only inline process.env at build time for non-NEXT_PUBLIC vars.
-// We use NEXT_PUBLIC_ prefix here so they are available in the Edge middleware.
-// These are demo credentials — not sensitive.
-const VALID_USER = process.env.NEXT_PUBLIC_JUDGE_USER ?? "judge";
-const VALID_PASS = process.env.NEXT_PUBLIC_JUDGE_PASS ?? "iam-detective-2026";
+const COOKIE_NAME = 'iam_judge_auth';
 
 export function middleware(req: NextRequest) {
-  const basicAuth = req.headers.get('authorization');
+  const { pathname } = req.nextUrl;
 
-  if (basicAuth && basicAuth.startsWith('Basic ')) {
-    const authValue = basicAuth.slice(6); // strip 'Basic '
-    try {
-      const decoded = atob(authValue);
-      const colonIndex = decoded.indexOf(':');
-      if (colonIndex !== -1) {
-        const user = decoded.slice(0, colonIndex);
-        const pwd = decoded.slice(colonIndex + 1);
-        if (user === VALID_USER && pwd === VALID_PASS) {
-          return NextResponse.next();
-        }
-      }
-    } catch {
-      // Invalid base64 — fall through to 401
-    }
+  // Always allow the login page and its API route
+  if (
+    pathname.startsWith('/login') ||
+    pathname.startsWith('/api/auth') ||
+    pathname.startsWith('/_next') ||
+    pathname === '/favicon.ico'
+  ) {
+    return NextResponse.next();
   }
 
-  return new NextResponse('Authentication required.', {
-    status: 401,
-    headers: {
-      'WWW-Authenticate': 'Basic realm="IAM Detective"',
-    },
-  });
+  // Check for auth cookie
+  const authCookie = req.cookies.get(COOKIE_NAME);
+  if (authCookie?.value === 'granted') {
+    return NextResponse.next();
+  }
+
+  // Not authenticated — redirect to login
+  const loginUrl = req.nextUrl.clone();
+  loginUrl.pathname = '/login';
+  loginUrl.search = '';
+  return NextResponse.redirect(loginUrl);
 }
 
 export const config = {
-  matcher: [
-    '/((?!_next/static|_next/image|favicon.ico).*)',
-  ],
+  matcher: ['/((?!_next/static|_next/image|favicon.ico).*)'],
 };
