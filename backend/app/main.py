@@ -35,6 +35,10 @@ load_dotenv()
 
 app = FastAPI(title="IAM Detective API", version="0.4.0")
 
+from fastapi import APIRouter
+api_router = APIRouter()
+
+
 cors_origins = [o.strip() for o in os.getenv("CORS_ORIGINS", "http://localhost:3000").split(",") if o.strip()]
 app.add_middleware(
     CORSMiddleware,
@@ -81,17 +85,17 @@ async def preload_graphs() -> None:
 
 # ── Health & case listing ─────────────────────────────────────────────────────
 
-@app.get("/health")
+@api_router.get("/health")
 def health() -> dict[str, str]:
     return {"status": "ok"}
 
 
-@app.get("/api/cases", response_model=list[CaseListItem])
+@api_router.get("/cases", response_model=list[CaseListItem])
 def api_list_cases() -> list[CaseListItem]:
     return list_cases()
 
 
-@app.get("/api/cases/{case_id}", response_model=CaseDetail)
+@api_router.get("/cases/{case_id}", response_model=CaseDetail)
 async def api_get_case(case_id: str) -> CaseDetail:
     _require_case(case_id)
     client = _get_client(case_id)
@@ -125,7 +129,7 @@ async def api_get_case(case_id: str) -> CaseDetail:
     return detail
 
 
-@app.get("/api/cases/{case_id}/intro", response_model=list[CaseIntroSlide])
+@api_router.get("/cases/{case_id}/intro", response_model=list[CaseIntroSlide])
 async def api_get_intro_slides(case_id: str) -> list[CaseIntroSlide]:
     _require_case(case_id)
     client = _get_client(case_id)
@@ -168,7 +172,7 @@ async def api_get_intro_slides(case_id: str) -> list[CaseIntroSlide]:
 
 # ── Legacy linkboard + chat (no session, no investigation logic) ──────────────
 
-@app.get("/api/cases/{case_id}/linkboard", response_model=LinkBoard)
+@api_router.get("/cases/{case_id}/linkboard", response_model=LinkBoard)
 async def api_get_linkboard(case_id: str, stage: int = 1) -> LinkBoard:
     _require_case(case_id)
     client = _get_client(case_id)
@@ -205,7 +209,7 @@ async def api_get_linkboard(case_id: str, stage: int = 1) -> LinkBoard:
     return board
 
 
-@app.post("/api/cases/{case_id}/chat", response_model=ChatResponse)
+@api_router.post("/cases/{case_id}/chat", response_model=ChatResponse)
 async def api_chat(case_id: str, req: ChatRequest) -> ChatResponse:
     _require_case(case_id)
     try:
@@ -267,7 +271,7 @@ class ConcludeResponse(BaseModel):
     total_entities: int
 
 
-@app.post("/api/sessions", response_model=CreateSessionResponse)
+@api_router.post("/sessions", response_model=CreateSessionResponse)
 def api_create_session(req: CreateSessionRequest) -> CreateSessionResponse:
     """Create a new investigation session for a case."""
     _require_case(req.case_id)
@@ -280,7 +284,7 @@ def api_create_session(req: CreateSessionRequest) -> CreateSessionResponse:
     )
 
 
-@app.get("/api/sessions/{session_id}/board", response_model=SessionBoardResponse)
+@api_router.get("/sessions/{session_id}/board", response_model=SessionBoardResponse)
 def api_session_board(session_id: str) -> SessionBoardResponse:
     """Get investigation board — only shows discovered entities."""
     state = _require_session(session_id)
@@ -302,7 +306,7 @@ def api_session_board(session_id: str) -> SessionBoardResponse:
     )
 
 
-@app.post("/api/sessions/{session_id}/chat", response_model=SessionChatResponse)
+@api_router.post("/sessions/{session_id}/chat", response_model=SessionChatResponse)
 async def api_session_chat(session_id: str, req: SessionChatRequest) -> SessionChatResponse:
     """Chat with engine-restricted AI. Player messages trigger evidence unlocks."""
     state = _require_session(session_id)
@@ -349,7 +353,7 @@ async def api_session_chat(session_id: str, req: SessionChatRequest) -> SessionC
     )
 
 
-@app.post("/api/sessions/{session_id}/present-evidence", response_model=SessionChatResponse)
+@api_router.post("/sessions/{session_id}/present-evidence", response_model=SessionChatResponse)
 async def api_present_evidence(session_id: str, req: PresentEvidenceRequest) -> SessionChatResponse:
     """Present evidence to a suspect. If it contradicts their claim, AI responds under pressure."""
     state = _require_session(session_id)
@@ -402,7 +406,7 @@ async def api_present_evidence(session_id: str, req: PresentEvidenceRequest) -> 
     )
 
 
-@app.get("/api/sessions/{session_id}/contradictions")
+@api_router.get("/sessions/{session_id}/contradictions")
 def api_get_contradictions(session_id: str):
     state = _require_session(session_id)
     return {
@@ -411,7 +415,7 @@ def api_get_contradictions(session_id: str):
     }
 
 
-@app.post("/api/sessions/{session_id}/conclude", response_model=ConcludeResponse)
+@api_router.post("/sessions/{session_id}/conclude", response_model=ConcludeResponse)
 def api_conclude(session_id: str, req: ConcludeRequest) -> ConcludeResponse:
     """Submit final deduction and get scored."""
     state = _require_session(session_id)
@@ -419,7 +423,7 @@ def api_conclude(session_id: str, req: ConcludeRequest) -> ConcludeResponse:
     return ConcludeResponse(**result)
 
 
-@app.post("/api/sessions/{session_id}/gate")
+@api_router.post("/sessions/{session_id}/gate")
 def api_satisfy_gate(session_id: str, gate_name: str):
     """Manually satisfy an investigation gate."""
     state = _require_session(session_id)
@@ -449,7 +453,7 @@ class StageAdvanceResponse(BaseModel):
     graph_event: str
 
 
-@app.get("/api/sessions/{session_id}/stage", response_model=StageResponse)
+@api_router.get("/sessions/{session_id}/stage", response_model=StageResponse)
 def api_get_stage(session_id: str) -> StageResponse:
     """Get current investigation stage info and whether player can advance."""
     state = _require_session(session_id)
@@ -464,7 +468,7 @@ def api_get_stage(session_id: str) -> StageResponse:
     )
 
 
-@app.post("/api/sessions/{session_id}/stage/advance", response_model=StageAdvanceResponse)
+@api_router.post("/sessions/{session_id}/stage/advance", response_model=StageAdvanceResponse)
 def api_advance_stage(session_id: str) -> StageAdvanceResponse:
     """Advance to the next investigation stage."""
     state = _require_session(session_id)
@@ -488,7 +492,7 @@ def api_advance_stage(session_id: str) -> StageAdvanceResponse:
 # GRAPH ENDPOINTS — knowledge graph / pinboard system
 # ══════════════════════════════════════════════════════════════════════════════
 
-@app.get("/api/cases/{case_id}/graph")
+@api_router.get("/cases/{case_id}/graph")
 async def get_case_graph(case_id: str, background_tasks: BackgroundTasks) -> dict:
     """Return full case graph. Returns static layer immediately; triggers AI enrichment in background."""
     _require_case(case_id)
@@ -529,7 +533,7 @@ async def _build_and_cache_graph(case_id: str) -> None:
         set_graph_building(case_id, False)
 
 
-@app.get("/api/sessions/{session_id}/graph")
+@api_router.get("/sessions/{session_id}/graph")
 async def get_session_graph(session_id: str) -> dict:
     """Return session-filtered graph — respects the player's current unlock progress."""
     state = _require_session(session_id)
@@ -574,7 +578,7 @@ async def get_session_graph(session_id: str) -> dict:
     }
 
 
-@app.post("/api/sessions/{session_id}/graph/node-unlocked")
+@api_router.post("/sessions/{session_id}/graph/node-unlocked")
 async def notify_node_unlocked(session_id: str, payload: dict) -> dict:
     """
     Called by the frontend when a keyword trigger fires.
@@ -595,3 +599,7 @@ async def notify_node_unlocked(session_id: str, payload: dict) -> dict:
         or e.get("target") == newly_unlocked_id
     ]
     return {"new_node": new_node, "new_edges": new_edges}
+
+
+app.include_router(api_router)         # Handles DO's Path Trimmed requests
+app.include_router(api_router, prefix="/api")  # Handles local explicit /api requests
