@@ -21,8 +21,6 @@ type Toast = { id: number; text: string; type: "evidence" | "contradiction" | "s
 // ── Chat message ─────────────────────────────────────────────────────────────
 type ChatMsg = { from: "you" | "agent"; text: string };
 
-const NOTES_KEY = (caseId: string) => `iam_notes_${caseId}`;
-
 // ── Legacy node style helper (used by evidence drawer) ───────────────────────
 const NODE_STYLES: Record<string, { label: string }> = {
   suspect:  { label: "text-red-400" },

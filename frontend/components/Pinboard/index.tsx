@@ -183,8 +183,9 @@ const Pinboard = forwardRef<PinboardHandle, PinboardProps>(
           // For edges, use saved modifications where available, but keep API as source of existence
           const savedEdgeMap = new Map((saved.edges || []).map((e: Edge) => [e.id, e]));
           const mergedEdges = fe.map(edge => {
-            if (savedEdgeMap.has(edge.id)) {
-              return { ...edge, ...savedEdgeMap.get(edge.id) };
+            const savedEdge = savedEdgeMap.get(edge.id);
+            if (savedEdge) {
+              return { ...edge, ...savedEdge };
             }
             return edge;
           });
