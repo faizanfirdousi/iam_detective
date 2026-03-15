@@ -10,8 +10,10 @@ import {
   type SessionBoard,
   type SessionChatResponse,
   type StageInfo,
+  type TimelineEvent,
 } from "@/lib/api";
 import Pinboard, { NODE_COLORS, type PinboardHandle } from "@/components/Pinboard";
+import TimelineView from "@/components/TimelineView";
 
 // ── Toast type ───────────────────────────────────────────────────────────────
 type Toast = { id: number; text: string; type: "evidence" | "contradiction" | "stage" };
@@ -130,12 +132,19 @@ export default function WorkspacePage() {
   // Selected pinboard node (for slide-in detail panel)
   const [selectedPinNode, setSelectedPinNode] = useState<Record<string, unknown> | null>(null);
 
+  // Tabs
+  const [activeTab, setActiveTab] = useState<"pinboard" | "timeline">("pinboard");
+  const [timelineEvents, setTimelineEvents] = useState<TimelineEvent[]>([]);
+
   // Chat
   const [role, setRole] = useState<string>("co_detective");
   const [personaId, setPersonaId] = useState<string | null>(null);
   const [input, setInput] = useState("");
-  const [chat, setChat] = useState<ChatMsg[]>([]);
+  const [chatHistories, setChatHistories] = useState<Record<string, ChatMsg[]>>({});
   const [sending, setSending] = useState(false);
+
+  const currentChatKey = personaId ? `${role}:${personaId}` : role;
+  const currentChat = chatHistories[currentChatKey] || [];
 
   // Evidence drawer (board-level node, kept for evidence present logic)
   const [selectedNode, setSelectedNode] = useState<LinkNode | null>(null);
@@ -166,25 +175,37 @@ export default function WorkspacePage() {
 
   // Load notes
   useEffect(() => {
-    const saved = localStorage.getItem(NOTES_KEY(caseId));
-    if (saved) setNotes(saved);
-  }, [caseId]);
+    if (!sessionId) return;
+    api.getNotes(sessionId).then(res => {
+      if (res.notes) setNotes(res.notes);
+    }).catch(() => { /* ignore */ });
+  }, [sessionId]);
 
   // Auto-save notes
   useEffect(() => {
+    if (!sessionId) return;
     setNotesSaved(false);
     const t = setTimeout(() => {
-      localStorage.setItem(NOTES_KEY(caseId), notes);
-      setNotesSaved(true);
-    }, 800);
+      api.saveNotes(sessionId, notes).then(() => {
+        setNotesSaved(true);
+      }).catch(() => { /* ignore */ });
+    }, 1000);
     return () => clearTimeout(t);
-  }, [notes, caseId]);
+  }, [notes, sessionId]);
 
   // Fetch stage info helper
   const fetchStageInfo = useCallback(async (sid: string) => {
     try {
       const info = await api.getStage(sid);
       setStageInfo(info);
+    } catch { /* ignore */ }
+  }, []);
+
+  // Fetch timeline helper
+  const fetchTimeline = useCallback(async (sid: string) => {
+    try {
+      const res = await api.getTimeline(sid);
+      setTimelineEvents(res.events);
     } catch { /* ignore */ }
   }, []);
 
@@ -203,16 +224,20 @@ export default function WorkspacePage() {
         return Promise.all([
           api.getSessionBoard(session.session_id),
           api.getStage(session.session_id),
-        ]).then(([b, si]) => {
+          api.getTimeline(session.session_id),
+        ]).then(([b, si, tl]) => {
           if (!alive) return;
           setBoard(b);
           setStageInfo(si);
+          setTimelineEvents(tl.events);
           setBoardLoading(false);
           // Welcome message from the AI's first stage
-          setChat([{
-            from: "agent",
-            text: `🔦 Stage 1: ${si.stage_description}\n\nA new case file has been opened. Start by examining the crime scene. What do you see?`,
-          }]);
+          setChatHistories({
+            co_detective: [{
+              from: "agent",
+              text: `🔦 Stage 1: ${si.stage_description}\n\nA new case file has been opened. Start by examining the crime scene. What do you see?`,
+            }]
+          });
         });
       })
       .catch((e: unknown) => {
@@ -222,18 +247,20 @@ export default function WorkspacePage() {
       });
 
     return () => { alive = false; };
-  }, [caseId, fetchStageInfo]);
+  }, [caseId, fetchStageInfo, fetchTimeline]);
 
   // Refresh board helper
   const refreshBoard = useCallback(async () => {
     if (!sessionId) return;
     try {
-      const [b, si] = await Promise.all([
+      const [b, si, tl] = await Promise.all([
         api.getSessionBoard(sessionId),
         api.getStage(sessionId),
+        api.getTimeline(sessionId),
       ]);
       setBoard(b);
       setStageInfo(si);
+      setTimelineEvents(tl.events);
     } catch { /* ignore */ }
   }, [sessionId]);
 
@@ -253,14 +280,20 @@ export default function WorkspacePage() {
       );
 
       // Inject a co-detective message for the new stage
-      setChat(c => [...c, {
-        from: "agent",
-        text: `${result.stage_name.toUpperCase()}:\n${result.stage_description}\n\n${
-          newCount > 0
-            ? `New evidence has emerged: ${result.newly_unlocked_entities.map(e => e.name).join(", ")}. Study it carefully.`
-            : "A new phase of the investigation begins. What's your next move?"
-        }`,
-      }]);
+      setChatHistories(prev => ({
+        ...prev,
+        co_detective: [
+          ...(prev.co_detective || []),
+          {
+            from: "agent",
+            text: `🏁 STAGE COMPLETED.\n\nGood work on the ${STAGE_META[currentStage - 1].name}. We've gathered some crucial info. Now, let's move into ${result.stage_name.toUpperCase()}.\n\nMISSION: ${result.stage_description}\n\n${
+              newCount > 0
+                ? `New evidence has emerged: ${result.newly_unlocked_entities.map(e => e.name).join(", ")}. Study it carefully.`
+                : "A new phase of the investigation begins. What's your next move?"
+            }`,
+          }
+        ]
+      }));
     } catch (e: unknown) {
       addToast(`⚠️ Could not advance stage: ${e instanceof Error ? e.message : String(e)}`, "evidence");
     } finally {
@@ -272,8 +305,14 @@ export default function WorkspacePage() {
   async function send() {
     const msg = input.trim();
     if (!msg || sending || !sessionId) return;
+    
+    const key = currentChatKey;
     setInput("");
-    setChat(c => [...c, { from: "you", text: msg }]);
+    setChatHistories(prev => ({
+      ...prev,
+      [key]: [...(prev[key] || []), { from: "you", text: msg }]
+    }));
+    
     setSending(true);
     try {
       const res: SessionChatResponse = await api.sessionChat(sessionId, {
@@ -281,7 +320,11 @@ export default function WorkspacePage() {
         role,
         persona_id: personaId,
       });
-      setChat(c => [...c, { from: "agent", text: res.reply }]);
+      
+      setChatHistories(prev => ({
+        ...prev,
+        [key]: [...(prev[key] || []), { from: "agent", text: res.reply }]
+      }));
 
       // Toasts for newly unlocked
       for (const u of res.newly_unlocked) {
@@ -301,7 +344,10 @@ export default function WorkspacePage() {
         if (sessionId) void fetchStageInfo(sessionId);
       }
     } catch (e: unknown) {
-      setChat(c => [...c, { from: "agent", text: e instanceof Error ? e.message : String(e) }]);
+      setChatHistories(prev => ({
+        ...prev,
+        [key]: [...(prev[key] || []), { from: "agent", text: e instanceof Error ? e.message : String(e) }]
+      }));
     } finally {
       setSending(false);
     }
@@ -310,16 +356,27 @@ export default function WorkspacePage() {
   // Present evidence
   async function presentEvidence(evidenceId: string, suspectId: string) {
     if (!sessionId) return;
+    const key = `suspect:${suspectId}`;
     setSending(true);
     try {
       const res = await api.presentEvidence(sessionId, evidenceId, suspectId);
-      setChat(c => [...c, { from: "agent", text: res.reply }]);
+      setChatHistories(prev => ({
+        ...prev,
+        [key]: [
+          ...(prev[key] || []),
+          { from: "you", text: `[Presented evidence: ${evidenceId}]` },
+          { from: "agent", text: res.reply }
+        ]
+      }));
       for (const ct of res.contradictions) {
         addToast(`⚡ ${ct.claim}`, "contradiction");
       }
       await refreshBoard();
     } catch (e: unknown) {
-      setChat(c => [...c, { from: "agent", text: e instanceof Error ? e.message : String(e) }]);
+      setChatHistories(prev => ({
+        ...prev,
+        [key]: [...(prev[key] || []), { from: "agent", text: e instanceof Error ? e.message : String(e) }]
+      }));
     } finally {
       setSending(false);
     }
@@ -396,102 +453,126 @@ export default function WorkspacePage() {
 
       {/* Main layout */}
       <div className="flex flex-1 overflow-hidden">
-        {/* Pinboard */}
-        <main className="relative flex-1 overflow-hidden">
-          {boardLoading && (
-            <div className="absolute inset-0 flex items-center justify-center z-10">
-              <div className="flex flex-col items-center gap-3">
-                <div className="h-px w-12 animate-pulse bg-zinc-700" />
-                <span className="text-xs font-mono text-zinc-600 tracking-widest uppercase">Opening case file…</span>
-                <div className="h-px w-12 animate-pulse bg-zinc-700" />
-              </div>
-            </div>
-          )}
-          {boardErr ? (
-            <div className="flex h-full items-center justify-center p-6">
-              <div className="rounded-xl border border-red-900/40 bg-red-950/30 p-5 text-sm text-red-300 max-w-sm text-center">{boardErr}</div>
-            </div>
-          ) : sessionId ? (
-            <Pinboard
-              ref={pinboardRef}
-              sessionId={sessionId}
-              onNodeClick={(nodeId, nodeData) => {
-                setSelectedPinNode({ id: nodeId, ...nodeData });
-                if ((nodeData.type as string) === "PERSON") {
-                  setRole("suspect");
-                  setPersonaId(nodeId);
-                }
-              }}
-            />
-          ) : null}
+        {/* Left Tab Sidebar */}
+        <aside className="w-14 border-r border-zinc-800 bg-zinc-950 flex flex-col items-center py-4 gap-4 z-20">
+          <button
+            onClick={() => setActiveTab("pinboard")}
+            className={`p-2.5 rounded-xl transition-all ${activeTab === "pinboard" ? "bg-zinc-800 text-zinc-100 shadow-sm" : "text-zinc-600 hover:text-zinc-400"}`}
+            title="Investigation Pinboard"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m15 5 4 4"/><path d="M21.5 12a9.5 9.5 0 1 1-19 0 9.5 9.5 0 0 1 19 0Z"/><path d="M12 7v10"/><path d="M7 12h10"/></svg>
+          </button>
+          <button
+            onClick={() => setActiveTab("timeline")}
+            className={`p-2.5 rounded-xl transition-all ${activeTab === "timeline" ? "bg-zinc-800 text-zinc-100 shadow-sm" : "text-zinc-600 hover:text-zinc-400"}`}
+            title="Investigation Timeline"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 8v4l3 3"/><circle cx="12" cy="12" r="10"/></svg>
+          </button>
+        </aside>
 
-          {/* Slide-in node detail panel */}
-          {selectedPinNode && (
-            <div className="absolute right-4 top-4 w-72 bg-zinc-900/95 border border-zinc-700
-                            rounded-xl p-4 z-50 shadow-2xl backdrop-blur-sm animate-fadeIn">
-              <button
-                onClick={() => setSelectedPinNode(null)}
-                className="absolute top-3 right-3 text-zinc-500 hover:text-white text-sm transition-colors"
-              >
-                ✕
-              </button>
-              <div
-                className="text-[10px] font-mono uppercase tracking-wider mb-1"
-                style={{ color: NODE_COLORS[(selectedPinNode.type as string) ?? "UNKNOWN"] ?? "#6b7280" }}
-              >
-                {selectedPinNode.type as string}
-              </div>
-              <h3 className="text-white font-bold text-sm leading-snug">
-                {selectedPinNode.label as string}
-              </h3>
-              {typeof selectedPinNode.description === "string" && selectedPinNode.description && (
-                <p className="text-zinc-400 text-xs mt-2 leading-relaxed line-clamp-6">
-                  {selectedPinNode.description as string}
-                </p>
-              )}
-              {selectedPinNode.confidence != null && (
-                <div className="mt-3">
-                  <div className="text-zinc-600 text-[10px] mb-1">
-                    Confidence: {Math.round((selectedPinNode.confidence as number) * 100)}%
-                  </div>
-                  <div className="h-0.5 bg-zinc-800 rounded">
-                    <div
-                      className="h-full rounded transition-all"
-                      style={{
-                        width: `${(selectedPinNode.confidence as number) * 100}%`,
-                        backgroundColor: NODE_COLORS[(selectedPinNode.type as string) ?? "UNKNOWN"] ?? "#ef4444",
-                      }}
-                    />
+        {/* Content Area */}
+        <main className="relative flex-1 overflow-hidden">
+          {activeTab === "pinboard" ? (
+            <>
+              {boardLoading && (
+                <div className="absolute inset-0 flex items-center justify-center z-10 bg-zinc-950/50 backdrop-blur-sm">
+                  <div className="flex flex-col items-center gap-3">
+                    <div className="h-px w-12 animate-pulse bg-zinc-700" />
+                    <span className="text-xs font-mono text-zinc-600 tracking-widest uppercase">Opening case file…</span>
+                    <div className="h-px w-12 animate-pulse bg-zinc-700" />
                   </div>
                 </div>
               )}
-              {(selectedPinNode.type as string) === "PERSON" && (
-                <button
-                  onClick={() => {
-                    setRole("suspect");
-                    setPersonaId(selectedPinNode.id as string);
-                    setSelectedPinNode(null);
+              {boardErr ? (
+                <div className="flex h-full items-center justify-center p-6">
+                  <div className="rounded-xl border border-red-900/40 bg-red-950/30 p-5 text-sm text-red-300 max-w-sm text-center">{boardErr}</div>
+                </div>
+              ) : sessionId ? (
+                <Pinboard
+                  ref={pinboardRef}
+                  sessionId={sessionId}
+                  onNodeClick={(nodeId, nodeData) => {
+                    setSelectedPinNode({ id: nodeId, ...nodeData });
+                    if ((nodeData.type as string) === "PERSON") {
+                      setRole("suspect");
+                      setPersonaId(nodeId);
+                    }
                   }}
-                  className="mt-4 w-full bg-red-950 hover:bg-red-900 border border-red-800
-                             text-red-300 text-xs py-2 rounded font-mono tracking-wider transition-colors"
-                >
-                  INTERROGATE
-                </button>
-              )}
-            </div>
-          )}
+                />
+              ) : null}
 
-          {/* Stage description overlay (bottom left) */}
-          {stageInfo && (
-            <div className="absolute bottom-4 left-4 max-w-xs rounded-lg bg-zinc-900/90 border border-zinc-800 px-3 py-2 text-xs text-zinc-500">
-              <div className="text-zinc-400 font-mono text-[10px] uppercase tracking-widest mb-0.5">
-                Stage {stageInfo.current_stage} — {stageInfo.stage_name}
-              </div>
-              {stageInfo.stage_description}
-              {board && (
-                <div className="mt-1 text-zinc-600">🔍 {board.nodes.length} entities discovered</div>
+              {/* Slide-in node detail panel */}
+              {selectedPinNode && (
+                <div className="absolute right-4 top-4 w-72 bg-zinc-900/95 border border-zinc-700
+                                rounded-xl p-4 z-50 shadow-2xl backdrop-blur-sm animate-fadeIn">
+                  <button
+                    onClick={() => setSelectedPinNode(null)}
+                    className="absolute top-3 right-3 text-zinc-500 hover:text-white text-sm transition-colors"
+                  >
+                    ✕
+                  </button>
+                  <div
+                    className="text-[10px] font-mono uppercase tracking-wider mb-1"
+                    style={{ color: NODE_COLORS[(selectedPinNode.type as string) ?? "UNKNOWN"] ?? "#6b7280" }}
+                  >
+                    {selectedPinNode.type as string}
+                  </div>
+                  <h3 className="text-white font-bold text-sm leading-snug">
+                    {selectedPinNode.label as string}
+                  </h3>
+                  {typeof selectedPinNode.description === "string" && selectedPinNode.description && (
+                    <p className="text-zinc-400 text-xs mt-2 leading-relaxed line-clamp-6">
+                      {selectedPinNode.description as string}
+                    </p>
+                  )}
+                  {selectedPinNode.confidence != null && (
+                    <div className="mt-3">
+                      <div className="text-zinc-600 text-[10px] mb-1">
+                        Confidence: {Math.round((selectedPinNode.confidence as number) * 100)}%
+                      </div>
+                      <div className="h-0.5 bg-zinc-800 rounded">
+                        <div
+                          className="h-full rounded transition-all"
+                          style={{
+                            width: `${(selectedPinNode.confidence as number) * 100}%`,
+                            backgroundColor: NODE_COLORS[(selectedPinNode.type as string) ?? "UNKNOWN"] ?? "#ef4444",
+                          }}
+                        />
+                      </div>
+                    </div>
+                  )}
+                  {(selectedPinNode.type as string) === "PERSON" && (
+                    <button
+                      onClick={() => {
+                        setRole("suspect");
+                        setPersonaId(selectedPinNode.id as string);
+                        setSelectedPinNode(null);
+                      }}
+                      className="mt-4 w-full bg-red-950 hover:bg-red-900 border border-red-800
+                                 text-red-300 text-xs py-2 rounded font-mono tracking-wider transition-colors"
+                    >
+                      INTERROGATE
+                    </button>
+                  )}
+                </div>
               )}
-            </div>
+
+              {/* Stage description overlay (bottom left) */}
+              {stageInfo && (
+                <div className="absolute bottom-4 left-4 max-w-xs rounded-lg bg-zinc-900/90 border border-zinc-800 px-3 py-2 text-xs text-zinc-500">
+                  <div className="text-zinc-400 font-mono text-[10px] uppercase tracking-widest mb-0.5">
+                    Stage {stageInfo.current_stage} — {stageInfo.stage_name}
+                  </div>
+                  {stageInfo.stage_description}
+                  {board && (
+                    <div className="mt-1 text-zinc-600">🔍 {board.nodes.length} entities discovered</div>
+                  )}
+                </div>
+              )}
+            </>
+          ) : (
+            <TimelineView events={timelineEvents} />
           )}
         </main>
 
@@ -555,14 +636,14 @@ export default function WorkspacePage() {
             </div>
 
             <div className="flex-1 space-y-2 overflow-auto p-4">
-              {chat.length === 0 && (
+              {currentChat.length === 0 && (
                 <div className="text-xs text-zinc-600 text-center mt-8 leading-relaxed">
-                  Ask the co-detective a question, interrogate a witness, or question a suspect.
+                  Ask the {role.replace('_', '-')} a question.
                   <br /><br />
                   <span className="text-zinc-700">💡 Explore the scene. When you&apos;ve investigated enough, the <strong className="text-zinc-600">ADVANCE STAGE →</strong> button will appear.</span>
                 </div>
               )}
-              {chat.map((m, i) => (
+              {currentChat.map((m, i) => (
                 <div key={i} className={m.from === "you" ? "ml-auto max-w-[85%] rounded-xl bg-zinc-200 px-3.5 py-2.5 text-sm text-zinc-900" : "mr-auto max-w-[85%] rounded-xl bg-zinc-800/80 px-3.5 py-2.5 text-sm text-zinc-200 border border-zinc-700/50 whitespace-pre-line"}>
                   {m.text}
                 </div>

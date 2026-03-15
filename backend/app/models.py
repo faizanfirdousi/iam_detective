@@ -78,3 +78,18 @@ class ChatResponse(BaseModel):
     role: ChatRole
     reply: str
     stage_suggestion: int | None = None
+
+
+class TimelineEventModel(BaseModel):
+    id: str
+    timestamp: str
+    type: str
+    title: str
+    description: str
+    stage: int
+    meta: dict = Field(default_factory=dict)
+
+
+class TimelineResponse(BaseModel):
+    session_id: str
+    events: list[TimelineEventModel]

@@ -11,7 +11,10 @@ from pydantic import BaseModel, ValidationError
 
 from app.data.cases import list_cases, get_case_ids
 from app.data.images import patch_node_images
-from app.models import CaseDetail, CaseListItem, CaseIntroSlide, ChatRequest, ChatResponse, LinkBoard
+from app.models import (
+    CaseDetail, CaseListItem, CaseIntroSlide, ChatRequest, ChatResponse, LinkBoard,
+    TimelineResponse, TimelineEventModel
+)
 from app.services.chat import gradient_chat
 from app.services.do_agent import DOAgentClient
 
@@ -21,10 +24,11 @@ from app.services.graph_merger import merge_graph_with_schema
 
 # Engine imports
 from app.engine.state import (
-    create_session, get_session,
+    create_session, get_session, save_session,
     get_cached_graph, set_cached_graph,
     is_graph_building, set_graph_building,
 )
+from app.database import engine, Base
 from app.engine.schema import load_schema
 from app.engine import engine as inv_engine
 from app.engine.state import STAGE_NAMES, STAGE_DESCRIPTIONS
@@ -61,8 +65,8 @@ def _get_client(case_id: str) -> DOAgentClient:
         raise HTTPException(status_code=503, detail=str(e))
 
 
-def _require_session(session_id: str):
-    state = get_session(session_id)
+async def _require_session(session_id: str):
+    state = await get_session(session_id)
     if state is None:
         raise HTTPException(status_code=404, detail="session_not_found")
     return state
@@ -71,7 +75,13 @@ def _require_session(session_id: str):
 # ── Startup: preload any pre-generated graph JSON files from disk ─────────────
 
 @app.on_event("startup")
-async def preload_graphs() -> None:
+async def startup_event() -> None:
+    # 1. Create DB tables
+    async with engine.begin() as conn:
+        await conn.run_sync(Base.metadata.create_all)
+    print("[startup] Database tables verified.")
+
+    # 2. Preload graphs
     schema_dir = os.path.join(os.path.dirname(__file__), "data", "case_schemas")
     for path in glob.glob(os.path.join(schema_dir, "*-graph.json")):
         case_id = os.path.basename(path).replace("-graph.json", "")
@@ -272,11 +282,12 @@ class ConcludeResponse(BaseModel):
 
 
 @api_router.post("/sessions", response_model=CreateSessionResponse)
-def api_create_session(req: CreateSessionRequest) -> CreateSessionResponse:
+async def api_create_session(req: CreateSessionRequest) -> CreateSessionResponse:
     """Create a new investigation session for a case."""
     _require_case(req.case_id)
-    state = create_session(req.case_id)
+    state = await create_session(req.case_id)
     inv_engine.get_visible_entities(state)  # populate start entities
+    await save_session(state)
     return CreateSessionResponse(
         session_id=state.session_id,
         case_id=state.case_id,
@@ -285,14 +296,18 @@ def api_create_session(req: CreateSessionRequest) -> CreateSessionResponse:
 
 
 @api_router.get("/sessions/{session_id}/board", response_model=SessionBoardResponse)
-def api_session_board(session_id: str) -> SessionBoardResponse:
+async def api_session_board(session_id: str) -> SessionBoardResponse:
     """Get investigation board — only shows discovered entities."""
-    state = _require_session(session_id)
+    state = await _require_session(session_id)
     nodes = inv_engine.get_visible_entities(state)
     edges = inv_engine.get_visible_connections(state)
     nodes = patch_node_images(state.case_id, nodes)
     contradictions = inv_engine.check_contradictions(state)
     advance_check = inv_engine.can_advance_stage(state)
+    
+    # Save session because get_visible_entities and check_contradictions may have updated discovery state
+    await save_session(state)
+    
     return SessionBoardResponse(
         session_id=state.session_id,
         case_id=state.case_id,
@@ -309,7 +324,7 @@ def api_session_board(session_id: str) -> SessionBoardResponse:
 @api_router.post("/sessions/{session_id}/chat", response_model=SessionChatResponse)
 async def api_session_chat(session_id: str, req: SessionChatRequest) -> SessionChatResponse:
     """Chat with engine-restricted AI. Player messages trigger evidence unlocks."""
-    state = _require_session(session_id)
+    state = await _require_session(session_id)
     client = _get_client(state.case_id)
 
     # 1. Process triggers
@@ -319,9 +334,10 @@ async def api_session_chat(session_id: str, req: SessionChatRequest) -> SessionC
     stage_prefix = build_stage_prefix(state)
     engine_context = inv_engine.build_ai_context(state, req.role, req.persona_id)
 
-    # 3. Assemble messages — stage prefix prepended to system prompt
+    # 3. Assemble messages — persona-specific history only
+    persona_history = state.get_persona_history(req.role, req.persona_id, limit=10)
     messages = [{"role": "system", "content": stage_prefix + engine_context}]
-    for msg in state.chat_history[-10:]:
+    for msg in persona_history:
         messages.append(msg)
     messages.append({
         "role": "user",
@@ -336,14 +352,16 @@ async def api_session_chat(session_id: str, req: SessionChatRequest) -> SessionC
     )
     reply = client.extract_content(resp).strip()
 
-    # 5. Update state (add_chat increments message_count for user messages)
-    state.add_chat("user", req.message)
-    state.add_chat("assistant", reply)
+    # 5. Update state
+    state.add_chat("user", req.message, req.persona_id, req.role)
+    state.add_chat("assistant", reply, req.persona_id, req.role)
     if req.persona_id:
         state.interrogated_characters.add(req.persona_id)
 
     # 6. Check contradictions
     contradictions = inv_engine.check_contradictions(state)
+
+    await save_session(state)
 
     return SessionChatResponse(
         reply=reply,
@@ -356,7 +374,7 @@ async def api_session_chat(session_id: str, req: SessionChatRequest) -> SessionC
 @api_router.post("/sessions/{session_id}/present-evidence", response_model=SessionChatResponse)
 async def api_present_evidence(session_id: str, req: PresentEvidenceRequest) -> SessionChatResponse:
     """Present evidence to a suspect. If it contradicts their claim, AI responds under pressure."""
-    state = _require_session(session_id)
+    state = await _require_session(session_id)
     client = _get_client(state.case_id)
     schema = load_schema(state.case_id)
 
@@ -386,18 +404,22 @@ async def api_present_evidence(session_id: str, req: PresentEvidenceRequest) -> 
     else:
         pressure += "\nThe detective is showing you this evidence. React in character."
 
+    persona_history = state.get_persona_history("suspect", req.suspect_id, limit=10)
     messages = [
         {"role": "system", "content": engine_context + pressure},
-        {"role": "user", "content": f"I'm presenting this evidence: {evidence['name']}. What do you say?"},
     ]
+    for msg in persona_history:
+        messages.append(msg)
+    messages.append({"role": "user", "content": f"I'm presenting this evidence: {evidence['name']}. What do you say?"})
 
     resp = await client.chat_completions(messages=messages, include_retrieval_info=True)
     reply = client.extract_content(resp).strip()
 
-    state.add_chat("user", f"[Presented evidence: {evidence['name']}]")
-    state.add_chat("assistant", reply)
+    state.add_chat("user", f"[Presented evidence: {evidence['name']}]", req.suspect_id, "suspect")
+    state.add_chat("assistant", reply, req.suspect_id, "suspect")
 
     contradictions = inv_engine.check_contradictions(state)
+    await save_session(state)
     return SessionChatResponse(
         reply=reply,
         role="suspect",
@@ -407,27 +429,41 @@ async def api_present_evidence(session_id: str, req: PresentEvidenceRequest) -> 
 
 
 @api_router.get("/sessions/{session_id}/contradictions")
-def api_get_contradictions(session_id: str):
-    state = _require_session(session_id)
+async def api_get_contradictions(session_id: str):
+    state = await _require_session(session_id)
+    new_contradictions = inv_engine.check_contradictions(state)
+    await save_session(state)
     return {
         "contradictions_found": sorted(state.contradictions_found),
-        "new_contradictions": inv_engine.check_contradictions(state),
+        "new_contradictions": new_contradictions,
     }
 
 
+@api_router.get("/sessions/{session_id}/timeline", response_model=TimelineResponse)
+async def api_get_timeline(session_id: str) -> TimelineResponse:
+    """Get chronological investigation events."""
+    state = await _require_session(session_id)
+    return TimelineResponse(
+        session_id=state.session_id,
+        events=[TimelineEventModel(**vars(e)) for e in state.timeline]
+    )
+
+
 @api_router.post("/sessions/{session_id}/conclude", response_model=ConcludeResponse)
-def api_conclude(session_id: str, req: ConcludeRequest) -> ConcludeResponse:
+async def api_conclude(session_id: str, req: ConcludeRequest) -> ConcludeResponse:
     """Submit final deduction and get scored."""
-    state = _require_session(session_id)
+    state = await _require_session(session_id)
     result = inv_engine.evaluate_conclusion(state, req.model_dump())
+    await save_session(state)
     return ConcludeResponse(**result)
 
 
 @api_router.post("/sessions/{session_id}/gate")
-def api_satisfy_gate(session_id: str, gate_name: str):
+async def api_satisfy_gate(session_id: str, gate_name: str):
     """Manually satisfy an investigation gate."""
-    state = _require_session(session_id)
+    state = await _require_session(session_id)
     newly_visible = inv_engine.satisfy_gate(gate_name, state)
+    await save_session(state)
     return {
         "gate": gate_name,
         "newly_unlocked": [{"id": e["id"], "name": e["name"], "type": e["type"]} for e in newly_visible],
@@ -454,9 +490,9 @@ class StageAdvanceResponse(BaseModel):
 
 
 @api_router.get("/sessions/{session_id}/stage", response_model=StageResponse)
-def api_get_stage(session_id: str) -> StageResponse:
+async def api_get_stage(session_id: str) -> StageResponse:
     """Get current investigation stage info and whether player can advance."""
-    state = _require_session(session_id)
+    state = await _require_session(session_id)
     advance_check = inv_engine.can_advance_stage(state)
     return StageResponse(
         current_stage=state.current_stage,
@@ -469,9 +505,9 @@ def api_get_stage(session_id: str) -> StageResponse:
 
 
 @api_router.post("/sessions/{session_id}/stage/advance", response_model=StageAdvanceResponse)
-def api_advance_stage(session_id: str) -> StageAdvanceResponse:
+async def api_advance_stage(session_id: str) -> StageAdvanceResponse:
     """Advance to the next investigation stage."""
-    state = _require_session(session_id)
+    state = await _require_session(session_id)
     check = inv_engine.can_advance_stage(state)
     if not check["can_advance"]:
         raise HTTPException(
@@ -485,6 +521,8 @@ def api_advance_stage(session_id: str) -> StageAdvanceResponse:
     result = inv_engine.advance_stage(state)
     if not result.get("advanced"):
         raise HTTPException(status_code=400, detail=result.get("reason", "Cannot advance"))
+    
+    await save_session(state)
     return StageAdvanceResponse(**result)
 
 
@@ -536,7 +574,7 @@ async def _build_and_cache_graph(case_id: str) -> None:
 @api_router.get("/sessions/{session_id}/graph")
 async def get_session_graph(session_id: str) -> dict:
     """Return session-filtered graph — respects the player's current unlock progress."""
-    state = _require_session(session_id)
+    state = await _require_session(session_id)
     case_id = state.case_id
 
     full_graph = get_cached_graph(case_id) or \
@@ -584,7 +622,7 @@ async def notify_node_unlocked(session_id: str, payload: dict) -> dict:
     Called by the frontend when a keyword trigger fires.
     Returns the delta — newly visible node + its edges — so the UI can animate them in.
     """
-    state = _require_session(session_id)
+    state = await _require_session(session_id)
     newly_unlocked_id = payload.get("entity_id")
 
     full_graph = get_cached_graph(state.case_id) or \
@@ -599,6 +637,39 @@ async def notify_node_unlocked(session_id: str, payload: dict) -> dict:
         or e.get("target") == newly_unlocked_id
     ]
     return {"new_node": new_node, "new_edges": new_edges}
+
+
+# ── Persistence Endpoints for Frontend (Notes & Graph State) ─────────────────
+
+class NotesRequest(BaseModel):
+    notes: str
+
+class GraphStateRequest(BaseModel):
+    graph_state: dict
+
+@api_router.get("/sessions/{session_id}/notes")
+async def api_get_notes(session_id: str):
+    state = await _require_session(session_id)
+    return {"notes": state.notes}
+
+@api_router.post("/sessions/{session_id}/notes")
+async def api_save_notes(session_id: str, req: NotesRequest):
+    state = await _require_session(session_id)
+    state.notes = req.notes
+    await save_session(state)
+    return {"status": "saved"}
+
+@api_router.get("/sessions/{session_id}/graph-state")
+async def api_get_graph_state(session_id: str):
+    state = await _require_session(session_id)
+    return {"graph_state": state.graph_state}
+
+@api_router.post("/sessions/{session_id}/graph-state")
+async def api_save_graph_state(session_id: str, req: GraphStateRequest):
+    state = await _require_session(session_id)
+    state.graph_state = req.graph_state
+    await save_session(state)
+    return {"status": "saved"}
 
 
 app.include_router(api_router)         # Handles DO's Path Trimmed requests

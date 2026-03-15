@@ -90,6 +90,15 @@ def process_chat_triggers(message: str, state: InvestigationState) -> list[dict[
                         state.satisfied_gates.add(req)
 
                 newly_unlocked.append(ent)
+                
+                # Add to timeline
+                state.add_timeline_event(
+                    event_type="discovery",
+                    title=f"New {ent['type'].capitalize()}: {ent['name']}",
+                    description=ent.get("description", ""),
+                    meta={"entity_id": ent["id"], "trigger": keyword}
+                )
+                
                 log.info("🔓 Unlocked: %s (trigger: '%s')", ent["name"], keyword)
                 break  # don't double-trigger same entity
 
@@ -148,6 +157,15 @@ def check_contradictions(state: InvestigationState) -> list[dict[str, Any]]:
                         "character_id": char_id,
                         **contradiction,
                     })
+                    
+                    # Add to timeline
+                    state.add_timeline_event(
+                        event_type="contradiction",
+                        title=f"Contradiction Detected: {char_id}",
+                        description=f"Claim: '{contradiction['claim']}' is contradicted by evidence: '{contradicted_by}'",
+                        meta={"character_id": char_id, "contradiction_id": c_id, "evidence_id": contradicted_by}
+                    )
+                    
                     log.info("⚡ Contradiction detected: %s", c_id)
 
     return found
@@ -224,6 +242,14 @@ def advance_stage(state: InvestigationState) -> dict[str, Any]:
     # Move stage pointer
     state.current_stage = next_stage
 
+    # Add to timeline
+    state.add_timeline_event(
+        event_type="stage_advance",
+        title=f"Advanced to Stage {next_stage}: {STAGE_NAMES[next_stage]}",
+        description=STAGE_DESCRIPTIONS[next_stage],
+        meta={"stage_num": next_stage}
+    )
+
     # Discover newly visible entities
     schema = load_schema(state.case_id)
     newly_visible = []
@@ -284,9 +310,15 @@ def build_ai_context(
 
     # Role-specific context
     if role == "co_detective":
-        lines.append("You are a co-detective AI assistant. Help the player analyze evidence and form theories.")
-        lines.append("Encourage the player to investigate further when they're close to unlocking new evidence.")
-        lines.append("Never tell them the answer directly — guide them with questions.")
+        lines.append("You are the Lead Detective's partner. You are sharp, observant, and slightly noir.")
+        lines.append(f"Current Phase: {STAGE_NAMES.get(state.current_stage, 'Investigation')}")
+        lines.append(f"Mission: {STAGE_DESCRIPTIONS.get(state.current_stage, '')}")
+        lines.append("\nYOUR OBJECTIVES:")
+        lines.append("- Actively suggest what to investigate next based on the current stage.")
+        lines.append("- If we're at the Crime Scene, focus on physical details and initial impressions.")
+        lines.append("- If we're in Forensics, help analyze the DNA or ballistics reports.")
+        lines.append("- NEVER reveal future stage secrets. Only talk about what we've discovered.")
+        lines.append("- Be conversational, like a partner in a squad car. Don't just list facts.")
 
     elif role in ("witness", "suspect") and persona_id:
         char = get_character(schema, persona_id)

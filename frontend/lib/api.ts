@@ -143,6 +143,21 @@ export interface StageAdvanceResponse {
   graph_event: string;
 }
 
+export interface TimelineEvent {
+  id: string;
+  timestamp: string;
+  type: "discovery" | "contradiction" | "stage_advance" | "note";
+  title: string;
+  description: string;
+  stage: number;
+  meta: Record<string, unknown>;
+}
+
+export interface TimelineResponse {
+  session_id: string;
+  events: TimelineEvent[];
+}
+
 // ── Helpers ──────────────────────────────────────────────────────────────────
 
 async function fetchJSON<T>(path: string, opts?: RequestInit): Promise<T> {
@@ -220,5 +235,27 @@ export const api = {
   advanceStage: (sessionId: string) =>
     fetchJSON<StageAdvanceResponse>(`/api/sessions/${sessionId}/stage/advance`, {
       method: "POST",
+    }),
+
+  getTimeline: (sessionId: string) =>
+    fetchJSON<TimelineResponse>(`/api/sessions/${sessionId}/timeline`),
+
+  // --- Persistence (Notes & Graph State) ---
+  getNotes: (sessionId: string) =>
+    fetchJSON<{ notes: string }>(`/api/sessions/${sessionId}/notes`),
+
+  saveNotes: (sessionId: string, notes: string) =>
+    fetchJSON<{ status: string }>(`/api/sessions/${sessionId}/notes`, {
+      method: "POST",
+      body: JSON.stringify({ notes }),
+    }),
+
+  getGraphState: (sessionId: string) =>
+    fetchJSON<{ graph_state: any }>(`/api/sessions/${sessionId}/graph-state`),
+
+  saveGraphState: (sessionId: string, graphState: any) =>
+    fetchJSON<{ status: string }>(`/api/sessions/${sessionId}/graph-state`, {
+      method: "POST",
+      body: JSON.stringify({ graph_state: graphState }),
     }),
 };
