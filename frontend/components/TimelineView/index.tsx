@@ -72,7 +72,7 @@ export default function TimelineView({ events }: { events: TimelineEvent[] }) {
                           }`}>
                             {event.type.replace('_', ' ')}
                           </span>
-                          {event.meta.trigger && (
+                          {typeof event.meta.trigger === 'string' && (
                             <span className="text-[9px] font-mono text-zinc-600 px-1.5 py-0.5 rounded border border-zinc-800">
                               TRIGGER: &ldquo;{event.meta.trigger}&rdquo;
                             </span>
