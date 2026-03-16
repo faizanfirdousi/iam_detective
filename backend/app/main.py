@@ -157,6 +157,8 @@ class CaseProgressItem(BaseModel):
     started_at: datetime | None = None
     intro_seen: bool
     last_session_id: str | None = None
+    current_stage: int | None = None
+    completed_stages: list[int] | None = None
 
 
 @api_router.get("/me", response_model=MeResponse)
@@ -173,12 +175,19 @@ async def api_my_cases(request: Request) -> list[CaseProgressItem]:
     async with AsyncSessionLocal() as db:
         res = await db.execute(select(UserCaseProgress).where(UserCaseProgress.user_id == user.id))
         rows = res.scalars().all()
+        session_ids = [r.last_session_id for r in rows if r.last_session_id]
+        session_map: dict[str, SessionRecord] = {}
+        if session_ids:
+            sres = await db.execute(select(SessionRecord).where(SessionRecord.session_id.in_(session_ids)))
+            session_map = {s.session_id: s for s in sres.scalars().all()}
         return [
             CaseProgressItem(
                 case_id=r.case_id,
                 started_at=r.started_at,
                 intro_seen=bool(r.intro_seen),
                 last_session_id=r.last_session_id,
+                current_stage=(session_map.get(r.last_session_id).current_stage if r.last_session_id and session_map.get(r.last_session_id) else None),
+                completed_stages=(session_map.get(r.last_session_id).completed_stages if r.last_session_id and session_map.get(r.last_session_id) else None),
             )
             for r in rows
         ]
@@ -198,11 +207,17 @@ async def api_my_case(request: Request, case_id: str) -> CaseProgressItem:
         row = res.scalar_one_or_none()
         if row is None:
             return CaseProgressItem(case_id=case_id, started_at=None, intro_seen=False, last_session_id=None)
+        stage_rec = None
+        if row.last_session_id:
+            sres = await db.execute(select(SessionRecord).where(SessionRecord.session_id == row.last_session_id))
+            stage_rec = sres.scalar_one_or_none()
         return CaseProgressItem(
             case_id=row.case_id,
             started_at=row.started_at,
             intro_seen=bool(row.intro_seen),
             last_session_id=row.last_session_id,
+            current_stage=(stage_rec.current_stage if stage_rec else None),
+            completed_stages=(stage_rec.completed_stages if stage_rec else None),
         )
 
 

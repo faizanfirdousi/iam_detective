@@ -180,6 +180,8 @@ export interface CaseProgressItem {
   started_at: string | null;
   intro_seen: boolean;
   last_session_id: string | null;
+  current_stage?: number | null;
+  completed_stages?: number[] | null;
 }
 
 export interface CaseSessionResponse {
