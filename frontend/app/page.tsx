@@ -43,7 +43,7 @@ function DifficultyBar({ difficulty }: { difficulty: import("@/lib/api").CaseDif
 function CaseCard({ c }: { c: CaseListItem }) {
   return (
     <Link
-      href={`/case/${c.id}/intro`}
+      href={`/case/${c.id}`}
       className="group relative flex flex-col rounded-2xl border border-zinc-800 bg-zinc-900/50 p-6 transition-all duration-300 hover:border-zinc-600 hover:bg-zinc-900/80 hover:shadow-2xl hover:shadow-black/40"
     >
       {/* Status pill */}

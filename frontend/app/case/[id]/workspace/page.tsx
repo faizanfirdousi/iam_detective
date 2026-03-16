@@ -214,7 +214,7 @@ export default function WorkspacePage() {
     setBoardErr(null);
 
     api
-      .createSession(caseId)
+      .getOrCreateCaseSession(caseId)
       .then((session) => {
         if (!alive) return;
         setSessionId(session.session_id);

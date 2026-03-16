@@ -3,11 +3,14 @@ from __future__ import annotations
 import glob
 import json
 import os
+import uuid
+from datetime import datetime
 
 from dotenv import load_dotenv
-from fastapi import BackgroundTasks, FastAPI, HTTPException
+from fastapi import BackgroundTasks, FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, ValidationError
+from sqlalchemy import select, update
 
 from app.data.cases import list_cases, get_case_ids
 from app.data.images import patch_node_images
@@ -28,11 +31,12 @@ from app.engine.state import (
     get_cached_graph, set_cached_graph,
     is_graph_building, set_graph_building,
 )
-from app.database import engine, Base
+from app.database import engine, Base, AsyncSessionLocal
 from app.engine.schema import load_schema
 from app.engine import engine as inv_engine
 from app.engine.state import STAGE_NAMES, STAGE_DESCRIPTIONS
 from app.services.do_agent import build_stage_prefix
+from app.db_models import User, UserCaseProgress, SessionRecord
 
 
 load_dotenv()
@@ -65,7 +69,36 @@ def _get_client(case_id: str) -> DOAgentClient:
         raise HTTPException(status_code=503, detail=str(e))
 
 
-async def _require_session(session_id: str):
+def _get_identity(request: Request) -> str:
+    user_id = request.headers.get("x-user-id")
+    if not user_id:
+        raise HTTPException(status_code=401, detail="missing_user_id")
+    return user_id
+
+
+async def _ensure_user(user_id: str) -> User:
+    async with AsyncSessionLocal() as db:
+        res = await db.execute(select(User).where(User.id == user_id))
+        user = res.scalar_one_or_none()
+        if user is None:
+            user = User(id=user_id, email=user_id, name=None)
+            db.add(user)
+            await db.commit()
+            return user
+        return user
+
+
+async def _require_session_for_user(request: Request, session_id: str):
+    user_id = _get_identity(request)
+    async with AsyncSessionLocal() as db:
+        res = await db.execute(
+            select(SessionRecord).where(
+                SessionRecord.session_id == session_id, SessionRecord.user_id == user_id
+            )
+        )
+        rec = res.scalar_one_or_none()
+        if rec is None:
+            raise HTTPException(status_code=404, detail="session_not_found")
     state = await get_session(session_id)
     if state is None:
         raise HTTPException(status_code=404, detail="session_not_found")
@@ -79,6 +112,16 @@ async def startup_event() -> None:
     # 1. Create DB tables
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
+        if engine.url.get_backend_name().startswith("sqlite"):
+            try:
+                res = await conn.exec_driver_sql("PRAGMA table_info(sessions)")
+                cols = {row[1] for row in res.fetchall()}
+                if "user_id" not in cols:
+                    await conn.exec_driver_sql("ALTER TABLE sessions ADD COLUMN user_id VARCHAR")
+                if "user_email" not in cols:
+                    await conn.exec_driver_sql("ALTER TABLE sessions ADD COLUMN user_email VARCHAR")
+            except Exception:
+                pass
     print("[startup] Database tables verified.")
 
     # 2. Preload graphs
@@ -103,6 +146,188 @@ def health() -> dict[str, str]:
 @api_router.get("/cases", response_model=list[CaseListItem])
 def api_list_cases() -> list[CaseListItem]:
     return list_cases()
+
+
+class MeResponse(BaseModel):
+    user_id: str
+
+
+class CaseProgressItem(BaseModel):
+    case_id: str
+    started_at: datetime | None = None
+    intro_seen: bool
+    last_session_id: str | None = None
+
+
+@api_router.get("/me", response_model=MeResponse)
+async def api_me(request: Request) -> MeResponse:
+    user_id = _get_identity(request)
+    user = await _ensure_user(user_id)
+    return MeResponse(user_id=user.id)
+
+
+@api_router.get("/me/cases", response_model=list[CaseProgressItem])
+async def api_my_cases(request: Request) -> list[CaseProgressItem]:
+    user_id = _get_identity(request)
+    user = await _ensure_user(user_id)
+    async with AsyncSessionLocal() as db:
+        res = await db.execute(select(UserCaseProgress).where(UserCaseProgress.user_id == user.id))
+        rows = res.scalars().all()
+        return [
+            CaseProgressItem(
+                case_id=r.case_id,
+                started_at=r.started_at,
+                intro_seen=bool(r.intro_seen),
+                last_session_id=r.last_session_id,
+            )
+            for r in rows
+        ]
+
+
+@api_router.get("/me/cases/{case_id}", response_model=CaseProgressItem)
+async def api_my_case(request: Request, case_id: str) -> CaseProgressItem:
+    _require_case(case_id)
+    user_id = _get_identity(request)
+    user = await _ensure_user(user_id)
+    async with AsyncSessionLocal() as db:
+        res = await db.execute(
+            select(UserCaseProgress).where(
+                UserCaseProgress.user_id == user.id, UserCaseProgress.case_id == case_id
+            )
+        )
+        row = res.scalar_one_or_none()
+        if row is None:
+            return CaseProgressItem(case_id=case_id, started_at=None, intro_seen=False, last_session_id=None)
+        return CaseProgressItem(
+            case_id=row.case_id,
+            started_at=row.started_at,
+            intro_seen=bool(row.intro_seen),
+            last_session_id=row.last_session_id,
+        )
+
+
+@api_router.post("/me/cases/{case_id}/start", response_model=CaseProgressItem)
+async def api_start_case(request: Request, case_id: str) -> CaseProgressItem:
+    _require_case(case_id)
+    user_id = _get_identity(request)
+    user = await _ensure_user(user_id)
+    now = datetime.utcnow()
+    async with AsyncSessionLocal() as db:
+        res = await db.execute(
+            select(UserCaseProgress).where(
+                UserCaseProgress.user_id == user.id, UserCaseProgress.case_id == case_id
+            )
+        )
+        row = res.scalar_one_or_none()
+        if row is None:
+            row = UserCaseProgress(
+                id=uuid.uuid4().hex,
+                user_id=user.id,
+                case_id=case_id,
+                started_at=now,
+                intro_seen=False,
+                updated_at=now,
+            )
+            db.add(row)
+            await db.commit()
+        else:
+            if row.started_at is None:
+                await db.execute(
+                    update(UserCaseProgress)
+                    .where(UserCaseProgress.id == row.id)
+                    .values(started_at=now, updated_at=now)
+                )
+                await db.commit()
+                row.started_at = now
+        return CaseProgressItem(
+            case_id=row.case_id,
+            started_at=row.started_at,
+            intro_seen=bool(row.intro_seen),
+            last_session_id=row.last_session_id,
+        )
+
+
+@api_router.post("/me/cases/{case_id}/intro-seen", response_model=CaseProgressItem)
+async def api_mark_intro_seen(request: Request, case_id: str) -> CaseProgressItem:
+    _require_case(case_id)
+    user_id = _get_identity(request)
+    user = await _ensure_user(user_id)
+    now = datetime.utcnow()
+    async with AsyncSessionLocal() as db:
+        res = await db.execute(
+            select(UserCaseProgress).where(
+                UserCaseProgress.user_id == user.id, UserCaseProgress.case_id == case_id
+            )
+        )
+        row = res.scalar_one_or_none()
+        if row is None:
+            row = UserCaseProgress(
+                id=uuid.uuid4().hex,
+                user_id=user.id,
+                case_id=case_id,
+                started_at=now,
+                intro_seen=True,
+                updated_at=now,
+            )
+            db.add(row)
+            await db.commit()
+        else:
+            if not row.intro_seen:
+                await db.execute(
+                    update(UserCaseProgress)
+                    .where(UserCaseProgress.id == row.id)
+                    .values(intro_seen=True, updated_at=now)
+                )
+                await db.commit()
+                row.intro_seen = True
+        return CaseProgressItem(
+            case_id=row.case_id,
+            started_at=row.started_at,
+            intro_seen=bool(row.intro_seen),
+            last_session_id=row.last_session_id,
+        )
+
+
+class CaseSessionResponse(BaseModel):
+    session_id: str
+
+
+@api_router.post("/me/cases/{case_id}/session", response_model=CaseSessionResponse)
+async def api_case_session(request: Request, case_id: str) -> CaseSessionResponse:
+    _require_case(case_id)
+    user_id = _get_identity(request)
+    user = await _ensure_user(user_id)
+    now = datetime.utcnow()
+    async with AsyncSessionLocal() as db:
+        res = await db.execute(
+            select(UserCaseProgress).where(
+                UserCaseProgress.user_id == user.id, UserCaseProgress.case_id == case_id
+            )
+        )
+        row = res.scalar_one_or_none()
+        if row is None:
+            row = UserCaseProgress(
+                id=uuid.uuid4().hex,
+                user_id=user.id,
+                case_id=case_id,
+                started_at=now,
+                intro_seen=False,
+                updated_at=now,
+            )
+            db.add(row)
+            await db.commit()
+        if row.last_session_id:
+            existing = await get_session(row.last_session_id)
+            if existing is not None:
+                return CaseSessionResponse(session_id=row.last_session_id)
+        state = await create_session(case_id, user_id=user_id)
+        await db.execute(
+            update(UserCaseProgress)
+            .where(UserCaseProgress.id == row.id)
+            .values(last_session_id=state.session_id, updated_at=now)
+        )
+        await db.commit()
+        return CaseSessionResponse(session_id=state.session_id)
 
 
 @api_router.get("/cases/{case_id}", response_model=CaseDetail)
@@ -282,10 +507,11 @@ class ConcludeResponse(BaseModel):
 
 
 @api_router.post("/sessions", response_model=CreateSessionResponse)
-async def api_create_session(req: CreateSessionRequest) -> CreateSessionResponse:
-    """Create a new investigation session for a case."""
+async def api_create_session(request: Request, req: CreateSessionRequest) -> CreateSessionResponse:
     _require_case(req.case_id)
-    state = await create_session(req.case_id)
+    email, name = _get_identity(request)
+    await _ensure_user(email, name)
+    state = await create_session(req.case_id, user_email=email)
     inv_engine.get_visible_entities(state)  # populate start entities
     await save_session(state)
     return CreateSessionResponse(
@@ -296,16 +522,14 @@ async def api_create_session(req: CreateSessionRequest) -> CreateSessionResponse
 
 
 @api_router.get("/sessions/{session_id}/board", response_model=SessionBoardResponse)
-async def api_session_board(session_id: str) -> SessionBoardResponse:
-    """Get investigation board — only shows discovered entities."""
-    state = await _require_session(session_id)
+async def api_session_board(request: Request, session_id: str) -> SessionBoardResponse:
+    state = await _require_session_for_user(request, session_id)
     nodes = inv_engine.get_visible_entities(state)
     edges = inv_engine.get_visible_connections(state)
     nodes = patch_node_images(state.case_id, nodes)
     contradictions = inv_engine.check_contradictions(state)
     advance_check = inv_engine.can_advance_stage(state)
     
-    # Save session because get_visible_entities and check_contradictions may have updated discovery state
     await save_session(state)
     
     return SessionBoardResponse(
@@ -322,9 +546,8 @@ async def api_session_board(session_id: str) -> SessionBoardResponse:
 
 
 @api_router.post("/sessions/{session_id}/chat", response_model=SessionChatResponse)
-async def api_session_chat(session_id: str, req: SessionChatRequest) -> SessionChatResponse:
-    """Chat with engine-restricted AI. Player messages trigger evidence unlocks."""
-    state = await _require_session(session_id)
+async def api_session_chat(request: Request, session_id: str, req: SessionChatRequest) -> SessionChatResponse:
+    state = await _require_session_for_user(request, session_id)
     client = _get_client(state.case_id)
 
     # 1. Process triggers
@@ -372,9 +595,8 @@ async def api_session_chat(session_id: str, req: SessionChatRequest) -> SessionC
 
 
 @api_router.post("/sessions/{session_id}/present-evidence", response_model=SessionChatResponse)
-async def api_present_evidence(session_id: str, req: PresentEvidenceRequest) -> SessionChatResponse:
-    """Present evidence to a suspect. If it contradicts their claim, AI responds under pressure."""
-    state = await _require_session(session_id)
+async def api_present_evidence(request: Request, session_id: str, req: PresentEvidenceRequest) -> SessionChatResponse:
+    state = await _require_session_for_user(request, session_id)
     client = _get_client(state.case_id)
     schema = load_schema(state.case_id)
 
@@ -429,8 +651,8 @@ async def api_present_evidence(session_id: str, req: PresentEvidenceRequest) -> 
 
 
 @api_router.get("/sessions/{session_id}/contradictions")
-async def api_get_contradictions(session_id: str):
-    state = await _require_session(session_id)
+async def api_get_contradictions(request: Request, session_id: str):
+    state = await _require_session_for_user(request, session_id)
     new_contradictions = inv_engine.check_contradictions(state)
     await save_session(state)
     return {
@@ -440,9 +662,8 @@ async def api_get_contradictions(session_id: str):
 
 
 @api_router.get("/sessions/{session_id}/timeline", response_model=TimelineResponse)
-async def api_get_timeline(session_id: str) -> TimelineResponse:
-    """Get chronological investigation events."""
-    state = await _require_session(session_id)
+async def api_get_timeline(request: Request, session_id: str) -> TimelineResponse:
+    state = await _require_session_for_user(request, session_id)
     return TimelineResponse(
         session_id=state.session_id,
         events=[TimelineEventModel(**vars(e)) for e in state.timeline]
@@ -450,18 +671,16 @@ async def api_get_timeline(session_id: str) -> TimelineResponse:
 
 
 @api_router.post("/sessions/{session_id}/conclude", response_model=ConcludeResponse)
-async def api_conclude(session_id: str, req: ConcludeRequest) -> ConcludeResponse:
-    """Submit final deduction and get scored."""
-    state = await _require_session(session_id)
+async def api_conclude(request: Request, session_id: str, req: ConcludeRequest) -> ConcludeResponse:
+    state = await _require_session_for_user(request, session_id)
     result = inv_engine.evaluate_conclusion(state, req.model_dump())
     await save_session(state)
     return ConcludeResponse(**result)
 
 
 @api_router.post("/sessions/{session_id}/gate")
-async def api_satisfy_gate(session_id: str, gate_name: str):
-    """Manually satisfy an investigation gate."""
-    state = await _require_session(session_id)
+async def api_satisfy_gate(request: Request, session_id: str, gate_name: str):
+    state = await _require_session_for_user(request, session_id)
     newly_visible = inv_engine.satisfy_gate(gate_name, state)
     await save_session(state)
     return {
@@ -490,9 +709,8 @@ class StageAdvanceResponse(BaseModel):
 
 
 @api_router.get("/sessions/{session_id}/stage", response_model=StageResponse)
-async def api_get_stage(session_id: str) -> StageResponse:
-    """Get current investigation stage info and whether player can advance."""
-    state = await _require_session(session_id)
+async def api_get_stage(request: Request, session_id: str) -> StageResponse:
+    state = await _require_session_for_user(request, session_id)
     advance_check = inv_engine.can_advance_stage(state)
     return StageResponse(
         current_stage=state.current_stage,
@@ -505,9 +723,8 @@ async def api_get_stage(session_id: str) -> StageResponse:
 
 
 @api_router.post("/sessions/{session_id}/stage/advance", response_model=StageAdvanceResponse)
-async def api_advance_stage(session_id: str) -> StageAdvanceResponse:
-    """Advance to the next investigation stage."""
-    state = await _require_session(session_id)
+async def api_advance_stage(request: Request, session_id: str) -> StageAdvanceResponse:
+    state = await _require_session_for_user(request, session_id)
     check = inv_engine.can_advance_stage(state)
     if not check["can_advance"]:
         raise HTTPException(
@@ -572,9 +789,8 @@ async def _build_and_cache_graph(case_id: str) -> None:
 
 
 @api_router.get("/sessions/{session_id}/graph")
-async def get_session_graph(session_id: str) -> dict:
-    """Return session-filtered graph — respects the player's current unlock progress."""
-    state = await _require_session(session_id)
+async def get_session_graph(request: Request, session_id: str) -> dict:
+    state = await _require_session_for_user(request, session_id)
     case_id = state.case_id
 
     full_graph = get_cached_graph(case_id) or \
@@ -617,12 +833,12 @@ async def get_session_graph(session_id: str) -> dict:
 
 
 @api_router.post("/sessions/{session_id}/graph/node-unlocked")
-async def notify_node_unlocked(session_id: str, payload: dict) -> dict:
+async def notify_node_unlocked(request: Request, session_id: str, payload: dict) -> dict:
     """
     Called by the frontend when a keyword trigger fires.
     Returns the delta — newly visible node + its edges — so the UI can animate them in.
     """
-    state = await _require_session(session_id)
+    state = await _require_session_for_user(request, session_id)
     newly_unlocked_id = payload.get("entity_id")
 
     full_graph = get_cached_graph(state.case_id) or \
@@ -648,25 +864,25 @@ class GraphStateRequest(BaseModel):
     graph_state: dict
 
 @api_router.get("/sessions/{session_id}/notes")
-async def api_get_notes(session_id: str):
-    state = await _require_session(session_id)
+async def api_get_notes(request: Request, session_id: str):
+    state = await _require_session_for_user(request, session_id)
     return {"notes": state.notes}
 
 @api_router.post("/sessions/{session_id}/notes")
-async def api_save_notes(session_id: str, req: NotesRequest):
-    state = await _require_session(session_id)
+async def api_save_notes(request: Request, session_id: str, req: NotesRequest):
+    state = await _require_session_for_user(request, session_id)
     state.notes = req.notes
     await save_session(state)
     return {"status": "saved"}
 
 @api_router.get("/sessions/{session_id}/graph-state")
-async def api_get_graph_state(session_id: str):
-    state = await _require_session(session_id)
+async def api_get_graph_state(request: Request, session_id: str):
+    state = await _require_session_for_user(request, session_id)
     return {"graph_state": state.graph_state}
 
 @api_router.post("/sessions/{session_id}/graph-state")
-async def api_save_graph_state(session_id: str, req: GraphStateRequest):
-    state = await _require_session(session_id)
+async def api_save_graph_state(request: Request, session_id: str, req: GraphStateRequest):
+    state = await _require_session_for_user(request, session_id)
     state.graph_state = req.graph_state
     await save_session(state)
     return {"status": "saved"}

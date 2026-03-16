@@ -166,7 +166,7 @@ class InvestigationState:
 
 # ── Database-backed Session Store ───────────────────────────────────────────
 
-async def create_session(case_id: str) -> InvestigationState:
+async def create_session(case_id: str, user_id: str | None = None) -> InvestigationState:
     """Create a new investigation session and persist it to the DB."""
     sid = uuid.uuid4().hex[:12]
     state = InvestigationState(session_id=sid, case_id=case_id)
@@ -179,7 +179,7 @@ async def create_session(case_id: str) -> InvestigationState:
     )
     
     async with AsyncSessionLocal() as db:
-        record = SessionRecord(**state.to_record_dict())
+        record = SessionRecord(**state.to_record_dict(), user_id=user_id)
         db.add(record)
         await db.commit()
         

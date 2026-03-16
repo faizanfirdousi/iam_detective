@@ -42,12 +42,16 @@ function SlideView({
   onNext,
   isLast,
   caseId,
+  onFinish,
+  onSkip,
 }: {
   slide: CaseIntroSlide;
   palette: (typeof SLIDE_PALETTES)[0];
   onNext: () => void;
   isLast: boolean;
   caseId: string;
+  onFinish: () => void;
+  onSkip: () => void;
 }) {
   const { displayed, done } = useTypewriter(slide.text);
 
@@ -79,20 +83,15 @@ function SlideView({
         )}
       </p>
 
-      {/* CTA — show after typewriter finishes */}
-      <div
-        className={`absolute bottom-14 transition-all duration-700 ${
-          done ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
-        }`}
-      >
+      <div className="absolute bottom-14">
         {isLast ? (
-          <Link
-            href={`/case/${caseId}/workspace`}
+          <button
+            onClick={onFinish}
             className="group flex items-center gap-3 rounded-full border border-zinc-700 bg-zinc-900/80 px-8 py-3.5 text-sm font-medium text-zinc-200 backdrop-blur-sm transition-all hover:border-zinc-400 hover:text-white"
           >
             <span>Begin Investigation</span>
             <span className="transition-transform group-hover:translate-x-1">→</span>
-          </Link>
+          </button>
         ) : (
           <button
             onClick={onNext}
@@ -104,13 +103,12 @@ function SlideView({
         )}
       </div>
 
-      {/* Skip link */}
-      <Link
-        href={`/case/${caseId}/workspace`}
+      <button
+        onClick={onSkip}
         className="absolute bottom-5 right-6 text-xs text-zinc-700 transition-colors hover:text-zinc-500"
       >
-        Skip intro
-      </Link>
+        Skip intro — I know the case
+      </button>
     </div>
   );
 }
@@ -156,6 +154,7 @@ function ErrorScreen({ err, caseId }: { err: string; caseId: string }) {
 export default function IntroPage() {
   const params = useParams<{ id: string }>();
   const caseId = params.id;
+  const router = useRouter();
 
   const [slides, setSlides] = useState<CaseIntroSlide[]>([]);
   const [loading, setLoading] = useState(true);
@@ -192,6 +191,14 @@ export default function IntroPage() {
     }, 400);
   }, [transitioning]);
 
+  const finish = useCallback(async () => {
+    try {
+      await api.markIntroSeen(caseId);
+    } catch {
+    }
+    router.replace(`/case/${caseId}/workspace`);
+  }, [caseId, router]);
+
   if (loading) return <LoadingScreen />;
   if (err || slides.length === 0)
     return <ErrorScreen err={err ?? "no_slides"} caseId={caseId} />;
@@ -213,6 +220,8 @@ export default function IntroPage() {
         onNext={goNext}
         isLast={isLast}
         caseId={caseId}
+        onFinish={finish}
+        onSkip={finish}
       />
 
       {/* Back link top-left */}

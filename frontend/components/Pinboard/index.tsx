@@ -157,11 +157,8 @@ const Pinboard = forwardRef<PinboardHandle, PinboardProps>(
 
     const fetchGraph = useCallback(async () => {
       try {
-        const res = await fetch(`${API_BASE}/api/sessions/${sessionId}/graph`);
-        if (!res.ok) return;
-        const data = await res.json();
+        const data = await api.getSessionGraph(sessionId);
         if (!data.graph) return;
-
         const { nodes: fn, edges: fe } = buildFlowGraph(
           data.graph.nodes as Record<string, unknown>[],
           data.graph.edges as Record<string, unknown>[]

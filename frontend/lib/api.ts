@@ -6,6 +6,23 @@ const API_BASE =
     ? (process.env.APP_URL || process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:8000")
     : "";
 
+function getAnonUserId(): string | null {
+  if (typeof window === "undefined") return null;
+  try {
+    const key = "iam_user_id";
+    const existing = window.localStorage.getItem(key);
+    if (existing) return existing;
+    const created =
+      typeof crypto !== "undefined" && "randomUUID" in crypto
+        ? crypto.randomUUID()
+        : `${Date.now()}-${Math.random().toString(16).slice(2)}`;
+    window.localStorage.setItem(key, created);
+    return created;
+  } catch {
+    return null;
+  }
+}
+
 
 // ── Types ────────────────────────────────────────────────────────────────────
 
@@ -158,12 +175,57 @@ export interface TimelineResponse {
   events: TimelineEvent[];
 }
 
+export interface CaseProgressItem {
+  case_id: string;
+  started_at: string | null;
+  intro_seen: boolean;
+  last_session_id: string | null;
+}
+
+export interface CaseSessionResponse {
+  session_id: string;
+}
+
+export interface SessionGraphNode {
+  id: string;
+  label?: string;
+  type?: string;
+  locked?: boolean;
+  unlock_level?: number;
+  [key: string]: unknown;
+}
+
+export interface SessionGraphEdge {
+  source: string;
+  target: string;
+  unlock_level?: number;
+  relationship?: string;
+  [key: string]: unknown;
+}
+
+export interface SessionGraphResponse {
+  graph: { nodes: SessionGraphNode[]; edges: SessionGraphEdge[] };
+  player_level: number;
+  max_level: number;
+  graph_status: string;
+}
+
 // ── Helpers ──────────────────────────────────────────────────────────────────
 
 async function fetchJSON<T>(path: string, opts?: RequestInit): Promise<T> {
+  const userId = getAnonUserId();
+  const { headers, ...rest } = opts ?? {};
+  const extraHeaders =
+    headers instanceof Headers
+      ? Object.fromEntries(headers.entries())
+      : (headers as Record<string, string> | undefined) ?? {};
   const res = await fetch(`${API_BASE}${path}`, {
-    headers: { "Content-Type": "application/json" },
-    ...opts,
+    headers: {
+      "Content-Type": "application/json",
+      ...(userId ? { "x-user-id": userId } : {}),
+      ...extraHeaders,
+    },
+    ...rest,
   });
   if (!res.ok) {
     const detail = await res.text();
@@ -240,6 +302,9 @@ export const api = {
   getTimeline: (sessionId: string) =>
     fetchJSON<TimelineResponse>(`/api/sessions/${sessionId}/timeline`),
 
+  getSessionGraph: (sessionId: string) =>
+    fetchJSON<SessionGraphResponse>(`/api/sessions/${sessionId}/graph`),
+
   // --- Persistence (Notes & Graph State) ---
   getNotes: (sessionId: string) =>
     fetchJSON<{ notes: string }>(`/api/sessions/${sessionId}/notes`),
@@ -258,4 +323,20 @@ export const api = {
       method: "POST",
       body: JSON.stringify({ graph_state: graphState }),
     }),
+
+  // --- User progress ---
+  me: () => fetchJSON<{ user_id: string }>("/api/me"),
+
+  getMyCases: () => fetchJSON<CaseProgressItem[]>("/api/me/cases"),
+
+  getMyCase: (caseId: string) => fetchJSON<CaseProgressItem>(`/api/me/cases/${caseId}`),
+
+  startCase: (caseId: string) =>
+    fetchJSON<CaseProgressItem>(`/api/me/cases/${caseId}/start`, { method: "POST" }),
+
+  markIntroSeen: (caseId: string) =>
+    fetchJSON<CaseProgressItem>(`/api/me/cases/${caseId}/intro-seen`, { method: "POST" }),
+
+  getOrCreateCaseSession: (caseId: string) =>
+    fetchJSON<CaseSessionResponse>(`/api/me/cases/${caseId}/session`, { method: "POST" }),
 };
