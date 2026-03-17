@@ -126,6 +126,24 @@ export default async function Home() {
           ))}
         </section>
       </main>
+
+      {/* Footer */}
+      <footer className="border-t border-zinc-800/60 bg-zinc-950/80 mt-auto">
+        <div className="mx-auto max-w-5xl px-6 py-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <p className="text-sm text-zinc-500">
+            Developed by Faizan Firdousi
+          </p>
+          <div className="flex items-center gap-6 text-sm text-zinc-500">
+            <a href="mailto:faizanfirdousi.official@gmail.com" className="hover:text-zinc-300 transition-colors">
+              faizanfirdousi.official@gmail.com
+            </a>
+            <a href="https://github.com/faizanfirdousi/iam_detective" target="_blank" rel="noopener noreferrer" className="hover:text-zinc-300 transition-colors">
+              GitHub Repository
+            </a>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 }
+

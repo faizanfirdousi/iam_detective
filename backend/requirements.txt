@@ -11,4 +11,4 @@ aiosqlite==0.21.0
 # PostgreSQL drivers
 asyncpg==0.30.0; python_version < "3.14"
 psycopg2-binary==2.9.10; python_version < "3.14"
-psycopg[binary]==3.2.6; python_version >= "3.14"
+psycopg==3.2.6; python_version >= "3.14"
