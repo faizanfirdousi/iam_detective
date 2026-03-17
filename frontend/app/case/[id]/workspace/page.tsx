@@ -540,19 +540,7 @@ export default function WorkspacePage() {
                       </div>
                     </div>
                   )}
-                  {(selectedPinNode.type as string) === "PERSON" && (
-                    <button
-                      onClick={() => {
-                        setRole("suspect");
-                        setPersonaId(selectedPinNode.id as string);
-                        setSelectedPinNode(null);
-                      }}
-                      className="mt-4 w-full bg-red-950 hover:bg-red-900 border border-red-800
-                                 text-red-300 text-xs py-2 rounded font-mono tracking-wider transition-colors"
-                    >
-                      INTERROGATE
-                    </button>
-                  )}
+
                 </div>
               )}
 
