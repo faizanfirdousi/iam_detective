@@ -18,7 +18,7 @@ export const metadata: Metadata = {
   description: "iamdetective",
 };
 
-const GA_MEASUREMENT_ID = "S1jtNjT8S-uM0WKYyYaukQ"; // 👈 Replace with your real ID
+const GA_MEASUREMENT_ID = "G-VTYDBYVGZJ"; // 👈 Replace with your real ID
 
 export default function RootLayout({
   children,
